@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import nabbitLogo from "@/assets/nabbit-logo.png";
 
 const Footer = () => {
   return (
@@ -8,8 +9,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center">
-              <span className="font-heading text-xl font-bold text-foreground">nabbit</span>
-              <span className="font-heading text-xl font-bold text-primary">.ai</span>
+              <img src={nabbitLogo} alt="nabbit.ai" className="h-7 invert" />
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
               AI-powered price hunting that never sleeps. You name the price. We nab it.

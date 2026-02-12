@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import nabbitLogo from "@/assets/nabbit-logo.png";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
@@ -43,9 +44,8 @@ const Navbar = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center gap-0">
-          <span className="font-heading text-xl font-bold text-foreground">nabbit</span>
-          <span className="font-heading text-xl font-bold text-primary">.ai</span>
+        <Link to="/" className="flex items-center">
+          <img src={nabbitLogo} alt="nabbit.ai" className="h-8 invert" />
         </Link>
 
         {/* Desktop nav */}
