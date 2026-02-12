@@ -9,7 +9,7 @@ const Login = () => {
       <div className="w-full max-w-md card-surface p-8 space-y-6">
         <div className="text-center mb-4">
           <Link to="/">
-            <img src={nabbitLogo} alt="nabbit.ai" className="h-8 invert mx-auto" />
+            <img src={nabbitLogo} alt="nabbit.ai" className="h-8 mx-auto" style={{ mixBlendMode: "lighten" }} />
           </Link>
         </div>
         <h1 className="font-heading text-2xl font-bold text-foreground text-center">Log in</h1>

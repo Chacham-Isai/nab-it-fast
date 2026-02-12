@@ -9,7 +9,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center">
-              <img src={nabbitLogo} alt="nabbit.ai" className="h-7 invert" />
+              <img src={nabbitLogo} alt="nabbit.ai" className="h-7" style={{ mixBlendMode: "lighten" }} />
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
               AI-powered price hunting that never sleeps. You name the price. We nab it.
