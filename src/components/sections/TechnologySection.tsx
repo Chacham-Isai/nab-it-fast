@@ -1,0 +1,95 @@
+import SectionWrapper from "@/components/SectionWrapper";
+import { motion } from "framer-motion";
+import { Eye, BarChart3, Bot, ShieldCheck } from "lucide-react";
+
+const techs = [
+  {
+    icon: Eye,
+    title: "NabVision AI",
+    subtitle: "Visual Product Recognition",
+    desc: "Proprietary CV model trained on 50M+ product images. Upload a photo from anywhere and NabVision identifies it in under 800ms with 99.2% accuracy.",
+    stat: "99.2% match accuracy",
+  },
+  {
+    icon: BarChart3,
+    title: "PriceGraph Engine",
+    subtitle: "Real-Time Price Intelligence",
+    desc: "Continuously ingests pricing data from 200+ retailers and resale platforms. Predictive modeling with historical trend analysis for optimal buy-window recommendations.",
+    stat: "200+ retailers scanned",
+  },
+  {
+    icon: Bot,
+    title: "NabBot Agent",
+    subtitle: "Autonomous Purchase Execution",
+    desc: "When price meets threshold, NabBot executes autonomously in under 3 seconds. Handles authentication, cart management, checkout flow, and shipping selection.",
+    stat: "<3s purchase speed",
+  },
+  {
+    icon: ShieldCheck,
+    title: "TrustShield",
+    subtitle: "Fraud & Authenticity Layer",
+    desc: "Every listing scored for legitimacy before purchase. Cross-references seller reputation, listing anomalies, price outliers, and known scam patterns.",
+    stat: "0.02% fraud rate",
+  },
+];
+
+const metrics = [
+  { value: "50M+", label: "Training Images" },
+  { value: "99.2%", label: "Match Accuracy" },
+  { value: "<800ms", label: "ID Speed" },
+  { value: "<3s", label: "Purchase Speed" },
+  { value: "0.02%", label: "Fraud Rate" },
+];
+
+const TechnologySection = () => {
+  return (
+    <SectionWrapper id="technology">
+      <div className="text-center mb-16">
+        <p className="section-label mb-4">PROPRIETARY TECHNOLOGY</p>
+        <h2 className="font-heading font-bold text-foreground mb-6" style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}>
+          The Nabbit Engine.
+        </h2>
+        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          Four layers of proprietary AI working together to find, match, and purchase — autonomously.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        {techs.map((tech, i) => (
+          <motion.div
+            key={tech.title}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.1, duration: 0.5 }}
+            className="card-surface p-8 group"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-primary/[0.08] border border-primary/20 flex items-center justify-center mb-5">
+              <tech.icon className="w-5 h-5 text-primary" />
+            </div>
+            <h3 className="font-heading text-xl font-bold text-foreground mb-1">{tech.title}</h3>
+            <p className="text-sm text-primary font-medium mb-3">{tech.subtitle}</p>
+            <p className="text-sm text-muted-foreground leading-relaxed mb-4">{tech.desc}</p>
+            <span className="inline-block text-xs font-semibold text-primary bg-primary/[0.08] border border-primary/20 px-3 py-1 rounded-full">
+              {tech.stat}
+            </span>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* Metrics bar */}
+      <div className="card-surface p-6">
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-6 text-center">
+          {metrics.map((m) => (
+            <div key={m.label}>
+              <p className="font-heading text-2xl font-bold text-primary">{m.value}</p>
+              <p className="text-xs text-muted-foreground mt-1">{m.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </SectionWrapper>
+  );
+};
+
+export default TechnologySection;
