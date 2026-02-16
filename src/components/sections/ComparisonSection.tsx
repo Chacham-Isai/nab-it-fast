@@ -1,4 +1,5 @@
 import SectionWrapper from "@/components/SectionWrapper";
+import { Check, X, Minus } from "lucide-react";
 
 const features = [
   "AI Visual Matching",
@@ -21,9 +22,9 @@ const data: Record<string, Val[]> = {
 };
 
 const Dot = ({ v, highlighted }: { v: Val; highlighted?: boolean }) => {
-  if (v === "yes") return <span className={highlighted ? "text-primary" : "text-primary"}>●</span>;
-  if (v === "partial") return <span className="text-muted-foreground">◐</span>;
-  return <span className="text-muted-foreground">—</span>;
+  if (v === "yes") return <Check className={`w-4 h-4 mx-auto ${highlighted ? "text-primary" : "text-success"}`} />;
+  if (v === "partial") return <Minus className="w-4 h-4 text-muted-foreground mx-auto" />;
+  return <X className="w-4 h-4 text-muted-foreground/30 mx-auto" />;
 };
 
 const ComparisonSection = () => {
@@ -33,14 +34,14 @@ const ComparisonSection = () => {
       <div className="text-center mb-16">
         <p className="section-label mb-4">COMPETITIVE MOAT</p>
         <h2 className="font-heading font-bold text-foreground mb-6" style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}>
-          Not another coupon app.
+          Not another <span className="gradient-text">coupon app.</span>
         </h2>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
           The only platform combining AI matching, real-time tracking, and autonomous purchasing.
         </p>
       </div>
 
-      <div className="card-surface overflow-x-auto">
+      <div className="glass-card overflow-x-auto gradient-border">
         <table className="w-full min-w-[600px] text-sm">
           <thead>
             <tr className="border-b border-border">
@@ -59,12 +60,12 @@ const ComparisonSection = () => {
           </thead>
           <tbody>
             {features.map((f, fi) => (
-              <tr key={f} className="border-b border-border last:border-0">
+              <tr key={f} className="border-b border-border last:border-0 hover:bg-secondary/30 transition-colors">
                 <td className="p-4 text-foreground">{f}</td>
                 {competitors.map((c) => (
                   <td
                     key={c}
-                    className={`p-4 text-center text-lg ${c === "Nabbit" ? "bg-primary/[0.08]" : ""}`}
+                    className={`p-4 text-center ${c === "Nabbit" ? "bg-primary/[0.08]" : ""}`}
                   >
                     <Dot v={data[c][fi]} highlighted={c === "Nabbit"} />
                   </td>
