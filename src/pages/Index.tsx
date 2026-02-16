@@ -14,23 +14,25 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <HeroSection />
-      <div className="gradient-divider" />
-      <ProblemSection />
-      <div className="gradient-divider" />
-      <HowItWorksSection />
-      <div className="gradient-divider" />
-      <TechnologySection />
-      <div className="gradient-divider" />
-      <CategoriesSection />
-      <div className="gradient-divider" />
-      <TractionSection />
-      <div className="gradient-divider" />
-      <ComparisonSection />
-      <div className="gradient-divider" />
-      <PricingSection />
-      <div className="gradient-divider" />
-      <FinalCTASection />
+      <main>
+        <HeroSection />
+        <div className="gradient-divider" />
+        <ProblemSection />
+        <div className="gradient-divider" />
+        <HowItWorksSection />
+        <div className="gradient-divider" />
+        <TechnologySection />
+        <div className="gradient-divider" />
+        <CategoriesSection />
+        <div className="gradient-divider" />
+        <TractionSection />
+        <div className="gradient-divider" />
+        <ComparisonSection />
+        <div className="gradient-divider" />
+        <PricingSection />
+        <div className="gradient-divider" />
+        <FinalCTASection />
+      </main>
       <Footer />
     </div>
   );
