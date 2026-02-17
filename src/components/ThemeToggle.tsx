@@ -12,8 +12,10 @@ const ThemeToggle = () => {
       aria-label="Toggle theme"
     >
       <motion.div
-        initial={false}
-        animate={{ rotate: theme === "dark" ? 0 : 180, scale: [0.8, 1] }}
+        key={theme}
+        initial={{ rotate: -90, opacity: 0, scale: 0.5 }}
+        animate={{ rotate: 0, opacity: 1, scale: 1 }}
+        exit={{ rotate: 90, opacity: 0, scale: 0.5 }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
       >
         {theme === "dark" ? (
