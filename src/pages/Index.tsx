@@ -7,6 +7,7 @@ import TechnologySection from "@/components/sections/TechnologySection";
 import CategoriesSection from "@/components/sections/CategoriesSection";
 import TractionSection from "@/components/sections/TractionSection";
 import TestimonialsSection from "@/components/sections/TestimonialsSection";
+import RetailerMarquee from "@/components/sections/RetailerMarquee";
 import ComparisonSection from "@/components/sections/ComparisonSection";
 import PricingSection from "@/components/sections/PricingSection";
 import FinalCTASection from "@/components/sections/FinalCTASection";
@@ -19,6 +20,7 @@ const Index = () => {
       <BackToTop />
       <main>
         <HeroSection />
+        <RetailerMarquee />
         <div className="gradient-divider" />
         <ProblemSection />
         <div className="gradient-divider" />
