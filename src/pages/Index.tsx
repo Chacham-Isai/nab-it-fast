@@ -6,6 +6,7 @@ import HowItWorksSection from "@/components/sections/HowItWorksSection";
 import TechnologySection from "@/components/sections/TechnologySection";
 import CategoriesSection from "@/components/sections/CategoriesSection";
 import TractionSection from "@/components/sections/TractionSection";
+import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import ComparisonSection from "@/components/sections/ComparisonSection";
 import PricingSection from "@/components/sections/PricingSection";
 import FinalCTASection from "@/components/sections/FinalCTASection";
@@ -28,6 +29,8 @@ const Index = () => {
         <CategoriesSection />
         <div className="gradient-divider" />
         <TractionSection />
+        <div className="gradient-divider" />
+        <TestimonialsSection />
         <div className="gradient-divider" />
         <ComparisonSection />
         <div className="gradient-divider" />
