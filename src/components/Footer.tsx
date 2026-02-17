@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 import nabbitLogo from "@/assets/nabbit-logo.png";
+import { useTheme } from "@/hooks/use-theme";
 
 const Footer = () => {
+  const { theme } = useTheme();
   return (
     <footer className="border-t border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -9,7 +11,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center">
-              <img src={nabbitLogo} alt="nabbit.ai" className="h-7" style={{ mixBlendMode: "lighten" }} />
+              <img src={nabbitLogo} alt="nabbit.ai" className="h-7" style={{ mixBlendMode: theme === "dark" ? "lighten" : "normal" }} />
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
               AI-powered price hunting that never sleeps. You name the price. We nab it.

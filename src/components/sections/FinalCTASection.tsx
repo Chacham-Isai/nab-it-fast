@@ -16,7 +16,7 @@ const FinalCTASection = () => {
         
         {/* Grid pattern */}
         <div className="absolute inset-0 pointer-events-none rounded-3xl overflow-hidden" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, hsl(0 0% 100% / 0.02) 1px, transparent 0)`,
+          backgroundImage: `radial-gradient(circle at 1px 1px, var(--grid-dot-color) 1px, transparent 0)`,
           backgroundSize: '32px 32px',
         }} />
 
