@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
+import { motion, useScroll, useSpring } from "framer-motion";
 import nabbitLogo from "@/assets/nabbit-logo.png";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -16,6 +17,8 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -93,6 +96,12 @@ const Navbar = () => {
           </SheetContent>
         </Sheet>
       </div>
+
+      {/* Scroll progress indicator */}
+      <motion.div
+        className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary origin-left"
+        style={{ scaleX }}
+      />
     </nav>
   );
 };
