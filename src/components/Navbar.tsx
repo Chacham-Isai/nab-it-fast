@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, useScroll, useSpring } from "framer-motion";
 import nabbitLogo from "@/assets/nabbit-logo.png";
@@ -6,25 +6,46 @@ import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 
+const sectionIds = ["how-it-works", "technology", "categories", "pricing"];
+
 const navLinks = [
-  { label: "How It Works", href: "/#how-it-works" },
-  { label: "Technology", href: "/#technology" },
-  { label: "Categories", href: "/#categories" },
-  { label: "Pricing", href: "/#pricing" },
+  { label: "How It Works", href: "/#how-it-works", id: "how-it-works" },
+  { label: "Technology", href: "/#technology", id: "technology" },
+  { label: "Categories", href: "/#categories", id: "categories" },
+  { label: "Pricing", href: "/#pricing", id: "pricing" },
 ];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll);
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+
+      if (location.pathname !== "/") {
+        setActiveSection(null);
+        return;
+      }
+
+      let current: string | null = null;
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (el) {
+          const top = el.getBoundingClientRect().top;
+          if (top <= 120) current = id;
+        }
+      }
+      setActiveSection(current);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [location.pathname]);
 
   const handleNavClick = (href: string) => {
     setOpen(false);
@@ -57,9 +78,20 @@ const Navbar = () => {
             <button
               key={link.label}
               onClick={() => handleNavClick(link.href)}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              className={`text-sm transition-colors relative ${
+                activeSection === link.id
+                  ? "text-primary font-semibold"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
             >
               {link.label}
+              {activeSection === link.id && (
+                <motion.div
+                  layoutId="activeNav"
+                  className="absolute -bottom-1 left-0 right-0 h-[2px] bg-primary rounded-full"
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
+              )}
             </button>
           ))}
           <Button size="sm" className="rounded-full px-6 font-semibold">
@@ -81,7 +113,11 @@ const Navbar = () => {
                 <button
                   key={link.label}
                   onClick={() => handleNavClick(link.href)}
-                  className="text-lg text-muted-foreground hover:text-foreground transition-colors text-left"
+                  className={`text-lg transition-colors text-left ${
+                    activeSection === link.id
+                      ? "text-primary font-semibold"
+                      : "text-muted-foreground hover:text-foreground"
+                  }`}
                 >
                   {link.label}
                 </button>
