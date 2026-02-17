@@ -9,11 +9,13 @@ import TractionSection from "@/components/sections/TractionSection";
 import ComparisonSection from "@/components/sections/ComparisonSection";
 import PricingSection from "@/components/sections/PricingSection";
 import FinalCTASection from "@/components/sections/FinalCTASection";
+import BackToTop from "@/components/BackToTop";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
+      <BackToTop />
       <main>
         <HeroSection />
         <div className="gradient-divider" />
