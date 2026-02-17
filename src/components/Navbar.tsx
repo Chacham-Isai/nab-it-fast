@@ -2,9 +2,11 @@ import { useState, useEffect, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, useScroll, useSpring } from "framer-motion";
 import nabbitLogo from "@/assets/nabbit-logo.png";
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
+import ThemeToggle from "./ThemeToggle";
+import { useTheme } from "@/hooks/use-theme";
 
 const sectionIds = ["how-it-works", "technology", "categories", "pricing"];
 
@@ -20,6 +22,7 @@ const Navbar = () => {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const { theme } = useTheme();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
 
@@ -69,7 +72,7 @@ const Navbar = () => {
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
         <Link to="/" className="flex items-center">
-          <img src={nabbitLogo} alt="nabbit.ai" className="h-8" style={{ mixBlendMode: "lighten" }} />
+          <img src={nabbitLogo} alt="nabbit.ai" className="h-8" style={{ mixBlendMode: theme === "dark" ? "lighten" : "normal" }} />
         </Link>
 
         {/* Desktop nav */}
@@ -94,6 +97,7 @@ const Navbar = () => {
               )}
             </button>
           ))}
+          <ThemeToggle />
           <Button size="sm" className="rounded-full px-6 font-semibold">
             Get Started Free
           </Button>
@@ -125,6 +129,10 @@ const Navbar = () => {
               <Link to="/about" onClick={() => setOpen(false)} className="text-lg text-muted-foreground hover:text-foreground transition-colors">About</Link>
               <Link to="/blog" onClick={() => setOpen(false)} className="text-lg text-muted-foreground hover:text-foreground transition-colors">Blog</Link>
               <Link to="/contact" onClick={() => setOpen(false)} className="text-lg text-muted-foreground hover:text-foreground transition-colors">Contact</Link>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <span className="text-sm">Theme</span>
+                <ThemeToggle />
+              </div>
               <Button className="rounded-full font-semibold mt-4">
                 Get Started Free
               </Button>

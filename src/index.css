@@ -3,7 +3,64 @@
 @tailwind utilities;
 
 @layer base {
-  :root,
+  :root {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 8%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 8%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 8%;
+
+    --primary: 6 100% 58%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 94%;
+    --secondary-foreground: 0 0% 15%;
+
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 6 100% 58%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 0% / 0.08;
+    --input: 0 0% 0% / 0.08;
+    --ring: 6 100% 58%;
+
+    --radius: 0.75rem;
+
+    --sidebar-background: 0 0% 96%;
+    --sidebar-foreground: 0 0% 40%;
+    --sidebar-primary: 6 100% 58%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 94%;
+    --sidebar-accent-foreground: 0 0% 8%;
+    --sidebar-border: 0 0% 0% / 0.08;
+    --sidebar-ring: 6 100% 58%;
+
+    --success: 142 69% 45%;
+    --coral: 6 100% 58%;
+    --coral-glow: 6 100% 58% / 0.12;
+    --coral-soft: 6 100% 58% / 0.06;
+    --text-secondary: 0 0% 40%;
+    --text-muted: 0 0% 55%;
+    --border-accent: 6 100% 58% / 0.25;
+    --card-hover: 0 0% 96%;
+
+    --glass-bg: linear-gradient(135deg, hsl(0 0% 0% / 0.03), hsl(0 0% 0% / 0.01));
+    --glass-border: hsl(0 0% 0% / 0.08);
+    --glass-hover-shadow: 0 0 40px -8px hsl(var(--coral) / 0.12), 0 20px 60px -20px rgba(0, 0, 0, 0.1);
+    --grid-dot-color: hsl(0 0% 0% / 0.04);
+    --radial-overlay: radial-gradient(ellipse_at_center,transparent_0%,hsl(0_0%_98%)_70%);
+    --shimmer-color: hsl(0 0% 0% / 0.08);
+    --card-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.08);
+  }
+
   .dark {
     --background: 0 0% 4%;
     --foreground: 0 0% 100%;
@@ -52,6 +109,14 @@
     --text-muted: 0 0% 40%;
     --border-accent: 6 100% 68% / 0.3;
     --card-hover: 0 0% 10%;
+
+    --glass-bg: linear-gradient(135deg, hsl(0 0% 100% / 0.04), hsl(0 0% 100% / 0.01));
+    --glass-border: hsl(0 0% 100% / 0.08);
+    --glass-hover-shadow: 0 0 40px -8px hsl(var(--coral) / 0.15), 0 20px 60px -20px rgba(0, 0, 0, 0.6);
+    --grid-dot-color: hsl(0 0% 100% / 0.03);
+    --radial-overlay: radial-gradient(ellipse_at_center,transparent_0%,hsl(0_0%_4%)_70%);
+    --shimmer-color: hsl(0 0% 100% / 0.15);
+    --card-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.5);
   }
 }
 
@@ -66,6 +131,7 @@
 
   body {
     @apply bg-background text-foreground font-body antialiased;
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -95,7 +161,7 @@
   .card-surface:hover {
     background: hsl(var(--card-hover));
     transform: translateY(-4px);
-    box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--card-shadow);
   }
 
   .coral-glow {
@@ -104,8 +170,8 @@
 
   /* Premium glass card */
   .glass-card {
-    background: linear-gradient(135deg, hsl(0 0% 100% / 0.04), hsl(0 0% 100% / 0.01));
-    border: 1px solid hsl(0 0% 100% / 0.08);
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
     border-radius: 24px;
     backdrop-filter: blur(20px);
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -113,7 +179,7 @@
 
   .glass-card:hover {
     border-color: hsl(var(--coral) / 0.3);
-    box-shadow: 0 0 40px -8px hsl(var(--coral) / 0.15), 0 20px 60px -20px rgba(0, 0, 0, 0.6);
+    box-shadow: var(--glass-hover-shadow);
     transform: translateY(-6px);
   }
 
@@ -138,7 +204,7 @@
     left: -100%;
     width: 200%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, hsl(0 0% 100% / 0.15), transparent);
+    background: linear-gradient(90deg, transparent, var(--shimmer-color), transparent);
     animation: shimmer 3s ease-in-out infinite;
   }
 

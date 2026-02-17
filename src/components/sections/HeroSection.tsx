@@ -78,11 +78,11 @@ const HeroSection = () => {
         />
         {/* Grid pattern */}
         <div className="absolute inset-0" style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, hsl(0 0% 100% / 0.03) 1px, transparent 0)`,
+          backgroundImage: `radial-gradient(circle at 1px 1px, var(--grid-dot-color) 1px, transparent 0)`,
           backgroundSize: '40px 40px',
         }} />
         {/* Radial gradient overlay */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_0%,hsl(0_0%_4%)_70%)]" />
+        <div className="absolute inset-0" style={{ background: `var(--radial-overlay)` }} />
       </div>
 
       <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
