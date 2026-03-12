@@ -1,93 +1,86 @@
 
 
-# Navigator — Complete Build Plan
+# nabbit.ai — Full Marketing Website
 
-## Current State
-The project contains a **nabbit.ai marketing site** with 7 pages (Index, About, Blog, Contact, Login, Signup, NotFound). **Zero** Navigator pages, components, or routing exist. This is a ground-up build of a new application layered into the existing project.
-
-## Approach
-Build iteratively in phases, keeping existing nabbit.ai pages intact (they can serve as the marketing site at `/`). Each phase produces working, testable pages.
+A premium, dark-mode, conversion-focused marketing website for an AI-powered autonomous shopping agent. The logo image will be used as a reference for the brand identity (the "a" has a crosshair/target motif, ".ai" in coral).
 
 ---
 
-## Phase 1: Routing, Layout & BottomNav
+## Phase 1: Foundation & Design System
 
-- **Update AnimatedRoutes.tsx** to add all 12 Navigator routes (`/onboarding`, `/feed`, `/dream-buys`, `/community`, `/profile`, `/notifications`, `/giving`, `/play`, `/breaks`, `/grab-bags`, `/auctions`)
-- **Create `src/components/BottomNav.tsx`** — fixed bottom bar with 5 tabs (Feed, Dreams, Play center hero button, Tribe, Me). Hidden on `/` and `/onboarding`. Play tab uses coral elevated circle with pulsing shadow. Active state detection via `useLocation`.
-- **Create stub pages** for all 12 routes so navigation works end-to-end
-
-## Phase 2: Landing Page Retrofit
-
-- **Adapt existing Index.tsx** to serve as Navigator landing page, OR create a new `Landing.tsx` at `/` that includes: rotating word hero animation, HowItWorks (4 steps), sample drops, dream buy preview, community preview, testimonials, final CTA, footer
-- Wire "Get Early Access" and "Build My Feed" CTAs to `/onboarding`
-
-## Phase 3: Onboarding (7-Step Quiz)
-
-- **Create `src/pages/Onboarding.tsx`** with step state machine (steps 1–7)
-- Step components: image-multi grid (Q1), multi-chip pills (Q2), dream-input with tags (Q3), single-card radio (Q4), brand grid (Q5), multi-chip (Q6), single-card (Q7)
-- Progress bar header with step counter
-- Loading animation sequence after Q7 (5 phases, 700ms each)
-- Auto-navigate to `/feed` passing taste profile via router state
-
-## Phase 4: Feed (Swipe Cards)
-
-- **Create `src/pages/Feed.tsx`** — header with logo/bell/bookmark, horizontal category filter chips
-- **Swipe card stack** — 3 visible cards with depth illusion. Top card draggable via pointer events. Swipe right = "NAB IT" green overlay, swipe left = "PASS" red overlay. Threshold ±80px.
-- Action buttons below stack (Pass, Nab, Bookmark)
-- Toast notifications on swipe
-- Saved drops list below stack
-- Mock feed data scored against taste profile from onboarding
-
-## Phase 5: Dream Buys
-
-- **Create `src/pages/DreamBuy.tsx`** — add/remove dream buys, hunting/found status, closest match display, stats row (Active Hunts, Avg Find Time, Matches Found)
-- Local state management with mock data
-
-## Phase 6: Community
-
-- **Create `src/pages/Community.tsx`** — 3 tabs (Feed, Group Deals, Tribes)
-- Feed tab: live activity list with user actions
-- Group Deals tab: deal cards with progress bars and join toggle
-- Tribes tab: grid of tribe cards with join/joined toggle
-
-## Phase 7: Profile, Notifications, Giving
-
-- **Profile.tsx** — avatar, editable name, taste tags, stats row, Saved/History/Settings tabs
-- **Notifications.tsx** — filterable notification list with type icons, unread dots, mark-all-read
-- **Giving.tsx** — 3 tabs (Causes with round-up toggle, My Giving history, Impact stats)
-
-## Phase 8: Play Hub + Sub-Pages
-
-- **Play.tsx** — live ticker, 3 mode cards linking to sub-pages, recent wins feed
-- **Breaks.tsx** — Live/Upcoming/My Breaks tabs, slot grid with buy mechanic, countdown timer
-- **GrabBags.tsx** — 4 tier cards with quantity selector, full-screen 3-phase reveal animation with rarity roll logic
-- **Auctions.tsx** — auction cards with live countdown, Place Bid / Bid History tabs, quick-select bids, proxy bidding, Buy Now
-
-## Phase 9: Shared Components
-
-- **Countdown component** — live-ticking timer, red + pulse when urgent
-- **Reusable card patterns** — product card, stat tile, filter chip bar
-- All animations use Framer Motion (fade-up on scroll, scale transitions)
-
-## Phase 10: Backend Integration (Lovable Cloud)
-
-- Create database tables per the schema spec (users, taste_profiles, dream_buys, feed_items, swipes, saved_items, breaks, break_slots, grab_bag_orders, auctions, bids, group_deals, tribes, tribe_members, giving_preferences, giving_transactions, notifications)
-- RLS policies per table
-- Auth flow (email + password signup/login)
-- Realtime subscriptions for auctions, breaks, notifications
-- Edge functions for affiliate link generation and dream buy hunting
+- **Dark theme setup** — Override all CSS variables to the nabbit brand palette (#0A0A0A background, #FF6B5B coral accent, etc.)
+- **Typography** — Import Google Fonts (Syne for headings, Plus Jakarta Sans for body) and configure Tailwind
+- **Install Framer Motion** for scroll-triggered animations throughout the site
+- **Reusable components** — Section wrapper with fade-up animation, gradient dividers, coral pill/badge, stat card
 
 ---
 
-## Technical Notes
+## Phase 2: Navigation & Layout Shell
 
-- **State management**: React state + React Router state for onboarding flow. Supabase for persistence in Phase 10.
-- **Fonts**: Will add Clash Display, DM Sans, DM Mono via Google Fonts / CDN
-- **All mock data** hardcoded in each page until backend connected
-- **Existing nabbit.ai pages** (About, Blog, Contact) kept intact — can be repurposed or removed later
-- **Build order priority**: Phases 1–4 first (core loop: land → onboard → feed → swipe), then expand outward
+- **Sticky navbar** — Transparent → glass blur on scroll, nabbit.ai text logo ("nabbit" white, ".ai" coral), desktop nav links with smooth scroll, coral "Get Started Free" CTA button
+- **Mobile hamburger** — Slide-in drawer with all nav links
+- **Footer** — 4-column layout (Brand, Product, Company, Support), bottom copyright bar
 
-## Estimated Scope
+---
 
-This is a very large build — approximately 12 new pages, 15+ new components, and eventually 17 database tables. I recommend building it in batches of 2–3 pages per conversation to maintain quality. Starting with **Phase 1 + Phase 3 (routing + onboarding)** would be the most impactful first step.
+## Phase 3: Homepage Sections (Landing Page)
+
+### Hero (Section 1)
+- Two-column: headline + CTAs + inline stats on left, CSS phone mockup on right showing 3 product hunt cards (Jordan 4, Rolex, Chanel)
+- Floating animated badges around the phone
+- Coral radial glow background accents
+
+### The Problem (Section 2)
+- 4 stat cards in a grid with large coral values, descriptions, and source citations
+- Closing italicized quote
+
+### How It Works (Section 3)
+- 3 step cards (Upload, Set Price, Auto-Purchase) connected by a faint line
+- Each with icon, faded step number, description, and coral tag pill
+
+### Proprietary Technology (Section 4)
+- 2×2 grid of tech cards (NabVision AI, PriceGraph Engine, NabBot Agent, TrustShield)
+- Horizontal metrics bar below with 5 key stats
+
+### Use Cases / Categories (Section 5)
+- 4×2 grid of category cards (Sneakers, Electronics, Fashion, Collectibles, Beauty, Home, Kids, Cars) with Lucide icons
+
+### Traction (Section 6)
+- 4 metric cards with large coral values
+- Footnote bar with growth stats
+
+### Competitive Comparison (Section 7)
+- Feature comparison table: Nabbit vs Honey vs Camel vs Google Shopping
+- Nabbit column highlighted with coral tint, using ● / — / ◐ indicators
+
+### Pricing (Section 8)
+- 3 pricing cards: Nibble (Free), Nabber ($9/mo — featured with coral border/glow), Nabbit Pro ($29/mo)
+- Feature lists with coral checkmarks
+
+### Final CTA (Section 9)
+- Large banner card with coral glow, headline, and two CTA buttons
+
+---
+
+## Phase 4: Additional Pages
+
+- **/about** — Mission statement, placeholder team member cards, 3 company values
+- **/blog** — Grid of 6 placeholder blog post cards with titles, dates, and excerpts
+- **/contact** — Contact form (Name, Email, Subject dropdown, Message) + email/social links
+- **/login** — Dark centered card with email/password fields, links to signup/forgot password
+- **/signup** — Dark centered card with name/email/password/confirm fields, link to login
+
+All pages share the same navbar and footer. All UI-only (no backend auth needed).
+
+---
+
+## Design Details Applied Throughout
+
+- Scroll-triggered Framer Motion fade-up animations on every section
+- Cards with 1px borders, 20-24px rounded corners, hover lift effects
+- Generous spacing (~140px desktop, ~100px mobile between sections)
+- Gradient section dividers
+- Fully responsive: mobile-first with tablet and desktop breakpoints
+- Lucide React icons (no emojis)
+- All copy exactly as specified in the brief
 
