@@ -8,6 +8,17 @@ import Contact from "@/pages/Contact";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
 import NotFound from "@/pages/NotFound";
+import Onboarding from "@/pages/Onboarding";
+import Feed from "@/pages/Feed";
+import DreamBuy from "@/pages/DreamBuy";
+import Community from "@/pages/Community";
+import Profile from "@/pages/Profile";
+import Notifications from "@/pages/Notifications";
+import Giving from "@/pages/Giving";
+import Play from "@/pages/Play";
+import Breaks from "@/pages/Breaks";
+import GrabBags from "@/pages/GrabBags";
+import Auctions from "@/pages/Auctions";
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -21,6 +32,17 @@ const AnimatedRoutes = () => {
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
         <Route path="/signup" element={<PageTransition><Signup /></PageTransition>} />
+        <Route path="/onboarding" element={<PageTransition><Onboarding /></PageTransition>} />
+        <Route path="/feed" element={<PageTransition><Feed /></PageTransition>} />
+        <Route path="/dream-buys" element={<PageTransition><DreamBuy /></PageTransition>} />
+        <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
+        <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
+        <Route path="/notifications" element={<PageTransition><Notifications /></PageTransition>} />
+        <Route path="/giving" element={<PageTransition><Giving /></PageTransition>} />
+        <Route path="/play" element={<PageTransition><Play /></PageTransition>} />
+        <Route path="/breaks" element={<PageTransition><Breaks /></PageTransition>} />
+        <Route path="/grab-bags" element={<PageTransition><GrabBags /></PageTransition>} />
+        <Route path="/auctions" element={<PageTransition><Auctions /></PageTransition>} />
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
     </AnimatePresence>
