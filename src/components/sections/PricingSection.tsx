@@ -17,7 +17,7 @@ const plans = [
     name: "Nabber",
     price: "$9",
     period: "/mo",
-    tagline: "For serious hunters",
+    tagline: "For serious hunters. Track up to 25 items across all 200+ retailers with priority NabBot speed.",
     features: ["25 active hunts", "SMS + push alerts", "200+ retailers", "Priority scan", "Auto-purchase"],
     cta: "Start Nabbing",
     featured: true,
