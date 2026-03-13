@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SectionWrapper from "@/components/SectionWrapper";
 import { motion } from "framer-motion";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const posts = [
   { title: "How AI is Changing Online Shopping", date: "Feb 10, 2026", excerpt: "Explore how artificial intelligence is revolutionizing the way consumers find and purchase products online." },
@@ -13,6 +14,7 @@ const posts = [
 ];
 
 const Blog = () => {
+  usePageMeta({ title: "Blog — nabbit.ai", description: "Insights on AI shopping, price tracking, and autonomous purchasing. Stay ahead of the deal curve.", path: "/blog" });
   return (
     <div className="min-h-screen bg-background">
       <Navbar />

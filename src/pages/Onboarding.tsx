@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import nabbitLogo from "@/assets/nabbit-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const vibeOptions = [
   { id: "sneakers", emoji: "👟", label: "Sneaker Wall" },
@@ -70,6 +71,7 @@ const loadingPhases = [
 ];
 
 const Onboarding = () => {
+  usePageMeta({ title: "Onboarding — nabbit.ai", description: "Set up your taste profile so nabbit can find your perfect deals.", path: "/onboarding" });
   const navigate = useNavigate();
   const { user } = useAuth();
   const [step, setStep] = useState(1);

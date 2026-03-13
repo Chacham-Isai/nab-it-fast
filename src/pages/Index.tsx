@@ -15,12 +15,9 @@ import ComparisonSection from "@/components/sections/ComparisonSection";
 import PricingSection from "@/components/sections/PricingSection";
 import FinalCTASection from "@/components/sections/FinalCTASection";
 import BackToTop from "@/components/BackToTop";
-import { useEffect } from "react";
-
+import usePageMeta from "@/hooks/usePageMeta";
 const Index = () => {
-  useEffect(() => {
-    document.title = "nabbit.ai — AI-Powered Price Hunting That Never Sleeps";
-  }, []);
+  usePageMeta({ title: "nabbit.ai — AI-Powered Price Hunting That Never Sleeps", description: "Stop overpaying. Nabbit's AI monitors 200+ retailers 24/7 and auto-purchases the instant your item hits your target price.", path: "/" });
 
   return (
     <div className="min-h-screen bg-background">

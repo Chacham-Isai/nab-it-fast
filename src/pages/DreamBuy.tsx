@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import usePageMeta from "@/hooks/usePageMeta";
 
 interface DreamBuyItem {
   id: string;
@@ -22,6 +23,7 @@ const mockDreams: DreamBuyItem[] = [
 ];
 
 const DreamBuy = () => {
+  usePageMeta({ title: "Dream Buys — nabbit.ai", description: "Track your dream purchases. Nabbit hunts them down for you.", path: "/dreams" });
   const navigate = useNavigate();
   const { user } = useAuth();
   const [dreams, setDreams] = useState<DreamBuyItem[]>([]);

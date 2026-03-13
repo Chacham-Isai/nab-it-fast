@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import usePageMeta from "@/hooks/usePageMeta";
 
 interface NotifItem {
   id: string;
@@ -39,6 +40,7 @@ const typeIcons: Record<string, { icon: typeof Zap; color: string }> = {
 const filters = ["All", "Unread", "🎯 Dream Buys", "⚡ Group Deals", "📉 Price Drops"] as const;
 
 const Notifications = () => {
+  usePageMeta({ title: "Notifications — nabbit.ai", description: "Price drops, dream buy matches, and community updates.", path: "/notifications" });
   const navigate = useNavigate();
   const { user } = useAuth();
   const [notifs, setNotifs] = useState<NotifItem[]>([]);

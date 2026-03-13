@@ -6,6 +6,7 @@ import { Progress } from "@/components/ui/progress";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const causes = [
   { id: 1, name: "Youth Education Fund", category: "Education", emoji: "📚", raised: 12400, goal: 25000, pct: 49.6, tribe: "Card Collectors", desc: "Supporting STEM education for underserved communities" },
@@ -21,6 +22,7 @@ const givingHistory = [
 ];
 
 const Giving = () => {
+  usePageMeta({ title: "Giving — nabbit.ai", description: "Round up your savings and give back to causes you care about.", path: "/giving" });
   const navigate = useNavigate();
   const { user } = useAuth();
   const [tab, setTab] = useState<"causes" | "my-giving" | "impact">("causes");
