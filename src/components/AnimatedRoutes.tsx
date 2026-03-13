@@ -1,6 +1,7 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import PageTransition from "./PageTransition";
+import ProtectedRoute from "./ProtectedRoute";
 import Index from "@/pages/Index";
 import About from "@/pages/About";
 import Blog from "@/pages/Blog";
@@ -26,23 +27,27 @@ const AnimatedRoutes = () => {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
+        {/* Public routes */}
         <Route path="/" element={<PageTransition><Index /></PageTransition>} />
         <Route path="/about" element={<PageTransition><About /></PageTransition>} />
         <Route path="/blog" element={<PageTransition><Blog /></PageTransition>} />
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
         <Route path="/signup" element={<PageTransition><Signup /></PageTransition>} />
-        <Route path="/onboarding" element={<PageTransition><Onboarding /></PageTransition>} />
-        <Route path="/feed" element={<PageTransition><Feed /></PageTransition>} />
-        <Route path="/dream-buys" element={<PageTransition><DreamBuy /></PageTransition>} />
-        <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
-        <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
-        <Route path="/notifications" element={<PageTransition><Notifications /></PageTransition>} />
-        <Route path="/giving" element={<PageTransition><Giving /></PageTransition>} />
-        <Route path="/play" element={<PageTransition><Play /></PageTransition>} />
-        <Route path="/breaks" element={<PageTransition><Breaks /></PageTransition>} />
-        <Route path="/grab-bags" element={<PageTransition><GrabBags /></PageTransition>} />
-        <Route path="/auctions" element={<PageTransition><Auctions /></PageTransition>} />
+
+        {/* Protected routes */}
+        <Route path="/onboarding" element={<PageTransition><ProtectedRoute><Onboarding /></ProtectedRoute></PageTransition>} />
+        <Route path="/feed" element={<PageTransition><ProtectedRoute><Feed /></ProtectedRoute></PageTransition>} />
+        <Route path="/dream-buys" element={<PageTransition><ProtectedRoute><DreamBuy /></ProtectedRoute></PageTransition>} />
+        <Route path="/community" element={<PageTransition><ProtectedRoute><Community /></ProtectedRoute></PageTransition>} />
+        <Route path="/profile" element={<PageTransition><ProtectedRoute><Profile /></ProtectedRoute></PageTransition>} />
+        <Route path="/notifications" element={<PageTransition><ProtectedRoute><Notifications /></ProtectedRoute></PageTransition>} />
+        <Route path="/giving" element={<PageTransition><ProtectedRoute><Giving /></ProtectedRoute></PageTransition>} />
+        <Route path="/play" element={<PageTransition><ProtectedRoute><Play /></ProtectedRoute></PageTransition>} />
+        <Route path="/breaks" element={<PageTransition><ProtectedRoute><Breaks /></ProtectedRoute></PageTransition>} />
+        <Route path="/grab-bags" element={<PageTransition><ProtectedRoute><GrabBags /></ProtectedRoute></PageTransition>} />
+        <Route path="/auctions" element={<PageTransition><ProtectedRoute><Auctions /></ProtectedRoute></PageTransition>} />
+
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
     </AnimatePresence>
