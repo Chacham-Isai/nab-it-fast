@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SectionWrapper from "@/components/SectionWrapper";
 import { motion } from "framer-motion";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const posts = [
   { title: "How AI is Changing Online Shopping", date: "Feb 10, 2026", excerpt: "Explore how artificial intelligence is revolutionizing the way consumers find and purchase products online." },
