@@ -55,9 +55,10 @@ const AnimatedCounter = ({ target, prefix = "", suffix = "" }: { target: number;
 };
 
 const stats = [
-  { value: 2400000, prefix: "", suffix: "+", display: "2.4M+", label: "Items tracked" },
-  { value: 18700000, prefix: "$", suffix: "", display: "$18.7M", label: "Saved for users" },
-  { value: 3, prefix: "<", suffix: "s", display: "<3s", label: "Average nab speed" },
+  { value: 200, prefix: "", suffix: "+", display: "200+", label: "Retailers" },
+  { value: 2400000, prefix: "", suffix: "+", display: "2.4M", label: "Live Listings" },
+  { value: 12000, prefix: "", suffix: "+", display: "12K+", label: "Hunters" },
+  { value: 4200000, prefix: "$", suffix: "", display: "$4.2M", label: "Saved" },
 ];
 
 const HeroSection = () => {
@@ -109,12 +110,12 @@ const HeroSection = () => {
           </motion.div>
 
           <h1 className="font-heading font-extrabold text-foreground" style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 1.05 }}>
-            Stop paying<br />
-            <span className="gradient-text">full price.</span>
+            Your AI that<br />
+            <span className="gradient-text">never stops hunting.</span>
           </h1>
 
           <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
-            You name the price. We nab it. Nabbit monitors millions of listings across <strong className="text-foreground">200+ retailers</strong> — 24/7 — and auto-purchases the second your item hits your price.
+            Set your target price. nabbit watches <strong className="text-foreground">200+ retailers 24/7</strong> and auto-buys the moment your price hits — while you sleep.
           </p>
 
           {/* Trust signals */}
@@ -126,7 +127,7 @@ const HeroSection = () => {
 
           <div className="flex flex-wrap gap-4">
             <Button size="lg" className="rounded-full px-8 font-semibold text-base gap-2 shimmer-btn shadow-[0_0_30px_-5px_hsl(var(--coral)/0.4)]">
-              Start Nabbing Free <ArrowRight className="w-4 h-4" />
+              Start Hunting Free <ArrowRight className="w-4 h-4" />
             </Button>
             <Button size="lg" variant="outline" className="rounded-full px-8 font-semibold text-base border-border hover:bg-secondary group">
               See How It Works <ArrowRight className="w-4 h-4 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />

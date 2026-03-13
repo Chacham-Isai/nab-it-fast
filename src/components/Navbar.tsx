@@ -1,12 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, useScroll, useSpring } from "framer-motion";
 import nabbitLogo from "@/assets/nabbit-logo.png";
-import { Menu } from "lucide-react";
+import { Menu, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
 import ThemeToggle from "./ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
+import { useAuth } from "@/hooks/useAuth";
 
 const sectionIds = ["how-it-works", "technology", "categories", "pricing"];
 
@@ -22,7 +23,9 @@ const Navbar = () => {
   const [activeSection, setActiveSection] = useState<string | null>(null);
   const [open, setOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const { theme } = useTheme();
+  const { user, signOut } = useAuth();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
 
@@ -62,6 +65,11 @@ const Navbar = () => {
     }
   };
 
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/login");
+  };
+
   return (
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -98,9 +106,20 @@ const Navbar = () => {
             </button>
           ))}
           <ThemeToggle />
-          <Button size="sm" className="rounded-full px-6 font-semibold">
-            Get Started Free
-          </Button>
+          {user ? (
+            <div className="flex items-center gap-3">
+              <Link to="/profile" className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-xs font-bold text-primary">
+                {user.email?.[0]?.toUpperCase() || "U"}
+              </Link>
+              <Button variant="ghost" size="sm" onClick={handleSignOut} className="gap-1.5 text-muted-foreground">
+                <LogOut className="w-3.5 h-3.5" /> Sign Out
+              </Button>
+            </div>
+          ) : (
+            <Button size="sm" className="rounded-full px-6 font-semibold" asChild>
+              <Link to="/signup">Get Started Free</Link>
+            </Button>
+          )}
         </div>
 
         {/* Mobile hamburger */}
@@ -133,9 +152,15 @@ const Navbar = () => {
                 <span className="text-sm">Theme</span>
                 <ThemeToggle />
               </div>
-              <Button className="rounded-full font-semibold mt-4">
-                Get Started Free
-              </Button>
+              {user ? (
+                <Button variant="destructive" className="rounded-full font-semibold mt-4" onClick={() => { setOpen(false); handleSignOut(); }}>
+                  Sign Out
+                </Button>
+              ) : (
+                <Button className="rounded-full font-semibold mt-4" asChild>
+                  <Link to="/signup" onClick={() => setOpen(false)}>Get Started Free</Link>
+                </Button>
+              )}
             </div>
           </SheetContent>
         </Sheet>

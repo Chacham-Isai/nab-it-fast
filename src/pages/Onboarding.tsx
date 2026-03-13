@@ -6,6 +6,8 @@ import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Check, X, Plus, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import nabbitLogo from "@/assets/nabbit-logo.png";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const vibeOptions = [
   { id: "sneakers", emoji: "👟", label: "Sneaker Wall" },
@@ -69,11 +71,11 @@ const loadingPhases = [
 
 const Onboarding = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [loadingPhase, setLoadingPhase] = useState(0);
 
-  // Profile state
   const [vibes, setVibes] = useState<string[]>([]);
   const [categories, setCategories] = useState<string[]>([]);
   const [dreamBuys, setDreamBuys] = useState<string[]>([]);
@@ -98,7 +100,7 @@ const Onboarding = () => {
     switch (step) {
       case 1: return vibes.length > 0;
       case 2: return categories.length > 0;
-      case 3: return true; // optional
+      case 3: return true;
       case 4: return !!spendStyle;
       case 5: return brands.length > 0;
       case 6: return travel.length > 0;
@@ -107,27 +109,55 @@ const Onboarding = () => {
     }
   };
 
+  const saveProfile = async () => {
+    if (!user) return;
+    try {
+      // Update profile with taste data
+      await supabase.from("profiles").update({
+        taste_tags: [...vibes, ...categories],
+        spending_style: spendStyle,
+        buy_speed: buySpeed,
+        brand_affinities: brands,
+        travel_vibes: travel,
+        onboarding_complete: true,
+      }).eq("id", user.id);
+
+      // Insert dream buys
+      if (dreamBuys.length > 0) {
+        const dreamRows = dreamBuys.map((name) => ({
+          user_id: user.id,
+          item_name: name,
+          status: "hunting",
+        }));
+        await supabase.from("dream_buys").insert(dreamRows);
+      }
+    } catch (err) {
+      console.error("Failed to save profile:", err);
+    }
+  };
+
   const handleNext = useCallback(() => {
     if (step < totalSteps) {
       setStep(step + 1);
     } else {
-      // Start loading sequence
       setLoading(true);
       setLoadingPhase(0);
+
+      // Save to DB before loading animation
+      saveProfile();
+
       let phase = 0;
       const interval = setInterval(() => {
         phase++;
         if (phase >= loadingPhases.length) {
           clearInterval(interval);
-          navigate("/feed", {
-            state: { vibes, categories, dreamBuys, spendStyle, brands, travel, buySpeed },
-          });
+          navigate("/feed");
         } else {
           setLoadingPhase(phase);
         }
       }, 700);
     }
-  }, [step, vibes, categories, dreamBuys, spendStyle, brands, travel, buySpeed, navigate]);
+  }, [step, vibes, categories, dreamBuys, spendStyle, brands, travel, buySpeed, navigate, user]);
 
   const handleBack = () => {
     if (step > 1) setStep(step - 1);
@@ -178,7 +208,6 @@ const Onboarding = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
       <div className="sticky top-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3">
         <div className="flex items-center justify-between max-w-lg mx-auto">
           <Link to="/">
@@ -191,7 +220,6 @@ const Onboarding = () => {
         </div>
       </div>
 
-      {/* Content */}
       <div className="flex-1 px-4 py-6 max-w-lg mx-auto w-full">
         <AnimatePresence mode="wait">
           <motion.div
@@ -390,7 +418,6 @@ const Onboarding = () => {
         </AnimatePresence>
       </div>
 
-      {/* Bottom Nav */}
       <div className="sticky bottom-0 bg-background/90 backdrop-blur-xl border-t border-border px-4 py-4">
         <div className="flex justify-between max-w-lg mx-auto">
           <Button variant="ghost" onClick={handleBack} className="gap-2">
