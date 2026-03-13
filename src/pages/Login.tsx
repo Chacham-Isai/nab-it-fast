@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import nabbitLogo from "@/assets/nabbit-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const Login = () => {
   const navigate = useNavigate();
