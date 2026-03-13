@@ -8,7 +8,7 @@ const plans = [
     name: "Nibble",
     price: "$0",
     period: "/mo",
-    tagline: "Test the waters",
+    tagline: "Test nabbit on up to 3 hunts. Perfect for first-time buyers.",
     features: ["3 active hunts", "Email alerts", "Major retailers", "Standard speed"],
     cta: "Get Started Free",
     featured: false,
