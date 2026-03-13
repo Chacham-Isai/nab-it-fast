@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Heart, Globe, Check } from "lucide-react";
+import { ArrowLeft, Heart, Globe, Check, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import BottomNav from "@/components/BottomNav";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const causes = [
   { id: 1, name: "Youth Education Fund", category: "Education", emoji: "📚", raised: 12400, goal: 25000, pct: 49.6, tribe: "Card Collectors", desc: "Supporting STEM education for underserved communities" },
@@ -20,17 +22,67 @@ const givingHistory = [
 
 const Giving = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [tab, setTab] = useState<"causes" | "my-giving" | "impact">("causes");
-  const [roundupEnabled, setRoundupEnabled] = useState(true);
-  const [roundupPct, setRoundupPct] = useState(2);
-  const [selectedCauses, setSelectedCauses] = useState<number[]>([1, 2]);
+  const [roundupEnabled, setRoundupEnabled] = useState(false);
+  const [roundupPct, setRoundupPct] = useState(1);
+  const [activeCause, setActiveCause] = useState<string | null>(null);
+  const [totalGiven, setTotalGiven] = useState(0);
+  const [loading, setLoading] = useState(true);
 
-  const toggleCause = (id: number) => {
-    setSelectedCauses((prev) => prev.includes(id) ? prev.filter((c) => c !== id) : [...prev, id]);
+  useEffect(() => {
+    if (user) fetchGivingSettings();
+  }, [user]);
+
+  const fetchGivingSettings = async () => {
+    if (!user) return;
+    setLoading(true);
+    const { data } = await supabase
+      .from("giving_settings")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+    if (data) {
+      setRoundupEnabled(data.roundup_enabled || false);
+      setRoundupPct(data.roundup_pct || 1);
+      setActiveCause(data.active_cause);
+      setTotalGiven(Number(data.total_given) || 0);
+    }
+    setLoading(false);
   };
 
-  const totalGiven = givingHistory.reduce((sum, g) => sum + g.amount, 0);
+  const updateSetting = async (updates: Record<string, any>) => {
+    if (!user) return;
+    await supabase.from("giving_settings").update(updates).eq("id", user.id);
+  };
+
+  const handleToggleRoundup = () => {
+    const next = !roundupEnabled;
+    setRoundupEnabled(next);
+    updateSetting({ roundup_enabled: next });
+  };
+
+  const handlePctChange = (pct: number) => {
+    setRoundupPct(pct);
+    updateSetting({ roundup_pct: pct });
+  };
+
+  const handleCauseToggle = (causeName: string) => {
+    const next = activeCause === causeName ? null : causeName;
+    setActiveCause(next);
+    updateSetting({ active_cause: next });
+  };
+
   const communityTotal = causes.reduce((sum, c) => sum + c.raised, 0);
+  const displayTotalGiven = totalGiven > 0 ? totalGiven : givingHistory.reduce((sum, g) => sum + g.amount, 0);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -52,24 +104,20 @@ const Giving = () => {
       <div className="max-w-lg mx-auto px-4 py-4 space-y-4">
         {tab === "causes" && (
           <>
-            {/* Round-up toggle */}
             <div className="p-4 rounded-2xl bg-card border border-border">
               <div className="flex items-center justify-between mb-3">
                 <div>
                   <h3 className="font-semibold text-foreground text-sm">Purchase Round-Ups</h3>
                   <p className="text-xs text-muted-foreground">Automatically donate a % of each purchase</p>
                 </div>
-                <button
-                  onClick={() => setRoundupEnabled(!roundupEnabled)}
-                  className={`w-12 h-7 rounded-full transition-colors ${roundupEnabled ? "bg-primary" : "bg-secondary"}`}
-                >
+                <button onClick={handleToggleRoundup} className={`w-12 h-7 rounded-full transition-colors ${roundupEnabled ? "bg-primary" : "bg-secondary"}`}>
                   <div className={`w-5 h-5 rounded-full bg-primary-foreground transition-transform mx-1 ${roundupEnabled ? "translate-x-5" : "translate-x-0"}`} />
                 </button>
               </div>
               {roundupEnabled && (
                 <div className="flex gap-2">
                   {[1, 2, 5].map((pct) => (
-                    <button key={pct} onClick={() => setRoundupPct(pct)} className={`flex-1 py-2 rounded-full text-sm font-medium transition-all ${roundupPct === pct ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
+                    <button key={pct} onClick={() => handlePctChange(pct)} className={`flex-1 py-2 rounded-full text-sm font-medium transition-all ${roundupPct === pct ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
                       {pct}%
                     </button>
                   ))}
@@ -77,11 +125,10 @@ const Giving = () => {
               )}
             </div>
 
-            {/* Causes */}
             {causes.map((cause) => {
-              const selected = selectedCauses.includes(cause.id);
+              const selected = activeCause === cause.name;
               return (
-                <button key={cause.id} onClick={() => toggleCause(cause.id)} className={`w-full p-4 rounded-2xl text-left transition-all border-2 ${selected ? "border-primary bg-primary/5" : "border-border bg-card"}`}>
+                <button key={cause.id} onClick={() => handleCauseToggle(cause.name)} className={`w-full p-4 rounded-2xl text-left transition-all border-2 ${selected ? "border-primary bg-primary/5" : "border-border bg-card"}`}>
                   <div className="flex items-start gap-3">
                     <span className="text-2xl">{cause.emoji}</span>
                     <div className="flex-1">
@@ -103,8 +150,6 @@ const Giving = () => {
                 </button>
               );
             })}
-
-            <Button className="w-full rounded-full">Save Preferences</Button>
           </>
         )}
 
@@ -112,7 +157,7 @@ const Giving = () => {
           <>
             <div className="p-6 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 text-center">
               <Heart className="w-8 h-8 text-primary mx-auto mb-2" />
-              <p className="text-3xl font-bold text-foreground">${totalGiven.toFixed(2)}</p>
+              <p className="text-3xl font-bold text-foreground">${displayTotalGiven.toFixed(2)}</p>
               <p className="text-sm text-muted-foreground">Total Given</p>
             </div>
             <div className="space-y-2">

@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Users, Flame, Clock } from "lucide-react";
+import { ArrowLeft, Users, Flame, Clock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import BottomNav from "@/components/BottomNav";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const activityFeed = [
   { id: 1, user: "🧑‍🎤", name: "Alex K.", action: "just nabbed", item: "Jordan 1 Chicago", price: 289, tribe: "Sneakerheads", time: "2m ago", hot: true },
@@ -20,22 +22,46 @@ const groupDeals = [
 ];
 
 const tribes = [
-  { id: 1, name: "Card Collectors", emoji: "🃏", members: 2840, active: true, gradient: "from-primary/20 to-primary/5" },
-  { id: 2, name: "Sneakerheads", emoji: "👟", members: 3120, active: true, gradient: "from-blue-500/20 to-blue-500/5" },
-  { id: 3, name: "Watch Collectors", emoji: "⌚", members: 1560, active: false, gradient: "from-amber-500/20 to-amber-500/5" },
-  { id: 4, name: "Tech Heads", emoji: "🖥️", members: 2200, active: true, gradient: "from-green-500/20 to-green-500/5" },
-  { id: 5, name: "Vintage Hunters", emoji: "🪑", members: 890, active: false, gradient: "from-purple-500/20 to-purple-500/5" },
-  { id: 6, name: "Streetwear", emoji: "🧥", members: 1980, active: true, gradient: "from-pink-500/20 to-pink-500/5" },
+  { name: "Card Collectors", emoji: "🃏", members: 2840, active: true, gradient: "from-primary/20 to-primary/5" },
+  { name: "Sneakerheads", emoji: "👟", members: 3120, active: true, gradient: "from-blue-500/20 to-blue-500/5" },
+  { name: "Watch Collectors", emoji: "⌚", members: 1560, active: false, gradient: "from-amber-500/20 to-amber-500/5" },
+  { name: "Tech Heads", emoji: "🖥️", members: 2200, active: true, gradient: "from-green-500/20 to-green-500/5" },
+  { name: "Vintage Hunters", emoji: "🪑", members: 890, active: false, gradient: "from-purple-500/20 to-purple-500/5" },
+  { name: "Streetwear", emoji: "🧥", members: 1980, active: true, gradient: "from-pink-500/20 to-pink-500/5" },
 ];
 
 const Community = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [tab, setTab] = useState<"feed" | "deals" | "tribes">("feed");
-  const [joinedTribes, setJoinedTribes] = useState<number[]>([1, 2]);
+  const [joinedTribes, setJoinedTribes] = useState<string[]>([]);
   const [joinedDeals, setJoinedDeals] = useState<number[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const toggleTribe = (id: number) => {
-    setJoinedTribes((prev) => prev.includes(id) ? prev.filter((t) => t !== id) : [...prev, id]);
+  useEffect(() => {
+    if (user) fetchMemberships();
+  }, [user]);
+
+  const fetchMemberships = async () => {
+    if (!user) return;
+    setLoading(true);
+    const { data } = await supabase
+      .from("tribe_memberships")
+      .select("tribe_name")
+      .eq("user_id", user.id);
+    setJoinedTribes(data?.map((d: any) => d.tribe_name) || []);
+    setLoading(false);
+  };
+
+  const toggleTribe = async (tribeName: string, tribeEmoji: string) => {
+    if (!user) return;
+    if (joinedTribes.includes(tribeName)) {
+      await supabase.from("tribe_memberships").delete().eq("user_id", user.id).eq("tribe_name", tribeName);
+      setJoinedTribes((prev) => prev.filter((t) => t !== tribeName));
+    } else {
+      await supabase.from("tribe_memberships").insert({ user_id: user.id, tribe_name: tribeName, tribe_emoji: tribeEmoji });
+      setJoinedTribes((prev) => [...prev, tribeName]);
+    }
   };
 
   const toggleDeal = (id: number) => {
@@ -106,12 +132,7 @@ const Community = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" /> {deal.endsIn}</span>
-                    <Button
-                      size="sm"
-                      variant={joined ? "secondary" : "default"}
-                      className="rounded-full text-xs"
-                      onClick={() => toggleDeal(deal.id)}
-                    >
+                    <Button size="sm" variant={joined ? "secondary" : "default"} className="rounded-full text-xs" onClick={() => toggleDeal(deal.id)}>
                       {joined ? "Joined! ✓" : "Join Deal"}
                     </Button>
                   </div>
@@ -124,21 +145,16 @@ const Community = () => {
         {tab === "tribes" && (
           <div className="grid grid-cols-2 gap-3">
             {tribes.map((tribe) => {
-              const joined = joinedTribes.includes(tribe.id);
+              const joined = joinedTribes.includes(tribe.name);
               return (
-                <div key={tribe.id} className={`p-4 rounded-2xl bg-gradient-to-br ${tribe.gradient} border border-border text-center space-y-2`}>
+                <div key={tribe.name} className={`p-4 rounded-2xl bg-gradient-to-br ${tribe.gradient} border border-border text-center space-y-2`}>
                   <span className="text-3xl">{tribe.emoji}</span>
                   <h3 className="font-semibold text-foreground text-sm">{tribe.name}</h3>
                   <div className="flex items-center justify-center gap-1.5">
                     {tribe.active && <span className="w-2 h-2 rounded-full bg-success" />}
                     <span className="text-xs text-muted-foreground">{tribe.members.toLocaleString()} members</span>
                   </div>
-                  <Button
-                    size="sm"
-                    variant={joined ? "secondary" : "default"}
-                    className="w-full rounded-full text-xs"
-                    onClick={() => toggleTribe(tribe.id)}
-                  >
+                  <Button size="sm" variant={joined ? "secondary" : "default"} className="w-full rounded-full text-xs" onClick={() => toggleTribe(tribe.name, tribe.emoji)}>
                     {joined ? "Joined" : "Join"}
                   </Button>
                 </div>
