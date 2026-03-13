@@ -26,7 +26,7 @@ const plans = [
     name: "Nabbit Pro",
     price: "$29",
     period: "/mo",
-    tagline: "Unlimited. Relentless.",
+    tagline: "Unlimited hunts + full Navigator access: swipe feed, live breaks, grab bags, group deals, and auctions.",
     features: ["Unlimited hunts", "Instant alerts", "All marketplaces", "Real-time scan", "Deal concierge", "Price analytics"],
     cta: "Go Pro",
     featured: false,

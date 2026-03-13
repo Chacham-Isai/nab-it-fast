@@ -28,7 +28,7 @@ const techs = [
     icon: ShieldCheck,
     title: "TrustShield",
     subtitle: "Fraud & Authenticity Layer",
-    desc: "Every listing scored for legitimacy before purchase. Cross-references seller reputation, listing anomalies, price outliers, and known scam patterns.",
+    desc: "Every auto-purchase is protected with a full buyer guarantee, instant dispute resolution, and purchase confirmation alerts.",
     stat: "0.02% fraud rate",
   },
 ];

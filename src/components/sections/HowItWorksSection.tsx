@@ -6,23 +6,23 @@ import { Button } from "@/components/ui/button";
 const steps = [
   {
     num: "01",
-    title: "Upload Your Item",
+    title: "Tell nabbit what you want",
     icon: Camera,
-    desc: "Snap a photo, paste a link, or describe what you want in plain English. Nabbit's AI identifies the exact product across every major marketplace in under one second.",
+    desc: "Search by item name, photo, or URL. nabbit identifies the exact product across every listing.",
     tag: "Works with any input",
   },
   {
     num: "02",
-    title: "Set Your Max Price",
+    title: "Set your price",
     icon: Tag,
-    desc: "Tell us what you're willing to pay. We show current market prices, price history, and AI-recommended buy windows so you know exactly how aggressive to go.",
+    desc: "Enter your target. nabbit tracks every retailer in real-time and learns when prices are likely to drop.",
     tag: "Smart pricing data",
   },
   {
     num: "03",
-    title: "We Auto-Purchase",
+    title: "We buy it for you",
     icon: Zap,
-    desc: "Nabbit scans 24/7. The second your item drops below your price — we buy it. You get notified. It ships to your door. Fully autonomous. Zero intervention.",
+    desc: "The moment your price hits, NabBot checks out instantly — faster than any human can click.",
     tag: "Sub-3 second execution",
   },
 ];

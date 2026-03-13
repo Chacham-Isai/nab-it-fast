@@ -55,9 +55,10 @@ const AnimatedCounter = ({ target, prefix = "", suffix = "" }: { target: number;
 };
 
 const stats = [
-  { value: 2400000, prefix: "", suffix: "+", display: "2.4M+", label: "Items tracked" },
-  { value: 18700000, prefix: "$", suffix: "", display: "$18.7M", label: "Saved for users" },
-  { value: 3, prefix: "<", suffix: "s", display: "<3s", label: "Average nab speed" },
+  { value: 200, prefix: "", suffix: "+", display: "200+", label: "Retailers" },
+  { value: 2400000, prefix: "", suffix: "+", display: "2.4M", label: "Live Listings" },
+  { value: 12000, prefix: "", suffix: "+", display: "12K+", label: "Hunters" },
+  { value: 4200000, prefix: "$", suffix: "", display: "$4.2M", label: "Saved" },
 ];
 
 const HeroSection = () => {
