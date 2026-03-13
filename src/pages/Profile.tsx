@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import BottomNav from "@/components/BottomNav";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const Profile = () => {
   const navigate = useNavigate();
