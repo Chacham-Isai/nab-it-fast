@@ -36,7 +36,7 @@ const FinalCTASection = () => {
               <span className="gradient-text">Start nabbing.</span>
             </h2>
             <p className="text-muted-foreground text-lg mb-8 max-w-xl mx-auto">
-              The Nabbit Engine is live. Deals are personalized. Your next impulse buy is waiting — and it's actually a steal.
+              The Nabbit Engine is live. Deals are personalized. Your next great nab is waiting — and it's actually a steal.
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Button
