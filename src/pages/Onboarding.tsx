@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import nabbitLogo from "@/assets/nabbit-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const vibeOptions = [
   { id: "sneakers", emoji: "👟", label: "Sneaker Wall" },
