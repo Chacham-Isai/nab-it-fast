@@ -7,7 +7,7 @@ const techs = [
     icon: Eye,
     title: "NabVision AI",
     subtitle: "Visual Product Recognition",
-    desc: "Proprietary CV model trained on 50M+ product images. Upload a photo from anywhere and NabVision identifies it in under 800ms with 99.2% accuracy.",
+    desc: "Identifies exact items across 200+ retailers using visual + semantic matching. Sees through different listings of the same product.",
     stat: "99.2% match accuracy",
   },
   {
