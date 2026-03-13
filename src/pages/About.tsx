@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import SectionWrapper from "@/components/SectionWrapper";
 import { motion } from "framer-motion";
 import { Target, Heart, Eye } from "lucide-react";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const team = [
   { name: "Alex Chen", title: "CEO & Co-Founder" },
