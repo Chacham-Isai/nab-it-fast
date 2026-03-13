@@ -13,7 +13,7 @@ import usePageMeta from "@/hooks/usePageMeta";
 const Index = () => {
   usePageMeta({
     title: "nabbit.ai — AI Deals You Grab, Spin, Bid & Auto-Buy",
-    description: "The Nabbit Engine finds personalized deals and lets you grab bags, bid auctions, join live breaks, or auto-nab at your price. Gamified impulse shopping powered by AI.",
+    description: "The Nabbit Engine finds personalized deals and lets you grab bags, bid auctions, join live breaks, or auto-nab at your price. Gamified AI-powered shopping.",
     path: "/",
   });
 
