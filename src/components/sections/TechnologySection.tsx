@@ -21,7 +21,7 @@ const techs = [
     icon: Bot,
     title: "NabBot Agent",
     subtitle: "Autonomous Purchase Execution",
-    desc: "When price meets threshold, NabBot executes autonomously in under 3 seconds. Handles authentication, cart management, checkout flow, and shipping selection.",
+    desc: "Autonomous checkout agent that secures your item the second your target price hits — before inventory disappears.",
     stat: "<3s purchase speed",
   },
   {
