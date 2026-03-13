@@ -19,6 +19,7 @@ const values = [
 ];
 
 const About = () => {
+  usePageMeta({ title: "About — nabbit.ai", description: "Meet the team behind nabbit.ai. We're on a mission to make sure no one ever overpays online again.", path: "/about" });
   return (
     <div className="min-h-screen bg-background">
       <Navbar />

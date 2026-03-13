@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import usePageMeta from "@/hooks/usePageMeta";
 
 const Profile = () => {
+  usePageMeta({ title: "Profile — nabbit.ai", description: "View your nabbit profile, saved items, and settings.", path: "/profile" });
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const [tab, setTab] = useState<"saved" | "history" | "settings">("saved");

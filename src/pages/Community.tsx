@@ -32,6 +32,7 @@ const tribes = [
 ];
 
 const Community = () => {
+  usePageMeta({ title: "Community — nabbit.ai", description: "Join tribes, group deals, and connect with fellow deal hunters.", path: "/community" });
   const navigate = useNavigate();
   const { user } = useAuth();
   const [tab, setTab] = useState<"feed" | "deals" | "tribes">("feed");

@@ -14,6 +14,7 @@ const posts = [
 ];
 
 const Blog = () => {
+  usePageMeta({ title: "Blog — nabbit.ai", description: "Insights on AI shopping, price tracking, and autonomous purchasing. Stay ahead of the deal curve.", path: "/blog" });
   return (
     <div className="min-h-screen bg-background">
       <Navbar />

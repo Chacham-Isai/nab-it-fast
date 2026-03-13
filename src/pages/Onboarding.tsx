@@ -71,6 +71,7 @@ const loadingPhases = [
 ];
 
 const Onboarding = () => {
+  usePageMeta({ title: "Onboarding — nabbit.ai", description: "Set up your taste profile so nabbit can find your perfect deals.", path: "/onboarding" });
   const navigate = useNavigate();
   const { user } = useAuth();
   const [step, setStep] = useState(1);

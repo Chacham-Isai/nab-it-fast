@@ -22,6 +22,7 @@ const givingHistory = [
 ];
 
 const Giving = () => {
+  usePageMeta({ title: "Giving — nabbit.ai", description: "Round up your savings and give back to causes you care about.", path: "/giving" });
   const navigate = useNavigate();
   const { user } = useAuth();
   const [tab, setTab] = useState<"causes" | "my-giving" | "impact">("causes");

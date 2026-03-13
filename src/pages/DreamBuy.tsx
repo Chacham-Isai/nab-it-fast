@@ -23,6 +23,7 @@ const mockDreams: DreamBuyItem[] = [
 ];
 
 const DreamBuy = () => {
+  usePageMeta({ title: "Dream Buys — nabbit.ai", description: "Track your dream purchases. Nabbit hunts them down for you.", path: "/dreams" });
   const navigate = useNavigate();
   const { user } = useAuth();
   const [dreams, setDreams] = useState<DreamBuyItem[]>([]);

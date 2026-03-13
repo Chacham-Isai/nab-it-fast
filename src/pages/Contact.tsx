@@ -9,6 +9,7 @@ import { Mail, Twitter, Linkedin, Github } from "lucide-react";
 import usePageMeta from "@/hooks/usePageMeta";
 
 const Contact = () => {
+  usePageMeta({ title: "Contact — nabbit.ai", description: "Get in touch with the nabbit.ai team. We'd love to hear from you.", path: "/contact" });
   return (
     <div className="min-h-screen bg-background">
       <Navbar />

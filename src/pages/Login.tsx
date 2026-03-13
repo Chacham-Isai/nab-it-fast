@@ -8,6 +8,7 @@ import { toast } from "@/hooks/use-toast";
 import usePageMeta from "@/hooks/usePageMeta";
 
 const Login = () => {
+  usePageMeta({ title: "Log In — nabbit.ai", description: "Sign in to your nabbit.ai account to track deals and auto-purchase.", path: "/login" });
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
