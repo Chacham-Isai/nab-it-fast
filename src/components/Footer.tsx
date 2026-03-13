@@ -14,7 +14,7 @@ const Footer = () => {
   const handleNewsletter = (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) {
-      toast.success("You're on the list! 🎉");
+      toast.success("You're on the list! 🔥");
       setEmail("");
     }
   };
@@ -29,7 +29,7 @@ const Footer = () => {
               <img src={nabbitLogo} alt="nabbit.ai" className="h-7" style={{ mixBlendMode: theme === "dark" ? "lighten" : "normal" }} />
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              AI-powered price hunting that never sleeps. You name the price. We nab it.
+              AI-powered deals you grab, spin, bid & auto-buy. The Nabbit Engine never sleeps.
             </p>
             <form onSubmit={handleNewsletter} className="flex gap-2">
               <Input
@@ -43,7 +43,6 @@ const Footer = () => {
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </form>
-            {/* Social links */}
             <div className="flex gap-4 pt-1">
               <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors text-sm">𝕏</a>
               <a href="https://discord.gg" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-foreground transition-colors text-sm">Discord</a>
@@ -51,14 +50,14 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Product */}
+          {/* Ways to Nab */}
           <div className="space-y-4">
-            <h4 className="font-heading text-sm font-bold text-foreground">Product</h4>
+            <h4 className="font-heading text-sm font-bold text-foreground">Ways to Nab</h4>
             <div className="flex flex-col gap-3">
-              <a href="/#how-it-works" className="text-sm text-muted-foreground hover:text-foreground transition-colors">How It Works</a>
-              <a href="/#technology" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Technology</a>
-              <a href="/#categories" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Categories</a>
-              <a href="/#pricing" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
+              <Link to="/grab-bags" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Grab Bags</Link>
+              <Link to="/breaks" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Live Breaks</Link>
+              <Link to="/auctions" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Auctions</Link>
+              <Link to="/dream-buys" className="text-sm text-muted-foreground hover:text-foreground transition-colors">Dream Buys</Link>
             </div>
           </div>
 

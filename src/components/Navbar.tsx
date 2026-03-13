@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, useScroll, useSpring } from "framer-motion";
 import nabbitLogo from "@/assets/nabbit-logo.png";
@@ -9,13 +9,13 @@ import ThemeToggle from "./ThemeToggle";
 import { useTheme } from "@/hooks/use-theme";
 import { useAuth } from "@/hooks/useAuth";
 
-const sectionIds = ["how-it-works", "technology", "categories", "pricing"];
+const sectionIds = ["live-deals", "how-it-drops", "game-modes", "nabbit-engine"];
 
 const navLinks = [
-  { label: "How It Works", href: "/#how-it-works", id: "how-it-works" },
-  { label: "Technology", href: "/#technology", id: "technology" },
-  { label: "Categories", href: "/#categories", id: "categories" },
-  { label: "Pricing", href: "/#pricing", id: "pricing" },
+  { label: "Live Deals", href: "/#live-deals", id: "live-deals" },
+  { label: "How It Works", href: "/#how-it-drops", id: "how-it-drops" },
+  { label: "Ways to Nab", href: "/#game-modes", id: "game-modes" },
+  { label: "The Engine", href: "/#nabbit-engine", id: "nabbit-engine" },
 ];
 
 const Navbar = () => {
@@ -32,12 +32,10 @@ const Navbar = () => {
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 20);
-
       if (location.pathname !== "/") {
         setActiveSection(null);
         return;
       }
-
       let current: string | null = null;
       for (const id of sectionIds) {
         const el = document.getElementById(id);
@@ -116,8 +114,8 @@ const Navbar = () => {
               </Button>
             </div>
           ) : (
-            <Button size="sm" className="rounded-full px-6 font-semibold" asChild>
-              <Link to="/signup">Get Started Free</Link>
+            <Button size="sm" className="rounded-full px-6 font-bold" asChild>
+              <Link to="/signup">Start Nabbing</Link>
             </Button>
           )}
         </div>
@@ -157,8 +155,8 @@ const Navbar = () => {
                   Sign Out
                 </Button>
               ) : (
-                <Button className="rounded-full font-semibold mt-4" asChild>
-                  <Link to="/signup" onClick={() => setOpen(false)}>Get Started Free</Link>
+                <Button className="rounded-full font-bold mt-4" asChild>
+                  <Link to="/signup" onClick={() => setOpen(false)}>Start Nabbing</Link>
                 </Button>
               )}
             </div>
@@ -166,7 +164,7 @@ const Navbar = () => {
         </Sheet>
       </div>
 
-      {/* Scroll progress indicator */}
+      {/* Scroll progress */}
       <motion.div
         className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary origin-left"
         style={{ scaleX }}

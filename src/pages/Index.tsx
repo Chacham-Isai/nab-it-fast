@@ -1,23 +1,21 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import HeroSection from "@/components/sections/HeroSection";
-import ProblemSection from "@/components/sections/ProblemSection";
-import HowItWorksSection from "@/components/sections/HowItWorksSection";
-import DemoSection from "@/components/sections/DemoSection";
-import NavigatorSection from "@/components/sections/NavigatorSection";
-import TechnologySection from "@/components/sections/TechnologySection";
-import CategoriesSection from "@/components/sections/CategoriesSection";
-import TractionSection from "@/components/sections/TractionSection";
-import TestimonialsSection from "@/components/sections/TestimonialsSection";
-import RetailerMarquee from "@/components/sections/RetailerMarquee";
-import PressBar from "@/components/sections/PressBar";
-import ComparisonSection from "@/components/sections/ComparisonSection";
-import PricingSection from "@/components/sections/PricingSection";
+import LiveFeedSection from "@/components/sections/LiveFeedSection";
+import HowItDropsSection from "@/components/sections/HowItDropsSection";
+import GameModesSection from "@/components/sections/GameModesSection";
+import NabbitEngineSection from "@/components/sections/NabbitEngineSection";
+import SocialProofSection from "@/components/sections/SocialProofSection";
 import FinalCTASection from "@/components/sections/FinalCTASection";
 import BackToTop from "@/components/BackToTop";
 import usePageMeta from "@/hooks/usePageMeta";
+
 const Index = () => {
-  usePageMeta({ title: "nabbit.ai — AI-Powered Price Hunting That Never Sleeps", description: "Stop overpaying. Nabbit's AI monitors 200+ retailers 24/7 and auto-purchases the instant your item hits your target price.", path: "/" });
+  usePageMeta({
+    title: "nabbit.ai — AI Deals You Grab, Spin, Bid & Auto-Buy",
+    description: "The Nabbit Engine finds personalized deals and lets you grab bags, bid auctions, join live breaks, or auto-nab at your price. Gamified impulse shopping powered by AI.",
+    path: "/",
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -25,28 +23,16 @@ const Index = () => {
       <BackToTop />
       <main>
         <HeroSection />
-        <RetailerMarquee />
         <div className="gradient-divider" />
-        <ProblemSection />
+        <LiveFeedSection />
         <div className="gradient-divider" />
-        <HowItWorksSection />
+        <HowItDropsSection />
         <div className="gradient-divider" />
-        <DemoSection />
+        <GameModesSection />
         <div className="gradient-divider" />
-        <NavigatorSection />
+        <NabbitEngineSection />
         <div className="gradient-divider" />
-        <TechnologySection />
-        <div className="gradient-divider" />
-        <CategoriesSection />
-        <div className="gradient-divider" />
-        <TractionSection />
-        <div className="gradient-divider" />
-        <TestimonialsSection />
-        <PressBar />
-        <div className="gradient-divider" />
-        <ComparisonSection />
-        <div className="gradient-divider" />
-        <PricingSection />
+        <SocialProofSection />
         <div className="gradient-divider" />
         <FinalCTASection />
       </main>
