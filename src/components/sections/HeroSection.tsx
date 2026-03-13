@@ -1,7 +1,8 @@
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, Shield, Zap, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const hunts = [
   {
@@ -34,39 +35,62 @@ const hunts = [
   },
 ];
 
-const AnimatedCounter = ({ target, prefix = "", suffix = "" }: { target: number; prefix?: string; suffix?: string }) => {
-  const [count, setCount] = useState(0);
-  useEffect(() => {
-    let start = 0;
-    const duration = 2000;
-    const step = target / (duration / 16);
-    const timer = setInterval(() => {
-      start += step;
-      if (start >= target) {
-        setCount(target);
-        clearInterval(timer);
-      } else {
-        setCount(Math.floor(start));
-      }
-    }, 16);
-    return () => clearInterval(timer);
-  }, [target]);
-  return <>{prefix}{count.toLocaleString()}{suffix}</>;
-};
+const rotatingPhrases = [
+  "never stops hunting.",
+  "finds your grails.",
+  "saves while you sleep.",
+  "nabs before you blink.",
+];
+
+const activityFeed = [
+  { name: "Sarah K.", item: "Jordan 4 Retro", price: "$220", time: "2m ago" },
+  { name: "Marcus T.", item: "Rolex Explorer II", price: "$6,800", time: "5m ago" },
+  { name: "Emily R.", item: "Dyson V15", price: "$449", time: "8m ago" },
+  { name: "James W.", item: "PS5 Pro Bundle", price: "$499", time: "12m ago" },
+  { name: "Priya D.", item: "Chanel Le Boy", price: "$3,100", time: "15m ago" },
+  { name: "Alex M.", item: "Air Max 1 Patta", price: "$165", time: "18m ago" },
+];
+
+const avatarGradients = [
+  "from-primary to-[hsl(var(--coral-glow))]",
+  "from-[#6366f1] to-[#8b5cf6]",
+  "from-[#f59e0b] to-[#ef4444]",
+  "from-[#10b981] to-[#06b6d4]",
+  "from-[#ec4899] to-[#8b5cf6]",
+];
 
 const stats = [
-  { value: 200, prefix: "", suffix: "+", display: "200+", label: "Retailers" },
-  { value: 2400000, prefix: "", suffix: "+", display: "2.4M", label: "Live Listings" },
-  { value: 12000, prefix: "", suffix: "+", display: "12K+", label: "Hunters" },
-  { value: 4200000, prefix: "$", suffix: "", display: "$4.2M", label: "Saved" },
+  { display: "200+", label: "Retailers" },
+  { display: "2.4M", label: "Live Listings" },
+  { display: "12K+", label: "Hunters" },
+  { display: "$4.2M", label: "Saved" },
 ];
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [activityIndex, setActivityIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPhraseIndex((prev) => (prev + 1) % rotatingPhrases.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActivityIndex((prev) => (prev + 1) % activityFeed.length);
+    }, 3500);
+    return () => clearInterval(interval);
+  }, []);
+
+  const currentActivity = activityFeed[activityIndex];
+
   return (
     <section className="relative min-h-screen flex items-center pt-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
       {/* Animated background effects */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Main glow */}
         <motion.div 
           animate={{ scale: [1, 1.2, 1], opacity: [0.07, 0.12, 0.07] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
@@ -77,12 +101,10 @@ const HeroSection = () => {
           transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
           className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-primary blur-[130px]" 
         />
-        {/* Grid pattern */}
         <div className="absolute inset-0" style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, var(--grid-dot-color) 1px, transparent 0)`,
           backgroundSize: '40px 40px',
         }} />
-        {/* Radial gradient overlay */}
         <div className="absolute inset-0" style={{ background: `var(--radial-overlay)` }} />
       </div>
 
@@ -111,7 +133,20 @@ const HeroSection = () => {
 
           <h1 className="font-heading font-extrabold text-foreground" style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 1.05 }}>
             Your AI that<br />
-            <span className="gradient-text">never stops hunting.</span>
+            <span className="gradient-text relative">
+              <AnimatePresence mode="wait">
+                <motion.span
+                  key={phraseIndex}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.4 }}
+                  className="inline-block"
+                >
+                  {rotatingPhrases[phraseIndex]}
+                </motion.span>
+              </AnimatePresence>
+            </span>
           </h1>
 
           <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
@@ -126,20 +161,32 @@ const HeroSection = () => {
           </div>
 
           <div className="flex flex-wrap gap-4">
-            <Button size="lg" className="rounded-full px-8 font-semibold text-base gap-2 shimmer-btn shadow-[0_0_30px_-5px_hsl(var(--coral)/0.4)]">
+            <Button
+              size="lg"
+              className="rounded-full px-8 font-semibold text-base gap-2 shimmer-btn shadow-[0_0_30px_-5px_hsl(var(--coral)/0.4)]"
+              onClick={() => navigate("/signup")}
+            >
               Start Hunting Free <ArrowRight className="w-4 h-4" />
             </Button>
-            <Button size="lg" variant="outline" className="rounded-full px-8 font-semibold text-base border-border hover:bg-secondary group">
+            <Button
+              size="lg"
+              variant="outline"
+              className="rounded-full px-8 font-semibold text-base border-border hover:bg-secondary group"
+              onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
+            >
               See How It Works <ArrowRight className="w-4 h-4 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
             </Button>
           </div>
 
-          {/* Social proof */}
+          {/* Social proof with gradient avatars */}
           <div className="flex items-center gap-3 pt-2">
             <div className="flex -space-x-2">
-              {[...Array(5)].map((_, i) => (
-                <div key={i} className="w-8 h-8 rounded-full border-2 border-background bg-secondary flex items-center justify-center text-xs font-bold text-muted-foreground">
-                  {String.fromCharCode(65 + i)}
+              {["SK", "MT", "ER", "JW", "PD"].map((initials, i) => (
+                <div
+                  key={i}
+                  className={`w-8 h-8 rounded-full border-2 border-background bg-gradient-to-br ${avatarGradients[i]} flex items-center justify-center text-xs font-bold text-white`}
+                >
+                  {initials}
                 </div>
               ))}
             </div>
@@ -152,6 +199,31 @@ const HeroSection = () => {
               </div>
               <p className="text-xs text-muted-foreground">Trusted by <strong className="text-foreground">12,000+</strong> smart shoppers</p>
             </div>
+          </div>
+
+          {/* Live activity ticker */}
+          <div className="pt-2">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activityIndex}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/[0.08] border border-success/20 text-sm"
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
+                </span>
+                <span className="text-muted-foreground">
+                  <strong className="text-foreground">{currentActivity.name}</strong> just nabbed{" "}
+                  <strong className="text-foreground">{currentActivity.item}</strong> for{" "}
+                  <strong className="text-success">{currentActivity.price}</strong>
+                </span>
+                <span className="text-xs text-muted-foreground/60">{currentActivity.time}</span>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {/* Stats */}
@@ -176,22 +248,18 @@ const HeroSection = () => {
           className="relative flex justify-center lg:justify-end"
         >
           <div className="relative">
-            {/* Glow behind phone */}
             <div className="absolute inset-0 scale-110 blur-[60px] bg-primary/[0.08] rounded-full pointer-events-none" />
             
-            {/* Phone frame */}
             <div className="w-[300px] sm:w-[340px] rounded-[36px] border border-border bg-card p-4 shadow-2xl relative noise-bg">
-              {/* Notch */}
               <div className="w-24 h-6 bg-background rounded-full mx-auto mb-4" />
 
-              {/* Hunt cards */}
               <div className="space-y-3">
                 {hunts.map((hunt, i) => (
                   <motion.div
                     key={hunt.name}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.5 + i * 0.15, duration: 0.5 }}
+                    initial={{ opacity: 0, x: 30, scale: 0.95 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    transition={{ delay: 0.5 + i * 0.25, duration: 0.6, type: "spring", stiffness: 100 }}
                     className={`rounded-2xl border p-3 space-y-2 ${
                       hunt.nabbed ? "border-success/30 bg-success/[0.05]" : "border-border bg-secondary"
                     }`}
@@ -211,10 +279,29 @@ const HeroSection = () => {
                       <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${hunt.progress}%` }}
-                        transition={{ delay: 0.8 + i * 0.15, duration: 1, ease: "easeOut" }}
+                        transition={{ delay: 0.8 + i * 0.25, duration: 1, ease: "easeOut" }}
                         className={`h-full rounded-full ${hunt.progressColor}`}
                       />
                     </div>
+                    {/* Confetti burst on purchased card */}
+                    {hunt.nabbed && (
+                      <motion.div
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: [0, 1.2, 1], opacity: [0, 1, 0.8] }}
+                        transition={{ delay: 1.8, duration: 0.6 }}
+                        className="flex justify-center gap-1 text-xs"
+                      >
+                        {["🎉", "✨", "🎯"].map((e, ei) => (
+                          <motion.span
+                            key={ei}
+                            animate={{ y: [0, -8, 0] }}
+                            transition={{ delay: 2 + ei * 0.1, duration: 0.5 }}
+                          >
+                            {e}
+                          </motion.span>
+                        ))}
+                      </motion.div>
+                    )}
                   </motion.div>
                 ))}
               </div>
@@ -237,7 +324,6 @@ const HeroSection = () => {
               <span className="text-success"><TrendingDown className="w-3.5 h-3.5 inline mr-1" /> You saved $750</span>
             </motion.div>
 
-            {/* Pulse ring behind phone */}
             <motion.div
               animate={{ scale: [1, 1.5], opacity: [0.3, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
