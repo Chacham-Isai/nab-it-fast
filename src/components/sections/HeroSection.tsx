@@ -126,7 +126,7 @@ const HeroSection = () => {
 
           <div className="flex flex-wrap gap-4">
             <Button size="lg" className="rounded-full px-8 font-semibold text-base gap-2 shimmer-btn shadow-[0_0_30px_-5px_hsl(var(--coral)/0.4)]">
-              Start Nabbing Free <ArrowRight className="w-4 h-4" />
+              Start Hunting Free <ArrowRight className="w-4 h-4" />
             </Button>
             <Button size="lg" variant="outline" className="rounded-full px-8 font-semibold text-base border-border hover:bg-secondary group">
               See How It Works <ArrowRight className="w-4 h-4 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
