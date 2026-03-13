@@ -1,334 +1,234 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Shield, Zap, TrendingDown } from "lucide-react";
+import { ArrowRight, Zap, Flame, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const hunts = [
-  {
-    name: "Jordan 4 Retro",
-    market: "$285",
-    target: "$220",
-    progress: 65,
-    status: "Scanning",
-    statusColor: "text-primary",
-    progressColor: "bg-primary",
-  },
-  {
-    name: "Rolex Datejust 36",
-    market: "$8,200",
-    target: "$6,800",
-    progress: 42,
-    status: "Scanning",
-    statusColor: "text-primary",
-    progressColor: "bg-primary",
-  },
-  {
-    name: "Chanel Classic Flap",
-    market: "$3,200",
-    target: "$2,450",
-    progress: 100,
-    status: "Purchased",
-    statusColor: "text-success",
-    progressColor: "bg-success",
-    nabbed: true,
-  },
+const recentNabs = [
+  { user: "🔥 Jake R.", item: "PS5 Slim Bundle", saved: "$127", time: "just now" },
+  { user: "⚡ Maria K.", item: "Air Jordan 4 Retro", saved: "$89", time: "12s ago" },
+  { user: "🎯 Dev P.", item: "Dyson Airwrap", saved: "$165", time: "34s ago" },
+  { user: "💎 Lena S.", item: "Rolex Explorer II", saved: "$2,100", time: "1m ago" },
+  { user: "🎲 Chris M.", item: "RTX 4090 FE", saved: "$340", time: "2m ago" },
+  { user: "🏆 Ava T.", item: "Chanel Le Boy", saved: "$890", time: "3m ago" },
 ];
 
-const rotatingPhrases = [
-  "never stops hunting.",
-  "finds your grails.",
-  "saves while you sleep.",
-  "nabs before you blink.",
+const heroWords = [
+  "GRAB IT.",
+  "NAB IT.",
+  "SPIN IT.",
+  "WIN IT.",
 ];
 
-const activityFeed = [
-  { name: "Sarah K.", item: "Jordan 4 Retro", price: "$220", time: "2m ago" },
-  { name: "Marcus T.", item: "Rolex Explorer II", price: "$6,800", time: "5m ago" },
-  { name: "Emily R.", item: "Dyson V15", price: "$449", time: "8m ago" },
-  { name: "James W.", item: "PS5 Pro Bundle", price: "$499", time: "12m ago" },
-  { name: "Priya D.", item: "Chanel Le Boy", price: "$3,100", time: "15m ago" },
-  { name: "Alex M.", item: "Air Max 1 Patta", price: "$165", time: "18m ago" },
-];
-
-const avatarGradients = [
-  "from-primary to-[hsl(var(--coral-glow))]",
-  "from-[#6366f1] to-[#8b5cf6]",
-  "from-[#f59e0b] to-[#ef4444]",
-  "from-[#10b981] to-[#06b6d4]",
-  "from-[#ec4899] to-[#8b5cf6]",
-];
-
-const stats = [
-  { display: "200+", label: "Retailers" },
-  { display: "2.4M", label: "Live Listings" },
-  { display: "12K+", label: "Hunters" },
-  { display: "$4.2M", label: "Saved" },
+const floatingDeals = [
+  { emoji: "👟", name: "Jordan 4 Retro", was: "$285", now: "$196", pct: "-31%" },
+  { emoji: "🎮", name: "PS5 Pro Bundle", was: "$699", now: "$499", pct: "-29%" },
+  { emoji: "💄", name: "Dyson Airwrap", was: "$599", now: "$434", pct: "-28%" },
 ];
 
 const HeroSection = () => {
   const navigate = useNavigate();
-  const [phraseIndex, setPhraseIndex] = useState(0);
-  const [activityIndex, setActivityIndex] = useState(0);
+  const [wordIndex, setWordIndex] = useState(0);
+  const [nabIndex, setNabIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setPhraseIndex((prev) => (prev + 1) % rotatingPhrases.length);
+      setWordIndex((prev) => (prev + 1) % heroWords.length);
+    }, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setNabIndex((prev) => (prev + 1) % recentNabs.length);
     }, 3000);
     return () => clearInterval(interval);
   }, []);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActivityIndex((prev) => (prev + 1) % activityFeed.length);
-    }, 3500);
-    return () => clearInterval(interval);
-  }, []);
-
-  const currentActivity = activityFeed[activityIndex];
+  const currentNab = recentNabs[nabIndex];
 
   return (
-    <section className="relative min-h-screen flex items-center pt-16 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Animated background effects */}
+    <section className="relative min-h-screen flex items-center pt-20 pb-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+      {/* Background chaos */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], opacity: [0.07, 0.12, 0.07] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-20 right-0 w-[700px] h-[700px] rounded-full bg-primary blur-[150px]" 
+        <motion.div
+          animate={{ scale: [1, 1.4, 1], opacity: [0.1, 0.2, 0.1], rotate: [0, 15, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute -top-20 -right-40 w-[800px] h-[800px] rounded-full bg-primary blur-[200px]"
         />
-        <motion.div 
-          animate={{ scale: [1, 1.3, 1], opacity: [0.05, 0.08, 0.05] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-          className="absolute bottom-0 left-0 w-[500px] h-[500px] rounded-full bg-primary blur-[130px]" 
+        <motion.div
+          animate={{ scale: [1.2, 1, 1.2], opacity: [0.06, 0.12, 0.06] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+          className="absolute -bottom-40 -left-40 w-[600px] h-[600px] rounded-full bg-[hsl(280,100%,60%)] blur-[180px]"
         />
         <div className="absolute inset-0" style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, var(--grid-dot-color) 1px, transparent 0)`,
-          backgroundSize: '40px 40px',
+          backgroundSize: '32px 32px',
         }} />
         <div className="absolute inset-0" style={{ background: `var(--radial-overlay)` }} />
       </div>
 
-      <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-12 lg:gap-16 items-center relative z-10">
-        {/* Left */}
+      <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-10 lg:gap-16 items-center relative z-10">
+        {/* Left — Copy */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7 }}
-          className="space-y-8"
+          transition={{ duration: 0.6 }}
+          className="space-y-7"
         >
-          {/* Badge */}
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
+          {/* Live badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3, duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/[0.08] backdrop-blur-sm"
+            transition={{ delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/40 bg-primary/[0.1] backdrop-blur-sm"
           >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
             </span>
-            <span className="text-sm font-medium text-primary">AI-Powered Shopping Agent</span>
-            <span className="text-xs text-muted-foreground ml-1">— Now in Beta</span>
+            <span className="text-sm font-bold text-primary tracking-wide uppercase">Live Deals Dropping Now</span>
           </motion.div>
 
-          <h1 className="font-heading font-extrabold text-foreground" style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 1.05 }}>
-            Your AI that<br />
-            <span className="gradient-text relative">
+          <h1 className="font-heading font-black text-foreground leading-[0.95]" style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)" }}>
+            AI finds the deal.<br />
+            You{" "}
+            <span className="gradient-text relative inline-block min-w-[200px]">
               <AnimatePresence mode="wait">
                 <motion.span
-                  key={phraseIndex}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -20 }}
-                  transition={{ duration: 0.4 }}
+                  key={wordIndex}
+                  initial={{ opacity: 0, y: 30, rotateX: -40 }}
+                  animate={{ opacity: 1, y: 0, rotateX: 0 }}
+                  exit={{ opacity: 0, y: -30, rotateX: 40 }}
+                  transition={{ duration: 0.35 }}
                   className="inline-block"
                 >
-                  {rotatingPhrases[phraseIndex]}
+                  {heroWords[wordIndex]}
                 </motion.span>
               </AnimatePresence>
             </span>
           </h1>
 
-          <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
-            Set your target price. nabbit watches <strong className="text-foreground">200+ retailers 24/7</strong> and auto-buys the moment your price hits — while you sleep.
+          <p className="text-lg sm:text-xl text-muted-foreground max-w-lg leading-relaxed">
+            The <strong className="text-foreground">Nabbit Engine</strong> scans millions of listings, learns your taste, and drops personalized deals you can{" "}
+            <strong className="text-foreground">bid, spin, grab,</strong> or <strong className="text-foreground">auto-buy</strong> — before anyone else.
           </p>
 
-          {/* Trust signals */}
-          <div className="flex items-center gap-4 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 text-success" /> Fraud-protected</div>
-            <div className="flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-primary" /> Sub-3s execution</div>
-            <div className="flex items-center gap-1.5"><TrendingDown className="w-3.5 h-3.5 text-primary" /> Avg. 23% saved</div>
+          {/* Dopamine trust pills */}
+          <div className="flex flex-wrap items-center gap-3 text-xs font-semibold">
+            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/[0.1] border border-primary/30 text-primary">
+              <Flame className="w-3.5 h-3.5" /> Impulse-Buy Engine
+            </span>
+            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-success/[0.1] border border-success/30 text-success">
+              <Zap className="w-3.5 h-3.5" /> Sub-3s Auto-Nab
+            </span>
+            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[hsl(280,100%,70%)]/[0.1] border border-[hsl(280,100%,70%)]/30 text-[hsl(280,100%,70%)]">
+              <Trophy className="w-3.5 h-3.5" /> Gamified Shopping
+            </span>
           </div>
 
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-4 pt-2">
             <Button
               size="lg"
-              className="rounded-full px-8 font-semibold text-base gap-2 shimmer-btn shadow-[0_0_30px_-5px_hsl(var(--coral)/0.4)]"
+              className="rounded-full px-10 font-black text-base gap-2 shimmer-btn shadow-[0_0_40px_-5px_hsl(var(--coral)/0.5)] text-lg"
               onClick={() => navigate("/signup")}
             >
-              Start Hunting Free <ArrowRight className="w-4 h-4" />
+              Start Nabbing <ArrowRight className="w-5 h-5" />
             </Button>
             <Button
               size="lg"
               variant="outline"
-              className="rounded-full px-8 font-semibold text-base border-border hover:bg-secondary group"
-              onClick={() => document.getElementById("how-it-works")?.scrollIntoView({ behavior: "smooth" })}
+              className="rounded-full px-8 font-bold text-base border-border hover:bg-secondary group"
+              onClick={() => document.getElementById("how-it-drops")?.scrollIntoView({ behavior: "smooth" })}
             >
               See How It Works <ArrowRight className="w-4 h-4 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
             </Button>
           </div>
 
-          {/* Social proof with gradient avatars */}
-          <div className="flex items-center gap-3 pt-2">
-            <div className="flex -space-x-2">
-              {["SK", "MT", "ER", "JW", "PD"].map((initials, i) => (
-                <div
-                  key={i}
-                  className={`w-8 h-8 rounded-full border-2 border-background bg-gradient-to-br ${avatarGradients[i]} flex items-center justify-center text-xs font-bold text-white`}
-                >
-                  {initials}
-                </div>
-              ))}
-            </div>
-            <div>
-              <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <span key={i} className="text-primary text-sm">&#9733;</span>
-                ))}
-                <span className="text-xs text-muted-foreground ml-1">4.9/5</span>
-              </div>
-              <p className="text-xs text-muted-foreground">Trusted by <strong className="text-foreground">12,000+</strong> smart shoppers</p>
-            </div>
-          </div>
-
-          {/* Live activity ticker */}
-          <div className="pt-2">
+          {/* Live nab ticker */}
+          <div className="pt-3">
             <AnimatePresence mode="wait">
               <motion.div
-                key={activityIndex}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
+                key={nabIndex}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/[0.08] border border-success/20 text-sm"
+                className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-success/[0.08] border border-success/20 text-sm"
               >
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
                 </span>
                 <span className="text-muted-foreground">
-                  <strong className="text-foreground">{currentActivity.name}</strong> just nabbed{" "}
-                  <strong className="text-foreground">{currentActivity.item}</strong> for{" "}
-                  <strong className="text-success">{currentActivity.price}</strong>
+                  {currentNab.user} nabbed <strong className="text-foreground">{currentNab.item}</strong> — saved{" "}
+                  <strong className="text-success">{currentNab.saved}</strong>
                 </span>
-                <span className="text-xs text-muted-foreground/60">{currentActivity.time}</span>
+                <span className="text-xs text-muted-foreground/50">{currentNab.time}</span>
               </motion.div>
             </AnimatePresence>
           </div>
-
-          {/* Stats */}
-          <div className="flex items-center gap-6 pt-4">
-            {stats.map((s, i) => (
-              <div key={s.label} className="flex items-center gap-6">
-                <div>
-                  <p className="font-heading text-2xl font-bold text-foreground">{s.display}</p>
-                  <p className="text-xs text-muted-foreground">{s.label}</p>
-                </div>
-                {i < stats.length - 1 && <div className="w-px h-10 bg-border" />}
-              </div>
-            ))}
-          </div>
         </motion.div>
 
-        {/* Right — Phone mockup */}
+        {/* Right — Deal cards cascade */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
+          transition={{ duration: 0.7, delay: 0.15 }}
           className="relative flex justify-center lg:justify-end"
         >
           <div className="relative">
-            <div className="absolute inset-0 scale-110 blur-[60px] bg-primary/[0.08] rounded-full pointer-events-none" />
-            
-            <div className="w-[300px] sm:w-[340px] rounded-[36px] border border-border bg-card p-4 shadow-2xl relative noise-bg">
-              <div className="w-24 h-6 bg-background rounded-full mx-auto mb-4" />
+            <div className="absolute inset-0 scale-110 blur-[80px] bg-primary/[0.1] rounded-full pointer-events-none" />
 
-              <div className="space-y-3">
-                {hunts.map((hunt, i) => (
-                  <motion.div
-                    key={hunt.name}
-                    initial={{ opacity: 0, x: 30, scale: 0.95 }}
-                    animate={{ opacity: 1, x: 0, scale: 1 }}
-                    transition={{ delay: 0.5 + i * 0.25, duration: 0.6, type: "spring", stiffness: 100 }}
-                    className={`rounded-2xl border p-3 space-y-2 ${
-                      hunt.nabbed ? "border-success/30 bg-success/[0.05]" : "border-border bg-secondary"
-                    }`}
-                  >
-                    <div className="flex justify-between items-start">
-                      <div>
-                        <p className="text-xs text-muted-foreground">{hunt.nabbed ? "Nabbed!" : "Hunting:"}</p>
-                        <p className="text-sm font-semibold text-foreground">{hunt.name}</p>
+            <div className="space-y-4 w-[320px] sm:w-[360px]">
+              {floatingDeals.map((deal, i) => (
+                <motion.div
+                  key={deal.name}
+                  initial={{ opacity: 0, x: 40, rotateY: -15 }}
+                  animate={{ opacity: 1, x: 0, rotateY: 0 }}
+                  transition={{ delay: 0.4 + i * 0.2, duration: 0.6, type: "spring", stiffness: 80 }}
+                  className="glass-card gradient-border p-5 group cursor-pointer"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-primary/[0.08] border border-primary/20 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                      {deal.emoji}
+                    </div>
+                    <div className="flex-1">
+                      <p className="font-heading font-bold text-foreground text-sm">{deal.name}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <span className="text-xs text-muted-foreground line-through">{deal.was}</span>
+                        <span className="text-sm font-black text-primary">{deal.now}</span>
+                        <span className="text-[10px] font-bold text-success bg-success/[0.1] px-1.5 py-0.5 rounded-full">{deal.pct}</span>
                       </div>
-                      <span className={`text-xs font-semibold ${hunt.statusColor}`}>{hunt.status}</span>
                     </div>
-                    <div className="flex justify-between text-xs text-muted-foreground">
-                      <span>{hunt.nabbed ? "Retail" : "Market"} {hunt.market}</span>
-                      <span>{hunt.nabbed ? "Paid" : "Your price"} {hunt.target}</span>
-                    </div>
-                    <div className="w-full h-1.5 rounded-full bg-secondary overflow-hidden">
-                      <motion.div
-                        initial={{ width: 0 }}
-                        animate={{ width: `${hunt.progress}%` }}
-                        transition={{ delay: 0.8 + i * 0.25, duration: 1, ease: "easeOut" }}
-                        className={`h-full rounded-full ${hunt.progressColor}`}
-                      />
-                    </div>
-                    {/* Confetti burst on purchased card */}
-                    {hunt.nabbed && (
-                      <motion.div
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: [0, 1.2, 1], opacity: [0, 1, 0.8] }}
-                        transition={{ delay: 1.8, duration: 0.6 }}
-                        className="flex justify-center gap-1 text-xs"
-                      >
-                        {["🎉", "✨", "🎯"].map((e, ei) => (
-                          <motion.span
-                            key={ei}
-                            animate={{ y: [0, -8, 0] }}
-                            transition={{ delay: 2 + ei * 0.1, duration: 0.5 }}
-                          >
-                            {e}
-                          </motion.span>
-                        ))}
-                      </motion.div>
-                    )}
-                  </motion.div>
-                ))}
-              </div>
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/30"
+                    >
+                      <Zap className="w-4 h-4 text-primary-foreground" />
+                    </motion.div>
+                  </div>
+                </motion.div>
+              ))}
             </div>
 
-            {/* Floating badges */}
+            {/* Floating urgency tags */}
             <motion.div
-              animate={{ y: [-5, 5, -5] }}
+              animate={{ y: [-6, 6, -6] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute -left-8 sm:-left-16 top-8 px-4 py-2 rounded-full border border-primary/40 bg-card/95 backdrop-blur-sm text-sm font-bold shadow-xl shadow-primary/10"
+            >
+              <Flame className="w-3.5 h-3.5 inline mr-1 text-primary" /> 3 left at this price
+            </motion.div>
+
+            <motion.div
+              animate={{ y: [6, -6, 6] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -left-4 sm:-left-12 top-16 px-4 py-2 rounded-full border border-primary/30 bg-card/90 backdrop-blur-sm text-sm font-medium shadow-lg shadow-primary/10"
+              className="absolute -right-6 sm:-right-14 bottom-16 px-4 py-2 rounded-full border border-success/40 bg-card/95 backdrop-blur-sm text-sm font-bold shadow-xl shadow-success/10"
             >
-              <span className="text-primary"><Zap className="w-3.5 h-3.5 inline mr-1" /></span> Price dropped! Auto-nabbing...
+              <Trophy className="w-3.5 h-3.5 inline mr-1 text-success" /> You saved $2,847 this month
             </motion.div>
-
-            <motion.div
-              animate={{ y: [5, -5, 5] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -right-4 sm:-right-12 bottom-24 px-4 py-2 rounded-full border border-success/30 bg-card/90 backdrop-blur-sm text-sm font-medium shadow-lg shadow-success/10"
-            >
-              <span className="text-success"><TrendingDown className="w-3.5 h-3.5 inline mr-1" /> You saved $750</span>
-            </motion.div>
-
-            <motion.div
-              animate={{ scale: [1, 1.5], opacity: [0.3, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] rounded-full border border-primary/20 pointer-events-none"
-            />
           </div>
         </motion.div>
       </div>
