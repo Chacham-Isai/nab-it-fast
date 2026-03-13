@@ -14,7 +14,241 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      dream_buys: {
+        Row: {
+          created_at: string | null
+          id: string
+          item_name: string
+          match_price: number | null
+          match_url: string | null
+          status: string | null
+          target_price: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          item_name: string
+          match_price?: number | null
+          match_url?: string | null
+          status?: string | null
+          target_price?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          item_name?: string
+          match_price?: number | null
+          match_url?: string | null
+          status?: string | null
+          target_price?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dream_buys_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      giving_settings: {
+        Row: {
+          active_cause: string | null
+          id: string
+          roundup_enabled: boolean | null
+          roundup_pct: number | null
+          total_given: number | null
+          updated_at: string | null
+        }
+        Insert: {
+          active_cause?: string | null
+          id: string
+          roundup_enabled?: boolean | null
+          roundup_pct?: number | null
+          total_given?: number | null
+          updated_at?: string | null
+        }
+        Update: {
+          active_cause?: string | null
+          id?: string
+          roundup_enabled?: boolean | null
+          roundup_pct?: number | null
+          total_given?: number | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "giving_settings_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications_log: {
+        Row: {
+          action_label: string | null
+          body: string | null
+          created_at: string | null
+          id: string
+          is_read: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          action_label?: string | null
+          body?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          action_label?: string | null
+          body?: string | null
+          created_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notifications_log_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_emoji: string | null
+          brand_affinities: string[] | null
+          buy_speed: string | null
+          created_at: string | null
+          display_name: string | null
+          id: string
+          onboarding_complete: boolean | null
+          spending_style: string | null
+          taste_tags: string[] | null
+          travel_vibes: string[] | null
+        }
+        Insert: {
+          avatar_emoji?: string | null
+          brand_affinities?: string[] | null
+          buy_speed?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id: string
+          onboarding_complete?: boolean | null
+          spending_style?: string | null
+          taste_tags?: string[] | null
+          travel_vibes?: string[] | null
+        }
+        Update: {
+          avatar_emoji?: string | null
+          brand_affinities?: string[] | null
+          buy_speed?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          id?: string
+          onboarding_complete?: boolean | null
+          spending_style?: string | null
+          taste_tags?: string[] | null
+          travel_vibes?: string[] | null
+        }
+        Relationships: []
+      }
+      saved_items: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          id: string
+          image_emoji: string | null
+          item_name: string
+          price: number | null
+          retailer: string | null
+          tag: string | null
+          user_id: string
+          was_price: number | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          image_emoji?: string | null
+          item_name: string
+          price?: number | null
+          retailer?: string | null
+          tag?: string | null
+          user_id: string
+          was_price?: number | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          image_emoji?: string | null
+          item_name?: string
+          price?: number | null
+          retailer?: string | null
+          tag?: string | null
+          user_id?: string
+          was_price?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "saved_items_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tribe_memberships: {
+        Row: {
+          id: string
+          joined_at: string | null
+          tribe_emoji: string | null
+          tribe_name: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string | null
+          tribe_emoji?: string | null
+          tribe_name: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string | null
+          tribe_emoji?: string | null
+          tribe_name?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tribe_memberships_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
