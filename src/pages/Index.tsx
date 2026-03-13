@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import HeroSection from "@/components/sections/HeroSection";
 import ProblemSection from "@/components/sections/ProblemSection";
 import HowItWorksSection from "@/components/sections/HowItWorksSection";
+import NavigatorSection from "@/components/sections/NavigatorSection";
 import TechnologySection from "@/components/sections/TechnologySection";
 import CategoriesSection from "@/components/sections/CategoriesSection";
 import TractionSection from "@/components/sections/TractionSection";
@@ -25,6 +26,8 @@ const Index = () => {
         <ProblemSection />
         <div className="gradient-divider" />
         <HowItWorksSection />
+        <div className="gradient-divider" />
+        <NavigatorSection />
         <div className="gradient-divider" />
         <TechnologySection />
         <div className="gradient-divider" />
