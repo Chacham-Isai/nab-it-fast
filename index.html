@@ -30,6 +30,38 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "Nabbit Inc.",
+      "url": "https://nabbit.ai",
+      "logo": "https://nab-it-fast.lovable.app/og-image.png",
+      "sameAs": [
+        "https://twitter.com/nabbitai",
+        "https://instagram.com/nabbitai",
+        "https://discord.gg/nabbit"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer support",
+        "email": "support@nabbit.ai"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "nabbit.ai",
+      "url": "https://nabbit.ai",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://nabbit.ai/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
       "@type": "SoftwareApplication",
       "name": "nabbit.ai",
       "applicationCategory": "ShoppingApplication",
@@ -65,8 +97,6 @@
       }
     }
     </script>
-    
-    <!-- FAQ Structured Data -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -86,6 +116,22 @@
           "acceptedAnswer": {
             "@type": "Answer",
             "text": "Yes! The Nibble plan is completely free with 3 active hunts. Paid plans start at $9/month for serious deal hunters."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What retailers does nabbit.ai support?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Nabbit monitors 200+ retailers including Amazon, Best Buy, Walmart, Target, Nike, and niche resale platforms like StockX, GOAT, and The RealReal."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is auto-purchase safe?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Absolutely. Nabbit uses bank-level encryption and never stores your full payment details. Every auto-purchase includes fraud protection and a confirmation notification."
           }
         }
       ]
