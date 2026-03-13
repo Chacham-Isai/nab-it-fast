@@ -14,7 +14,7 @@ const techs = [
     icon: BarChart3,
     title: "PriceGraph Engine",
     subtitle: "Real-Time Price Intelligence",
-    desc: "Continuously ingests pricing data from 200+ retailers and resale platforms. Predictive modeling with historical trend analysis for optimal buy-window recommendations.",
+    desc: "Predicts price floors and optimal buy windows using 5 years of historical pricing data and ML pattern recognition.",
     stat: "200+ retailers scanned",
   },
   {
