@@ -109,12 +109,12 @@ const HeroSection = () => {
           </motion.div>
 
           <h1 className="font-heading font-extrabold text-foreground" style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)", lineHeight: 1.05 }}>
-            Stop paying<br />
-            <span className="gradient-text">full price.</span>
+            Your AI that<br />
+            <span className="gradient-text">never stops hunting.</span>
           </h1>
 
           <p className="text-lg text-muted-foreground max-w-lg leading-relaxed">
-            You name the price. We nab it. Nabbit monitors millions of listings across <strong className="text-foreground">200+ retailers</strong> — 24/7 — and auto-purchases the second your item hits your price.
+            Set your target price. nabbit watches <strong className="text-foreground">200+ retailers 24/7</strong> and auto-buys the moment your price hits — while you sleep.
           </p>
 
           {/* Trust signals */}
