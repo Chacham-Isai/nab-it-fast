@@ -293,34 +293,34 @@ const Auctions = () => {
                       <div className="space-y-3">
                         <div className="flex gap-2">
                           {[minBid, minBid + inc, minBid + inc * 2].map((amt) => (
-                            <Button key={amt} variant="outline" size="sm" className="flex-1 rounded-xl text-xs" disabled={bidding === auction.id} onClick={() => placeBid(auction.id, amt)}>
+                            <Button key={amt} variant="outline" size="sm" className="flex-1 rounded-xl text-xs font-bold border-border/50 hover:border-primary/40 hover:bg-primary/5" disabled={bidding === auction.id} onClick={() => placeBid(auction.id, amt)}>
                               ${amt.toLocaleString()}
                             </Button>
                           ))}
                         </div>
                         <div className="flex gap-2">
                           <div className="relative flex-1">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
-                            <Input type="number" value={customBid[auction.id] || ""} onChange={(e) => setCustomBid((c) => ({ ...c, [auction.id]: e.target.value }))} className="pl-7 bg-secondary/50 border-border rounded-xl" placeholder={minBid.toLocaleString()} />
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 text-sm font-bold">$</span>
+                            <Input type="number" value={customBid[auction.id] || ""} onChange={(e) => setCustomBid((c) => ({ ...c, [auction.id]: e.target.value }))} className="pl-7 bg-secondary/30 border-border/50 rounded-xl font-medium" placeholder={minBid.toLocaleString()} />
                           </div>
-                          <Button disabled={bidding === auction.id} onClick={() => placeBid(auction.id, parseInt(customBid[auction.id] || "0"))} className="rounded-xl shimmer-btn">
+                          <Button disabled={bidding === auction.id} onClick={() => placeBid(auction.id, parseInt(customBid[auction.id] || "0"))} className="rounded-xl shimmer-btn font-black text-xs uppercase tracking-wider">
                             {bidding === auction.id ? "Bidding..." : "Bid"}
                           </Button>
                         </div>
                         {bidError[auction.id] && (
-                          <p className="text-xs text-destructive flex items-center gap-1">
+                          <p className="text-xs text-destructive flex items-center gap-1 font-medium">
                             <AlertTriangle className="w-3 h-3" /> {bidError[auction.id]}
                           </p>
                         )}
-                        <div className="p-3 rounded-xl bg-secondary/50 space-y-2">
-                          <p className="text-xs font-semibold text-foreground">Max / Proxy Bid</p>
+                        <div className="p-3.5 rounded-xl glass-card border border-border/50 space-y-2">
+                          <p className="text-xs font-black text-foreground uppercase tracking-wider">Max / Proxy Bid</p>
                           <p className="text-[10px] text-muted-foreground">We'll auto-bid for you up to your limit</p>
                           <div className="flex gap-2">
                             <div className="relative flex-1">
-                              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
-                              <Input type="number" value={proxyBid[auction.id] || ""} onChange={(e) => setProxyBid((p) => ({ ...p, [auction.id]: e.target.value }))} className="pl-7 bg-background border-border rounded-xl" />
+                              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 text-sm font-bold">$</span>
+                              <Input type="number" value={proxyBid[auction.id] || ""} onChange={(e) => setProxyBid((p) => ({ ...p, [auction.id]: e.target.value }))} className="pl-7 bg-secondary/30 border-border/50 rounded-xl font-medium" />
                             </div>
-                            <Button variant="outline" className="rounded-xl text-xs" onClick={() => setProxyBidFn(auction.id)}>Set</Button>
+                            <Button variant="outline" className="rounded-xl text-xs font-bold border-border/50 hover:border-primary/30" onClick={() => setProxyBidFn(auction.id)}>Set</Button>
                           </div>
                         </div>
                         {listing.buy_now_price && (
