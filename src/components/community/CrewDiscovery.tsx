@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Search, Users, Loader2, TrendingUp } from "lucide-react";
+import { Search, Users, Loader2, TrendingUp, Plus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import CreateCrewForm from "./CreateCrewForm";
 
 interface Crew {
   id: string;
@@ -23,7 +24,7 @@ interface CrewDiscoveryProps {
   onToggleCrew: (name: string, emoji: string) => void;
 }
 
-const categoryFilters = ["All", "Fashion", "Collectibles", "Electronics", "Luxury", "Home", "Music", "Art", "Sports"];
+const categoryFilters = ["All", "Fashion", "Collectibles", "Electronics", "Luxury", "Home", "Music", "Art", "Sports", "General"];
 
 const CrewDiscovery = ({ joinedCrews, onToggleCrew }: CrewDiscoveryProps) => {
   const { user } = useAuth();
@@ -32,6 +33,7 @@ const CrewDiscovery = ({ joinedCrews, onToggleCrew }: CrewDiscoveryProps) => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
+  const [showCreate, setShowCreate] = useState(false);
 
   useEffect(() => {
     fetchCrews();
@@ -83,15 +85,26 @@ const CrewDiscovery = ({ joinedCrews, onToggleCrew }: CrewDiscoveryProps) => {
 
   return (
     <div className="space-y-4">
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search crews..."
-          className="pl-9 bg-card border-border rounded-xl h-10"
-        />
+      {/* Search + Create */}
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search crews..."
+            className="pl-9 bg-card border-border rounded-xl h-10"
+          />
+        </div>
+        {user && (
+          <Button
+            variant="outline"
+            className="rounded-xl h-10 shrink-0 gap-1.5"
+            onClick={() => setShowCreate(true)}
+          >
+            <Plus className="w-4 h-4" /> Start
+          </Button>
+        )}
       </div>
 
       {/* Category pills */}
@@ -186,6 +199,12 @@ const CrewDiscovery = ({ joinedCrews, onToggleCrew }: CrewDiscoveryProps) => {
           </AnimatePresence>
         </div>
       )}
+
+      <CreateCrewForm
+        open={showCreate}
+        onClose={() => setShowCreate(false)}
+        onCreated={fetchCrews}
+      />
     </div>
   );
 };
