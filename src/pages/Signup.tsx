@@ -11,6 +11,7 @@ import usePageMeta from "@/hooks/usePageMeta";
 
 const Signup = () => {
   usePageMeta({ title: "Sign Up — nabbit.ai", description: "Create your free nabbit.ai account. Start hunting deals with AI in seconds.", path: "/signup" });
+  const { session, loading: authLoading } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
