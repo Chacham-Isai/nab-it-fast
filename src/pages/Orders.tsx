@@ -7,6 +7,7 @@ import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
+import ReviewForm from "@/components/reviews/ReviewForm";
 
 const statusConfig: Record<string, { icon: any; color: string; label: string }> = {
   pending: { icon: Clock, color: "text-[hsl(40_90%_55%)]", label: "Pending Payment" },
@@ -20,6 +21,7 @@ const Orders = () => {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const [orders, setOrders] = useState<any[]>([]);
+  const [reviewedOrderIds, setReviewedOrderIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,17 +33,25 @@ const Orders = () => {
 
   useEffect(() => {
     if (!user) return;
-    const loadOrders = async () => {
-      const { data } = await supabase
-        .from('orders')
-        .select('*, listings(title, category, images, listing_type)')
-        .eq('buyer_id', user.id)
-        .order('created_at', { ascending: false });
-      setOrders(data || []);
-      setLoading(false);
-    };
     loadOrders();
   }, [user]);
+
+  const loadOrders = async () => {
+    const [{ data: orderData }, { data: reviewData }] = await Promise.all([
+      supabase
+        .from('orders')
+        .select('*, listings(title, category, images, listing_type)')
+        .eq('buyer_id', user!.id)
+        .order('created_at', { ascending: false }),
+      supabase
+        .from('reviews')
+        .select('order_id')
+        .eq('reviewer_id', user!.id),
+    ]);
+    setOrders(orderData || []);
+    setReviewedOrderIds(new Set((reviewData || []).map((r: any) => r.order_id)));
+    setLoading(false);
+  };
 
   const confirmDelivery = async (orderId: string) => {
     await supabase.from('orders').update({ status: 'delivered' }).eq('id', orderId);
@@ -107,6 +117,21 @@ const Orders = () => {
                 <Button variant="outline" size="sm" className="mt-3 rounded-xl w-full text-xs gap-1" onClick={() => confirmDelivery(order.id)}>
                   <CheckCircle className="w-3.5 h-3.5" /> Confirm Delivery
                 </Button>
+              )}
+
+              {/* Review form for delivered orders */}
+              {order.status === 'delivered' && !reviewedOrderIds.has(order.id) && (
+                <ReviewForm
+                  orderId={order.id}
+                  sellerId={order.seller_id}
+                  reviewerId={user!.id}
+                  onSubmitted={loadOrders}
+                />
+              )}
+              {order.status === 'delivered' && reviewedOrderIds.has(order.id) && (
+                <p className="mt-3 text-xs text-muted-foreground flex items-center gap-1">
+                  <Star className="w-3 h-3 fill-primary text-primary" /> Review submitted
+                </p>
               )}
 
               {/* View listing */}

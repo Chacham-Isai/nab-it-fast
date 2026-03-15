@@ -9,6 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import Countdown from "@/components/Countdown";
 import BottomNav from "@/components/BottomNav";
 import usePageMeta from "@/hooks/usePageMeta";
+import ReviewList from "@/components/reviews/ReviewList";
 
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +19,7 @@ const ListingDetail = () => {
   const [seller, setSeller] = useState<any>(null);
   const [auction, setAuction] = useState<any>(null);
   const [bids, setBids] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [bidAmount, setBidAmount] = useState("");
   const [bidding, setBidding] = useState(false);
@@ -59,13 +61,22 @@ const ListingDetail = () => {
       setBids(bidData || []);
     }
 
-    // Load seller
-    const { data: sellerData } = await supabase
-      .from("seller_profiles")
-      .select("*")
-      .eq("id", data.seller_id)
-      .single();
+    // Load seller and reviews in parallel
+    const [{ data: sellerData }, { data: reviewData }] = await Promise.all([
+      supabase
+        .from("seller_profiles")
+        .select("*")
+        .eq("id", data.seller_id)
+        .single(),
+      supabase
+        .from("reviews")
+        .select("*, profiles:reviewer_id(display_name, avatar_emoji)")
+        .eq("seller_id", data.seller_id)
+        .order("created_at", { ascending: false })
+        .limit(5),
+    ]);
     setSeller(sellerData);
+    setReviews(reviewData || []);
 
     // Check saved
     if (user) {
@@ -327,6 +338,14 @@ const ListingDetail = () => {
               {seller.shop_description && (
                 <p className="text-xs text-muted-foreground mt-3">{seller.shop_description}</p>
               )}
+            </div>
+          )}
+
+          {/* Seller Reviews */}
+          {reviews.length > 0 && (
+            <div>
+              <h2 className="font-heading font-bold text-foreground text-sm mb-3">Seller Reviews</h2>
+              <ReviewList reviews={reviews} />
             </div>
           )}
 
