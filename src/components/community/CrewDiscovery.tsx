@@ -33,6 +33,7 @@ const CrewDiscovery = ({ joinedCrews, onToggleCrew }: CrewDiscoveryProps) => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("All");
+  const [showCreate, setShowCreate] = useState(false);
 
   useEffect(() => {
     fetchCrews();
