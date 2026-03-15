@@ -118,8 +118,8 @@ const Community = () => {
     setJoinedDeals((prev) => [...prev, dealId]);
 
     // Award XP
-    await supabase.from("profiles").update({ total_xp: (await supabase.from("profiles").select("total_xp").eq("id", user.id).single()).data?.total_xp + 50 }).eq("id", user.id);
-    toast({ title: "+50 XP! 🎮", description: "You joined a group deal!" });
+    const xpGain = await awardXP(user.id, "join_deal");
+    toast({ title: `+${xpGain} XP! 🎮`, description: "You joined a group deal!" });
   };
 
   const leaveDeal = async (dealId: string) => {
