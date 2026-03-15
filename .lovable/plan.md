@@ -1,86 +1,98 @@
 
 
-# nabbit.ai — Full Marketing Website
+# Make Group Deals & Gamification Real and Hot
 
-A premium, dark-mode, conversion-focused marketing website for an AI-powered autonomous shopping agent. The logo image will be used as a reference for the brand identity (the "a" has a crosshair/target motif, ".ai" in coral).
+## Current State
 
----
+- **Community page** has Group Deals but they're **hardcoded static data** (not stored in DB). Joining a deal is local state only (`toggleDeal` uses `useState`, no persistence).
+- **Tribes** are real (backed by `tribe_memberships` table).
+- **Grab Bags, Breaks, Auctions** are functional and DB-backed.
+- Group Deals have no database table, no AI recommendations, no real-time updates, and no reward/streak mechanics.
 
-## Phase 1: Foundation & Design System
+## Plan
 
-- **Dark theme setup** — Override all CSS variables to the nabbit brand palette (#0A0A0A background, #FF6B5B coral accent, etc.)
-- **Typography** — Import Google Fonts (Syne for headings, Plus Jakarta Sans for body) and configure Tailwind
-- **Install Framer Motion** for scroll-triggered animations throughout the site
-- **Reusable components** — Section wrapper with fade-up animation, gradient dividers, coral pill/badge, stat card
+### 1. Database: Create `group_deals` and `group_deal_participants` tables
 
----
+**`group_deals`** table:
+- `id`, `title`, `description`, `emoji`, `category`, `tribe_name`
+- `deal_price`, `retail_price`, `discount_pct`
+- `target_participants` (int), `current_participants` (int, default 0)
+- `ends_at` (timestamptz), `status` (text: 'active', 'funded', 'expired', 'completed')
+- `created_by` (uuid), `created_at`
+- `reward_tier` (text: null, 'bronze', 'silver', 'gold') — unlocks when milestones hit
 
-## Phase 2: Navigation & Layout Shell
+**`group_deal_participants`** table:
+- `id`, `deal_id` (fk → group_deals), `user_id` (uuid), `joined_at`
+- Unique constraint on `(deal_id, user_id)`
 
-- **Sticky navbar** — Transparent → glass blur on scroll, nabbit.ai text logo ("nabbit" white, ".ai" coral), desktop nav links with smooth scroll, coral "Get Started Free" CTA button
-- **Mobile hamburger** — Slide-in drawer with all nav links
-- **Footer** — 4-column layout (Brand, Product, Company, Support), bottom copyright bar
+RLS: anyone can view active deals, authenticated users can join, creators can manage their own deals.
 
----
+Add a trigger: on insert to `group_deal_participants`, increment `group_deals.current_participants` and check if target is met (auto-set status to 'funded').
 
-## Phase 3: Homepage Sections (Landing Page)
+Enable realtime on both tables for live participant counts.
 
-### Hero (Section 1)
-- Two-column: headline + CTAs + inline stats on left, CSS phone mockup on right showing 3 product hunt cards (Jordan 4, Rolex, Chanel)
-- Floating animated badges around the phone
-- Coral radial glow background accents
+### 2. AI-Powered Deal Recommendations Edge Function
 
-### The Problem (Section 2)
-- 4 stat cards in a grid with large coral values, descriptions, and source citations
-- Closing italicized quote
+Create `supabase/functions/recommend-deals/index.ts`:
+- Takes user's tribe memberships, taste tags, and brand affinities from their profile
+- Calls Lovable AI (gemini-3-flash-preview) to generate 3-5 personalized group deal suggestions with titles, descriptions, pricing, and urgency framing
+- Returns structured output via tool calling
+- Used on the Community page to show "AI Picks for You" section
 
-### How It Works (Section 3)
-- 3 step cards (Upload, Set Price, Auto-Purchase) connected by a faint line
-- Each with icon, faded step number, description, and coral tag pill
+### 3. Gamification: Streaks, XP, and Leaderboard
 
-### Proprietary Technology (Section 4)
-- 2×2 grid of tech cards (NabVision AI, PriceGraph Engine, NabBot Agent, TrustShield)
-- Horizontal metrics bar below with 5 key stats
+**Add columns to `profiles`** table:
+- `streak_days` (int, default 0)
+- `total_xp` (int, default 0)
+- `last_active_date` (date)
 
-### Use Cases / Categories (Section 5)
-- 4×2 grid of category cards (Sneakers, Electronics, Fashion, Collectibles, Beauty, Home, Kids, Cars) with Lucide icons
+**XP actions** (tracked client-side, written to profile):
+- Join a group deal: +50 XP
+- Deal fully funded (you were in it): +200 XP bonus
+- Daily login streak: +10 × streak_days
+- Open a grab bag: +25 XP
+- Win an auction: +100 XP
 
-### Traction (Section 6)
-- 4 metric cards with large coral values
-- Footnote bar with growth stats
+**Leaderboard**: query top 20 profiles by `total_xp`, displayed on Community page as a new "Leaderboard" tab.
 
-### Competitive Comparison (Section 7)
-- Feature comparison table: Nabbit vs Honey vs Camel vs Google Shopping
-- Nabbit column highlighted with coral tint, using ● / — / ◐ indicators
+**Streak widget**: shown at top of Community page — "🔥 5 day streak · 1,240 XP"
 
-### Pricing (Section 8)
-- 3 pricing cards: Nibble (Free), Nabber ($9/mo — featured with coral border/glow), Nabbit Pro ($29/mo)
-- Feature lists with coral checkmarks
+### 4. Revamped Community Page UI
 
-### Final CTA (Section 9)
-- Large banner card with coral glow, headline, and two CTA buttons
+Replace the static Group Deals tab with real DB-backed deals:
+- **Real-time participant counter** with animated progress bar that updates live via realtime subscriptions
+- **Urgency indicators**: pulsing "Almost there!" when >80%, confetti animation when deal is funded
+- **AI Picks banner** at top of deals tab showing personalized recommendations
+- **"Create a Group Deal"** button for sellers to propose deals
+- **Reward tiers**: visual badges that unlock as more people join (bronze at 50%, silver at 75%, gold at 100%)
+- **New "Leaderboard" tab** with XP rankings, streaks, and tribe standings
 
----
+### 5. Real-time Group Deal Cards (Component)
 
-## Phase 4: Additional Pages
+New `GroupDealCard` component with:
+- Live participant avatars (show last 5 joiners' emojis)
+- Animated progress ring instead of flat bar
+- Countdown timer with urgency colors
+- "Share to Tribe" button that creates a notification for tribe members
+- Haptic-style scale animation on join
+- Confetti burst when deal hits target while you're viewing
 
-- **/about** — Mission statement, placeholder team member cards, 3 company values
-- **/blog** — Grid of 6 placeholder blog post cards with titles, dates, and excerpts
-- **/contact** — Contact form (Name, Email, Subject dropdown, Message) + email/social links
-- **/login** — Dark centered card with email/password fields, links to signup/forgot password
-- **/signup** — Dark centered card with name/email/password/confirm fields, link to login
+### 6. Feed Integration
 
-All pages share the same navbar and footer. All UI-only (no backend auth needed).
+- Add a "Group Deal" card type in the swipe Feed — when a deal from your tribe is trending, it appears in your daily drops
+- Hot deals (>80% funded) get promoted to the Live Feed section on the landing page
 
----
+## Files to Create/Edit
 
-## Design Details Applied Throughout
-
-- Scroll-triggered Framer Motion fade-up animations on every section
-- Cards with 1px borders, 20-24px rounded corners, hover lift effects
-- Generous spacing (~140px desktop, ~100px mobile between sections)
-- Gradient section dividers
-- Fully responsive: mobile-first with tablet and desktop breakpoints
-- Lucide React icons (no emojis)
-- All copy exactly as specified in the brief
+| Action | File |
+|--------|------|
+| Migration | New tables: `group_deals`, `group_deal_participants`; alter `profiles` add XP/streak columns |
+| Create | `supabase/functions/recommend-deals/index.ts` |
+| Create | `src/components/community/GroupDealCard.tsx` |
+| Create | `src/components/community/LeaderboardTab.tsx` |
+| Create | `src/components/community/StreakWidget.tsx` |
+| Create | `src/components/community/AIPicksBanner.tsx` |
+| Rewrite | `src/pages/Community.tsx` — 4 tabs (Feed, Group Deals, Tribes, Leaderboard), real data, realtime |
+| Edit | `src/pages/Feed.tsx` — inject trending group deals into feed |
+| Edit | `src/components/sections/LiveFeedSection.tsx` — show hot group deals |
 
