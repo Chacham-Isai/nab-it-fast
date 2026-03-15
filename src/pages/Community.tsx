@@ -18,6 +18,7 @@ import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { cn } from "@/lib/utils";
+import nabbitLogo from "@/assets/nabbit-logo.png";
 
 import crewHeroImg from "@/assets/crew/crew-hero.jpg";
 import streakBgImg from "@/assets/crew/streak-bg.jpg";
