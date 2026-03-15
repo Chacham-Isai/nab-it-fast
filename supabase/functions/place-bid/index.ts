@@ -95,7 +95,7 @@ serve(async (req) => {
     if (previousBidderId && previousBidderId !== user.id) {
       await supabase.from('notifications_log').insert({
         user_id: previousBidderId,
-        title: 'You've been outbid! 😱',
+        title: "You've been outbid! 😱",
         body: `Someone placed a higher bid of $${amount}. Bid again to stay in the game!`,
         type: 'auction',
         action_label: 'Bid Again',
