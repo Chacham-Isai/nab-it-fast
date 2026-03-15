@@ -5,6 +5,7 @@ import { ArrowLeft, Gavel, ShoppingBag, Share2, Bookmark, Star, Shield, Loader2,
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { toast } from "@/hooks/use-toast";
 import Countdown from "@/components/Countdown";
 import BottomNav from "@/components/BottomNav";
