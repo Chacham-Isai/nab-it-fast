@@ -28,7 +28,7 @@ const HeroSection = () => {
   const currentNab = recentNabs[nabIndex];
 
   return (
-    <section className="relative min-h-screen flex items-center pt-20 pb-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <section className="relative min-h-[calc(100svh-4.5rem)] lg:min-h-screen flex items-center pt-16 lg:pt-20 pb-8 lg:pb-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
       {/* Background — cyan/purple gradient blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -50,13 +50,13 @@ const HeroSection = () => {
         <div className="absolute inset-0" style={{ background: `var(--radial-overlay)` }} />
       </div>
 
-      <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-10 lg:gap-16 items-center relative z-10">
+      <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-8 lg:gap-12 items-center relative z-10">
         {/* Left — Copy */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="space-y-7"
+          className="space-y-5 lg:space-y-6"
         >
           {/* Live badge */}
           <motion.div
@@ -72,12 +72,12 @@ const HeroSection = () => {
             <span className="text-sm font-bold text-nab-cyan tracking-wide uppercase">Live Deals Dropping Now</span>
           </motion.div>
 
-          <h1 className="font-heading font-black text-foreground leading-[0.95]" style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)" }}>
+          <h1 className="font-heading font-black text-foreground leading-[0.95]" style={{ fontSize: "clamp(2.4rem, 6vw, 4.8rem)" }}>
             Stop Chasing.<br />
             <span className="gradient-text">Start Nabbing.</span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-lg leading-relaxed">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-lg leading-relaxed">
             The <strong className="text-foreground">Nabbit Engine</strong> scans millions of listings, learns your taste, and drops personalized deals you can{" "}
             <strong className="text-foreground">bid, spin, grab,</strong> or <strong className="text-foreground">auto-buy</strong> — before anyone else.
           </p>
@@ -114,7 +114,7 @@ const HeroSection = () => {
           </div>
 
           {/* Live nab ticker */}
-          <div className="pt-3">
+          <div className="pt-2 hidden xl:block">
             <AnimatePresence mode="wait">
               <motion.div
                 key={nabIndex}
@@ -143,14 +143,14 @@ const HeroSection = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 60 }}
-          className="relative flex justify-center lg:justify-end"
+          className="relative mt-2 lg:mt-0 flex justify-center lg:justify-end"
         >
           <div className="relative">
             <div className="absolute inset-0 scale-110 blur-[80px] rounded-full pointer-events-none" style={{ background: "hsl(var(--nab-cyan) / 0.1)" }} />
             <motion.img
               src={isometricHero}
               alt="nabbit.ai — AI-powered deal hunting"
-              className="w-[400px] sm:w-[480px] relative z-10 drop-shadow-2xl"
+              className="w-[320px] sm:w-[400px] lg:w-[460px] relative z-10 drop-shadow-2xl"
               animate={{ y: [-8, 8, -8] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             />
@@ -159,7 +159,7 @@ const HeroSection = () => {
             <motion.div
               animate={{ y: [-6, 6, -6] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -left-4 sm:-left-12 top-12 px-4 py-2 rounded-full border border-nab-cyan/40 bg-card/95 backdrop-blur-sm text-sm font-bold shadow-xl"
+              className="hidden xl:flex absolute left-4 top-6 items-center px-4 py-2 rounded-full border border-nab-cyan/40 bg-card/95 backdrop-blur-sm text-sm font-bold shadow-xl"
             >
               <Flame className="w-3.5 h-3.5 inline mr-1 text-nab-cyan" /> 3 left at this price
             </motion.div>
@@ -167,7 +167,7 @@ const HeroSection = () => {
             <motion.div
               animate={{ y: [6, -6, 6] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -right-4 sm:-right-10 bottom-20 px-4 py-2 rounded-full border border-success/40 bg-card/95 backdrop-blur-sm text-sm font-bold shadow-xl"
+              className="hidden xl:flex absolute right-4 bottom-8 items-center px-4 py-2 rounded-full border border-success/40 bg-card/95 backdrop-blur-sm text-sm font-bold shadow-xl"
             >
               <Trophy className="w-3.5 h-3.5 inline mr-1 text-success" /> You saved $2,847
             </motion.div>
