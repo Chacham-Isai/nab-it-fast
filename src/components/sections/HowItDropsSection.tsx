@@ -15,7 +15,7 @@ const steps = [
     num: "02",
     title: "AI learns you.",
     desc: "Every swipe, bid, and nab trains your personal deal feed. It gets scarily accurate, fast.",
-    accent: "from-[hsl(280,100%,65%)] to-[hsl(320,100%,65%)]",
+    accent: "from-nab-purple to-accent",
   },
   {
     icon: Zap,
