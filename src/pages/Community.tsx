@@ -129,9 +129,11 @@ const Community = () => {
     if (!user) { navigate("/login"); return; }
     if (joinedTribes.includes(tribeName)) {
       await supabase.from("tribe_memberships").delete().eq("user_id", user.id).eq("tribe_name", tribeName);
+      track("crew_left", { crew_name: tribeName });
       setJoinedTribes((prev) => prev.filter((t) => t !== tribeName));
     } else {
       await supabase.from("tribe_memberships").insert({ user_id: user.id, tribe_name: tribeName, tribe_emoji: tribeEmoji });
+      track("crew_joined", { crew_name: tribeName });
       setJoinedTribes((prev) => [...prev, tribeName]);
     }
   };

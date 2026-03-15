@@ -164,6 +164,7 @@ const CrewDetail = () => {
       return;
     }
     setJoinedDeals((prev) => [...prev, dealId]);
+    track("group_deal_joined", { deal_id: dealId, crew_name: crewName });
     const xpGain = await awardXP(user.id, "join_deal");
     toast({ title: `+${xpGain} XP! 🎮`, description: "You joined a group deal!" });
   };

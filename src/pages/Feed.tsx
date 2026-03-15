@@ -209,6 +209,7 @@ const Feed = () => {
     if (!item) return;
     setSaved((s) => [item, ...s]);
     saveToDb(item);
+    track("bookmark", { item_id: item.id, category: item.category, price: item.price });
     setItems((prev) => prev.filter((i) => i.id !== item.id));
     toast({ title: "🔖 Saved!", description: item.name });
   };
