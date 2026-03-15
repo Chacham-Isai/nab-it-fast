@@ -53,7 +53,7 @@ const CrewDiscovery = ({ joinedCrews, onToggleCrew }: CrewDiscoveryProps) => {
   const fetchCrews = async () => {
     setLoading(true);
     const { data } = await supabase
-      .from("crews")
+      .from("crews" as any)
       .select("*")
       .order("member_count", { ascending: false });
     setCrews(data || []);
