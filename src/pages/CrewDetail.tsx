@@ -36,6 +36,7 @@ const CrewDetail = () => {
   const crewName = decodeURIComponent(name || "");
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { track } = useAnalytics();
 
   usePageMeta({
     title: `${crewName} — nabbit.ai`,
