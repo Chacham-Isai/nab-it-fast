@@ -71,18 +71,21 @@ const Community = () => {
 
   const loadData = async () => {
     setLoading(true);
-    const promises: Promise<any>[] = [
-      supabase.from("group_deals").select("*").in("status", ["active", "funded"]).order("created_at", { ascending: false }),
-    ];
+    const dealsPromise = supabase.from("group_deals").select("*").in("status", ["active", "funded"]).order("created_at", { ascending: false });
 
     if (user) {
-      promises.push(
+      const [dealsRes, tribesRes, participantsRes] = await Promise.all([
+        dealsPromise,
         supabase.from("tribe_memberships").select("tribe_name").eq("user_id", user.id),
         supabase.from("group_deal_participants").select("deal_id").eq("user_id", user.id),
-      );
+      ]);
+      setDeals(dealsRes.data || []);
+      setJoinedTribes(tribesRes.data?.map((d: any) => d.tribe_name) || []);
+      setJoinedDeals(participantsRes.data?.map((d: any) => d.deal_id) || []);
+    } else {
+      const dealsRes = await dealsPromise;
+      setDeals(dealsRes.data || []);
     }
-
-    const results = await Promise.all(promises);
     setDeals(results[0].data || []);
 
     if (user) {
