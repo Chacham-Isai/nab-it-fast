@@ -159,11 +159,6 @@ const Auctions = () => {
     }
   };
 
-  const getCategoryEmoji = (cat: string) => {
-    const map: Record<string, string> = { Cards: "🃏", Sneakers: "👟", Watches: "⌚", Electronics: "🥽", Collectibles: "🏆", Fashion: "🧥" };
-    return map[cat] || "📦";
-  };
-
   const formatTime = (dateStr: string) => {
     const d = new Date(dateStr);
     const diff = Date.now() - d.getTime();
@@ -173,13 +168,18 @@ const Auctions = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
-        <div className="flex items-center gap-3 max-w-lg mx-auto">
-          <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
-          <h1 className="font-heading font-bold text-foreground text-lg flex-1">Live Auctions</h1>
-          <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-success/10 text-success text-[10px] font-bold">
-            {auctions.filter(a => a.status === 'live').length} Active
+    <div className="min-h-screen bg-background pb-24">
+      <div className="sticky top-0 z-40 bg-background/60 backdrop-blur-2xl border-b border-border/50">
+        <div className="flex items-center gap-3 max-w-lg mx-auto px-4 py-3">
+          <button onClick={() => navigate(-1)} className="p-1.5 rounded-xl hover:bg-secondary/50 transition-colors">
+            <ArrowLeft className="w-5 h-5 text-foreground" />
+          </button>
+          <div className="flex items-center gap-2 flex-1">
+            <img src={nabbitLogo} alt="" className="w-5 h-5" />
+            <h1 className="font-heading font-black text-foreground text-base tracking-tight">AUCTIONS</h1>
+          </div>
+          <span className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-success/10 border border-success/20 text-success text-[10px] font-black uppercase tracking-wider">
+            {auctions.filter(a => a.status === 'live').length} Live
           </span>
         </div>
       </div>
@@ -187,7 +187,7 @@ const Auctions = () => {
       <div className="px-4 py-3 overflow-x-auto">
         <div className="flex gap-2 max-w-lg mx-auto">
           {filters.map((f) => (
-            <button key={f} onClick={() => setFilter(f)} className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${filter === f ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
+            <button key={f} onClick={() => setFilter(f)} className={`px-4 py-2 rounded-full text-xs font-black transition-all whitespace-nowrap uppercase tracking-wider ${filter === f ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-[0_0_20px_-4px_hsl(var(--primary)/0.4)]" : "bg-secondary/30 text-muted-foreground border border-border/50 hover:border-primary/30"}`}>
               {f}
             </button>
           ))}
@@ -195,9 +195,9 @@ const Auctions = () => {
       </div>
 
       <div className="max-w-lg mx-auto px-4 mb-4">
-        <div className="flex items-center gap-2 p-2.5 rounded-xl bg-primary/5 border border-primary/10">
+        <div className="flex items-center gap-2 p-3 rounded-xl glass-card border border-primary/20">
           <Shield className="w-4 h-4 text-primary shrink-0" />
-          <span className="text-xs text-foreground">All items are verified authentic.</span>
+          <span className="text-xs font-medium text-foreground">All items are verified authentic.</span>
         </div>
       </div>
 
