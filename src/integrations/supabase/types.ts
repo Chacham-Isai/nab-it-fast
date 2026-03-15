@@ -122,6 +122,54 @@ export type Database = {
           },
         ]
       }
+      break_slots: {
+        Row: {
+          buyer_id: string | null
+          created_at: string | null
+          id: string
+          listing_id: string
+          price: number
+          slot_emoji: string | null
+          slot_label: string
+          taken: boolean
+        }
+        Insert: {
+          buyer_id?: string | null
+          created_at?: string | null
+          id?: string
+          listing_id: string
+          price?: number
+          slot_emoji?: string | null
+          slot_label: string
+          taken?: boolean
+        }
+        Update: {
+          buyer_id?: string | null
+          created_at?: string | null
+          id?: string
+          listing_id?: string
+          price?: number
+          slot_emoji?: string | null
+          slot_label?: string
+          taken?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "break_slots_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "break_slots_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       chat_messages: {
         Row: {
           created_at: string | null
