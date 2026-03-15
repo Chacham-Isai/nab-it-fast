@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Package, Truck, CheckCircle, Clock, Loader2, Star, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
@@ -8,7 +8,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import ReviewForm from "@/components/reviews/ReviewForm";
+import GrabBagReveal from "@/components/GrabBagReveal";
 import usePageMeta from "@/hooks/usePageMeta";
+import { awardXP } from "@/lib/xp";
 
 const statusConfig: Record<string, { icon: any; color: string; label: string }> = {
   pending: { icon: Clock, color: "text-[hsl(40_90%_55%)]", label: "Pending Payment" },
@@ -24,10 +26,15 @@ const Orders = () => {
   const [searchParams] = useSearchParams();
   const [orders, setOrders] = useState<any[]>([]);
   const [reviewedOrderIds, setReviewedOrderIds] = useState<Set<string>>(new Set());
+  const [revealedOrderIds, setRevealedOrderIds] = useState<Set<string>>(() => {
+    try {
+      const stored = localStorage.getItem("nabbit_revealed_bags");
+      return stored ? new Set(JSON.parse(stored)) : new Set();
+    } catch { return new Set(); }
+  });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Handle Stripe success redirect
     if (searchParams.get("success") === "true") {
       toast({ title: "🎉 Payment successful!", description: "Your order has been placed." });
     }
@@ -42,7 +49,7 @@ const Orders = () => {
     const [{ data: orderData }, { data: reviewData }] = await Promise.all([
       supabase
         .from('orders')
-        .select('*, listings(title, category, images, listing_type)')
+        .select('*, listings(title, category, images, listing_type, metadata)')
         .eq('buyer_id', user!.id)
         .order('created_at', { ascending: false }),
       supabase
@@ -60,6 +67,29 @@ const Orders = () => {
     toast({ title: "📦 Delivery confirmed!" });
     setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: 'delivered' } : o));
   };
+
+  const handleBagRevealed = useCallback((orderId: string, rarity: string) => {
+    setRevealedOrderIds(prev => {
+      const next = new Set(prev);
+      next.add(orderId);
+      localStorage.setItem("nabbit_revealed_bags", JSON.stringify([...next]));
+      return next;
+    });
+    // Award XP
+    if (user) awardXP(user.id, "open_grab_bag");
+    // Show rarity toast after overlay closes
+    const labels: Record<string, string> = {
+      legendary: "🏆 LEGENDARY pull!",
+      ultra: "🔥 Ultra Hit!",
+      rare: "⭐ Rare Hit!",
+      common: "📦 Nice hit!",
+    };
+    toast({ title: labels[rarity] || "Bag opened!", description: "Your item will ship soon." });
+  }, [user]);
+
+  const isGrabBag = (order: any) => order.listings?.listing_type === "grab_bag";
+  const canReveal = (order: any) =>
+    isGrabBag(order) && order.status === "paid" && !revealedOrderIds.has(order.id);
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -86,14 +116,16 @@ const Orders = () => {
           const cfg = statusConfig[order.status] || statusConfig.pending;
           const Icon = cfg.icon;
           const listing = order.listings;
+          const grabBagReady = canReveal(order);
+          const grabBagOpened = isGrabBag(order) && revealedOrderIds.has(order.id);
           return (
-            <motion.div key={order.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="p-4 rounded-2xl bg-card border border-border">
+            <motion.div key={order.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className={`p-4 rounded-2xl bg-card border ${grabBagReady ? "border-primary/40 shadow-[0_0_20px_hsl(var(--primary)/0.1)]" : "border-border"}`}>
               <div className="flex items-start gap-3">
                 <div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center shrink-0 overflow-hidden">
                   {listing?.images?.[0] ? (
                     <img src={listing.images[0]} alt="" className="w-full h-full object-cover" />
                   ) : (
-                    <span className="text-2xl">{listing?.listing_type === 'auction' ? '🔨' : '🛍️'}</span>
+                    <span className="text-2xl">{listing?.listing_type === 'grab_bag' ? '📦' : listing?.listing_type === 'auction' ? '🔨' : '🛍️'}</span>
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -106,6 +138,24 @@ const Orders = () => {
                 </div>
                 <p className="font-bold text-foreground">${order.amount}</p>
               </div>
+
+              {/* Grab Bag Reveal — payment confirmed, not yet opened */}
+              {grabBagReady && (
+                <GrabBagReveal
+                  orderId={order.id}
+                  category={listing?.category || "other"}
+                  title={listing?.title || "Grab Bag"}
+                  odds={(listing?.metadata as any)?.odds}
+                  onRevealed={handleBagRevealed}
+                />
+              )}
+
+              {/* Grab Bag already opened */}
+              {grabBagOpened && (
+                <p className="mt-3 text-xs text-muted-foreground flex items-center gap-1">
+                  <span className="text-base">✨</span> Bag opened — item ships in 2–3 days
+                </p>
+              )}
 
               {/* Tracking info */}
               {order.tracking_url && (
@@ -137,7 +187,7 @@ const Orders = () => {
               )}
 
               {/* View listing */}
-              {listing && (
+              {listing && !grabBagReady && (
                 <button onClick={() => navigate(`/listing/${order.listing_id}`)} className="mt-2 text-xs text-muted-foreground hover:text-primary transition-colors">
                   View listing →
                 </button>
