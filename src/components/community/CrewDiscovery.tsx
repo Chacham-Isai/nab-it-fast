@@ -199,6 +199,12 @@ const CrewDiscovery = ({ joinedCrews, onToggleCrew }: CrewDiscoveryProps) => {
           </AnimatePresence>
         </div>
       )}
+
+      <CreateCrewForm
+        open={showCreate}
+        onClose={() => setShowCreate(false)}
+        onCreated={fetchCrews}
+      />
     </div>
   );
 };
