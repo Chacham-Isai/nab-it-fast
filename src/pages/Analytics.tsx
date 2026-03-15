@@ -39,6 +39,7 @@ const Analytics = () => {
   const [categoryData, setCategoryData] = useState<any[]>([]);
   const [crewGrowth, setCrewGrowth] = useState<any[]>([]);
   const [dealConversion, setDealConversion] = useState<any[]>([]);
+  const [funnelData, setFunnelData] = useState<any[]>([]);
 
   useEffect(() => {
     if (user) loadAnalytics();
