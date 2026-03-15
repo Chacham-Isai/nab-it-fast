@@ -152,7 +152,7 @@ export default function CreateListingForm({ user, onComplete }: Props) {
       metadata.guarantee = grabBagGuarantee;
     }
 
-    const { data: listing, error } = await supabase.from('listings').insert({
+    const insertData: Record<string, unknown> = {
       seller_id: user.id,
       title: form.title,
       description: form.description,
@@ -165,7 +165,9 @@ export default function CreateListingForm({ user, onComplete }: Props) {
       ends_at: endsAt,
       images: imageUrls,
       metadata: form.listing_type === "grab_bag" ? metadata : {},
-    }).select().single();
+    };
+
+    const { data: listing, error } = await supabase.from('listings').insert(insertData as any).select().single();
 
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
