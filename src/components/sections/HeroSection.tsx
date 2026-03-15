@@ -162,10 +162,10 @@ const HeroSection = () => {
             </span>
           </div>
 
-          <div className="flex flex-wrap gap-4 pt-1">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-1">
             <Button
               size="lg"
-              className="rounded-full px-10 font-black text-base gap-2 shimmer-btn text-lg"
+              className="rounded-full px-8 sm:px-10 font-black text-base gap-2 shimmer-btn w-full sm:w-auto"
               onClick={() => navigate("/signup")}
             >
               Start Nabbing <ArrowRight className="w-5 h-5" />
@@ -173,7 +173,7 @@ const HeroSection = () => {
             <Button
               size="lg"
               variant="outline"
-              className="rounded-full px-8 font-bold text-base border-border hover:bg-secondary group"
+              className="rounded-full px-6 sm:px-8 font-bold text-base border-border hover:bg-secondary group w-full sm:w-auto"
               onClick={() => document.getElementById("how-it-drops")?.scrollIntoView({ behavior: "smooth" })}
             >
               See How It Works <ArrowRight className="w-4 h-4 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
