@@ -3,6 +3,7 @@ import { ArrowRight, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import nabbitLogo from "@/assets/nabbit-logo.png";
 
 const FinalCTASection = () => {
   const navigate = useNavigate();
@@ -24,6 +25,13 @@ const FinalCTASection = () => {
 
         <div className="relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+            <motion.img
+              src={nabbitLogo}
+              alt="nabbit"
+              className="w-16 h-16 mx-auto mb-6 drop-shadow-[0_0_20px_hsl(var(--nab-cyan)/0.4)]"
+              animate={{ scale: [1, 1.08, 1], rotate: [0, 3, -3, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            />
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/30 bg-primary/[0.1] mb-8 text-sm font-bold">
               <Flame className="w-4 h-4 text-primary" />
               <span className="text-primary">Deals are dropping right now</span>
