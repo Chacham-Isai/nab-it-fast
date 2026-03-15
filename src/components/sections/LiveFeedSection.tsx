@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Flame, Clock, Users, ArrowRight, TrendingDown, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const liveDeals = [
   { emoji: "👟", name: "Nike Dunk Low Panda", price: 79, was: 130, buyers: 847, timeLeft: "2h 14m", hot: true, accent: "nab-cyan" },
