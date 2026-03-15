@@ -52,6 +52,12 @@ const Play = () => {
     },
   ];
 
+  const tools = [
+    { title: "Browse All", path: "/browse", emoji: "🔍", desc: "Search & filter listings", icon: Search },
+    { title: "Sell", path: "/sell", emoji: "💰", desc: "List items for sale", icon: ShoppingBag },
+    { title: "My Orders", path: "/orders", emoji: "📦", desc: "Track purchases", icon: Package },
+  ];
+
   return (
     <div className="min-h-screen bg-background pb-20">
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
