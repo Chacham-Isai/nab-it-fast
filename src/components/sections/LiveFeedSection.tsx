@@ -19,19 +19,51 @@ const liveDeals = [
 
 const LiveFeedSection = () => {
   const navigate = useNavigate();
+  const [allDeals, setAllDeals] = useState(liveDeals);
   const [visibleDeals, setVisibleDeals] = useState(liveDeals.slice(0, 4));
   const [tick, setTick] = useState(0);
   const [hoveredDeal, setHoveredDeal] = useState<number | null>(null);
   const [totalSaved, setTotalSaved] = useState(47219);
 
+  // Fetch hot group deals and merge
+  useEffect(() => {
+    const fetchHotDeals = async () => {
+      const { data } = await supabase
+        .from("group_deals")
+        .select("*")
+        .eq("status", "active")
+        .order("current_participants", { ascending: false })
+        .limit(3);
+
+      if (data && data.length > 0) {
+        const hotGroupDeals = data
+          .filter((d: any) => d.current_participants / d.target_participants > 0.5)
+          .map((d: any) => ({
+            emoji: d.emoji || "🤝",
+            name: `🤝 ${d.title}`,
+            price: d.deal_price,
+            was: d.retail_price,
+            buyers: d.current_participants,
+            timeLeft: `${Math.max(1, Math.round((new Date(d.ends_at).getTime() - Date.now()) / 3600000))}h`,
+            hot: d.current_participants / d.target_participants > 0.8,
+            accent: "nab-cyan" as const,
+          }));
+        if (hotGroupDeals.length > 0) {
+          setAllDeals([...hotGroupDeals, ...liveDeals]);
+        }
+      }
+    };
+    fetchHotDeals();
+  }, []);
+
   useEffect(() => {
     const interval = setInterval(() => {
       setTick((prev) => {
         const next = prev + 1;
-        const start = next % liveDeals.length;
+        const start = next % allDeals.length;
         const deals = [];
         for (let i = 0; i < 4; i++) {
-          deals.push(liveDeals[(start + i) % liveDeals.length]);
+          deals.push(allDeals[(start + i) % allDeals.length]);
         }
         setVisibleDeals(deals);
         return next;
@@ -39,7 +71,7 @@ const LiveFeedSection = () => {
       setTotalSaved((prev) => prev + Math.floor(Math.random() * 50 + 10));
     }, 4000);
     return () => clearInterval(interval);
-  }, []);
+  }, [allDeals]);
 
   return (
     <SectionWrapper id="live-deals">
