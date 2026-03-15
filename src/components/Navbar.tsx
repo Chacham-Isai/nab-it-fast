@@ -77,8 +77,9 @@ const Navbar = () => {
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
-        <Link to="/" className="flex items-center">
+        <Link to="/" className="flex items-center gap-2">
           <img src={nabbitLogo} alt="nabbit.ai" className="h-8" />
+          <span className="text-lg font-bold text-foreground tracking-tight">nabbit<span className="text-primary">.ai</span></span>
         </Link>
 
         {/* Desktop nav */}
