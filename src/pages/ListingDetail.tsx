@@ -61,13 +61,22 @@ const ListingDetail = () => {
       setBids(bidData || []);
     }
 
-    // Load seller
-    const { data: sellerData } = await supabase
-      .from("seller_profiles")
-      .select("*")
-      .eq("id", data.seller_id)
-      .single();
+    // Load seller and reviews in parallel
+    const [{ data: sellerData }, { data: reviewData }] = await Promise.all([
+      supabase
+        .from("seller_profiles")
+        .select("*")
+        .eq("id", data.seller_id)
+        .single(),
+      supabase
+        .from("reviews")
+        .select("*, profiles:reviewer_id(display_name, avatar_emoji)")
+        .eq("seller_id", data.seller_id)
+        .order("created_at", { ascending: false })
+        .limit(5),
+    ]);
     setSeller(sellerData);
+    setReviews(reviewData || []);
 
     // Check saved
     if (user) {
