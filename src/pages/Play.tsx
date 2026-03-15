@@ -33,7 +33,7 @@ const Play = () => {
       title: "Breaks", path: "/breaks", desc: "Pick your slot. Watch it rip live.",
       badge: "2 LIVE", badgeColor: "bg-destructive text-destructive-foreground",
       stat: "Slots filling 68%", icon: Radio,
-      gradient: "from-red-500/20 via-red-500/5 to-transparent",
+      gradient: "from-destructive/20 via-destructive/5 to-transparent",
       emoji: "🎴",
     },
     {
