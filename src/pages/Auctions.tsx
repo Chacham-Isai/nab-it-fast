@@ -285,8 +285,8 @@ const Auctions = () => {
                 {!isEnded && (
                   <>
                     <div className="flex gap-2">
-                      <button onClick={() => setBidTab((t) => ({ ...t, [auction.id]: "bid" }))} className={`px-3 py-1 rounded-full text-xs font-medium ${tab === "bid" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>Place Bid</button>
-                      <button onClick={() => setBidTab((t) => ({ ...t, [auction.id]: "history" }))} className={`px-3 py-1 rounded-full text-xs font-medium ${tab === "history" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>Bid History</button>
+                      <button onClick={() => setBidTab((t) => ({ ...t, [auction.id]: "bid" }))} className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all ${tab === "bid" ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-[0_0_16px_-4px_hsl(var(--primary)/0.4)]" : "bg-secondary/30 text-muted-foreground border border-border/50"}`}>Place Bid</button>
+                      <button onClick={() => setBidTab((t) => ({ ...t, [auction.id]: "history" }))} className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all ${tab === "history" ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-[0_0_16px_-4px_hsl(var(--primary)/0.4)]" : "bg-secondary/30 text-muted-foreground border border-border/50"}`}>Bid History</button>
                     </div>
 
                     {tab === "bid" && (
