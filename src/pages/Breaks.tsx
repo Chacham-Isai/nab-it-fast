@@ -121,20 +121,25 @@ const Breaks = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
-        <div className="flex items-center gap-3 max-w-lg mx-auto">
-          <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
-          <h1 className="font-heading font-bold text-foreground text-lg flex-1">Navigator Breaks</h1>
+    <div className="min-h-screen bg-background pb-24">
+      <div className="sticky top-0 z-40 bg-background/60 backdrop-blur-2xl border-b border-border/50">
+        <div className="flex items-center gap-3 max-w-lg mx-auto px-4 py-3">
+          <button onClick={() => navigate(-1)} className="p-1.5 rounded-xl hover:bg-secondary/50 transition-colors">
+            <ArrowLeft className="w-5 h-5 text-foreground" />
+          </button>
+          <div className="flex items-center gap-2 flex-1">
+            <img src={nabbitLogo} alt="" className="w-5 h-5" />
+            <h1 className="font-heading font-black text-foreground text-base tracking-tight">BREAKS</h1>
+          </div>
           {liveCount > 0 && (
-            <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold">
+            <span className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-destructive text-destructive-foreground text-[10px] font-black uppercase tracking-wider">
               <Radio className="w-3 h-3 animate-pulse" /> {liveCount} LIVE
             </span>
           )}
         </div>
-        <div className="flex gap-2 mt-3 max-w-lg mx-auto">
+        <div className="flex gap-2 mt-3 max-w-lg mx-auto px-4 pb-2">
           {(["live", "upcoming", "my-breaks"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)} className={`px-4 py-1.5 rounded-full text-xs font-medium capitalize transition-all ${tab === t ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
+            <button key={t} onClick={() => setTab(t)} className={`px-4 py-2 rounded-full text-xs font-black capitalize transition-all uppercase tracking-wider ${tab === t ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-[0_0_20px_-4px_hsl(var(--primary)/0.4)]" : "bg-secondary/30 text-muted-foreground border border-border/50 hover:border-primary/30"}`}>
               {t === "my-breaks" ? "My Breaks" : t}
             </button>
           ))}
