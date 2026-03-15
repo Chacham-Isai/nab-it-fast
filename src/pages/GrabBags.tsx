@@ -28,16 +28,16 @@ const bags: GrabBag[] = [
 
 const rarityLabels = [
   { key: "common", label: "Hit", color: "bg-secondary text-secondary-foreground" },
-  { key: "rare", label: "Rare Hit", color: "bg-blue-500/20 text-blue-500" },
+  { key: "rare", label: "Rare Hit", color: "bg-nab-blue/20 text-nab-blue" },
   { key: "ultra", label: "Ultra Hit", color: "bg-primary/20 text-primary" },
-  { key: "legendary", label: "🏆 LEGENDARY", color: "bg-amber-500/20 text-amber-600" },
+  { key: "legendary", label: "🏆 LEGENDARY", color: "bg-[hsl(40_90%_55%)]/20 text-[hsl(40_90%_45%)]" },
 ];
 
 const tierBorders: Record<string, string> = {
   Standard: "border-border",
-  Premium: "border-blue-500/30",
+  Premium: "border-nab-blue/30",
   Ultra: "border-primary/30",
-  Legendary: "border-amber-500/30",
+  Legendary: "border-[hsl(40_90%_55%)]/30",
 };
 
 type RevealPhase = "idle" | "shake" | "reveal" | "result";

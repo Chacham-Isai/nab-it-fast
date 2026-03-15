@@ -16,10 +16,10 @@ const posts = [
 
 const categoryColors: Record<string, string> = {
   "AI & Tech": "bg-primary/10 text-primary",
-  "Tips": "bg-green-500/10 text-green-500",
-  "Engineering": "bg-blue-500/10 text-blue-500",
-  "Insights": "bg-amber-500/10 text-amber-600",
-  "News": "bg-purple-500/10 text-purple-500",
+  "Tips": "bg-success/10 text-success",
+  "Engineering": "bg-nab-blue/10 text-nab-blue",
+  "Insights": "bg-[hsl(40_90%_55%)]/10 text-[hsl(40_90%_45%)]",
+  "News": "bg-nab-purple/10 text-nab-purple",
 };
 
 const Blog = () => {

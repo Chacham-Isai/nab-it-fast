@@ -33,7 +33,7 @@ const Play = () => {
       title: "Breaks", path: "/breaks", desc: "Pick your slot. Watch it rip live.",
       badge: "2 LIVE", badgeColor: "bg-destructive text-destructive-foreground",
       stat: "Slots filling 68%", icon: Radio,
-      gradient: "from-red-500/20 via-red-500/5 to-transparent",
+      gradient: "from-destructive/20 via-destructive/5 to-transparent",
       emoji: "🎴",
     },
     {
@@ -45,9 +45,9 @@ const Play = () => {
     },
     {
       title: "Auctions", path: "/auctions", desc: "Bid. Win. Own it.",
-      badge: "3 ACTIVE", badgeColor: "bg-green-500 text-primary-foreground",
+      badge: "3 ACTIVE", badgeColor: "bg-success text-primary-foreground",
       stat: "Auctions closing 14min", icon: Gavel,
-      gradient: "from-green-500/20 via-green-500/5 to-transparent",
+      gradient: "from-success/20 via-success/5 to-transparent",
       emoji: "🔨",
     },
   ];

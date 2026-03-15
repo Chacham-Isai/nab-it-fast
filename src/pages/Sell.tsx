@@ -128,16 +128,16 @@ const Sell = () => {
 
   const statusColors: Record<string, string> = {
     draft: "bg-secondary text-secondary-foreground",
-    active: "bg-green-500/10 text-green-500",
+    active: "bg-success/10 text-success",
     sold: "bg-primary/10 text-primary",
     ended: "bg-muted text-muted-foreground",
     cancelled: "bg-destructive/10 text-destructive",
   };
 
   const orderStatusColors: Record<string, string> = {
-    pending: "bg-amber-500/10 text-amber-500",
-    paid: "bg-green-500/10 text-green-500",
-    shipped: "bg-blue-500/10 text-blue-500",
+    pending: "bg-[hsl(40_90%_55%)]/10 text-[hsl(40_90%_55%)]",
+    paid: "bg-success/10 text-success",
+    shipped: "bg-nab-blue/10 text-nab-blue",
     delivered: "bg-primary/10 text-primary",
   };
 

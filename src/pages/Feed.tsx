@@ -26,7 +26,7 @@ const categories = ["All", "Cards", "Sneakers", "Tech", "Watches", "Streetwear",
 const tagColors: Record<string, string> = {
   "DREAM MATCH": "bg-primary text-primary-foreground",
   "LIMITED DROP": "bg-destructive text-destructive-foreground",
-  "PRICE DROP": "bg-green-500/20 text-green-500",
+  "PRICE DROP": "bg-success/20 text-success",
   "FIND": "bg-primary/20 text-primary",
   "VINTAGE FIND": "bg-secondary text-secondary-foreground",
 };
@@ -40,8 +40,8 @@ const SwipeCard = ({ item, isTop, onSwipe, onBookmark }: { item: FeedItem; isTop
   return (
     <motion.div style={{ x, rotate, zIndex: isTop ? 10 : 1 }} drag={isTop ? "x" : false} dragConstraints={{ left: 0, right: 0 }} dragElastic={0.7} onDragEnd={(_, info) => { if (info.offset.x > 80) onSwipe("right"); else if (info.offset.x < -80) onSwipe("left"); }} className="absolute inset-0 touch-none">
       <div className="w-full h-full rounded-3xl border border-border bg-card overflow-hidden shadow-lg">
-        <motion.div style={{ opacity: nabOpacity }} className="absolute inset-0 bg-green-500/20 z-20 flex items-center justify-center pointer-events-none rounded-3xl">
-          <span className="text-4xl font-heading font-black text-green-500 rotate-[-15deg] border-4 border-green-500 px-6 py-2 rounded-xl">NAB IT ✓</span>
+       <motion.div style={{ opacity: nabOpacity }} className="absolute inset-0 bg-success/20 z-20 flex items-center justify-center pointer-events-none rounded-3xl">
+          <span className="text-4xl font-heading font-black text-success rotate-[-15deg] border-4 border-success px-6 py-2 rounded-xl">NAB IT ✓</span>
         </motion.div>
         <motion.div style={{ opacity: passOpacity }} className="absolute inset-0 bg-destructive/20 z-20 flex items-center justify-center pointer-events-none rounded-3xl">
           <span className="text-4xl font-heading font-black text-destructive rotate-[15deg] border-4 border-destructive px-6 py-2 rounded-xl">PASS ✗</span>
@@ -63,7 +63,7 @@ const SwipeCard = ({ item, isTop, onSwipe, onBookmark }: { item: FeedItem; isTop
             <div className="flex items-baseline gap-2">
               <span className="text-xl font-bold text-foreground">${item.price.toLocaleString()}</span>
               <span className="text-sm text-muted-foreground line-through">${item.was.toLocaleString()}</span>
-              <span className="text-xs font-bold text-green-500">-{Math.round((1 - item.price / item.was) * 100)}%</span>
+              <span className="text-xs font-bold text-success">-{Math.round((1 - item.price / item.was) * 100)}%</span>
             </div>
             <div className="flex items-center gap-2 mt-2">
               <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden"><div className="h-full bg-primary rounded-full" style={{ width: `${item.score}%` }} /></div>
@@ -115,7 +115,7 @@ const Feed = () => {
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
         <div className="flex items-center justify-between max-w-lg mx-auto">
           <div className="flex items-center gap-2">
-            <img src={nabbitLogo} alt="nabbit" className="h-5" style={{ mixBlendMode: "lighten" }} />
+            <img src={nabbitLogo} alt="nabbit" className="h-5" />
             <span className="font-heading font-bold text-foreground text-lg">Today's Drops</span>
           </div>
           <div className="flex items-center gap-1">

@@ -7,9 +7,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
 const statusConfig: Record<string, { icon: any; color: string; label: string }> = {
-  pending: { icon: Clock, color: "text-amber-500", label: "Pending" },
-  paid: { icon: Package, color: "text-green-500", label: "Paid" },
-  shipped: { icon: Truck, color: "text-blue-500", label: "Shipped" },
+  pending: { icon: Clock, color: "text-[hsl(40_90%_55%)]", label: "Pending" },
+  paid: { icon: Package, color: "text-success", label: "Paid" },
+  shipped: { icon: Truck, color: "text-nab-blue", label: "Shipped" },
   delivered: { icon: CheckCircle, color: "text-primary", label: "Delivered" },
 };
 

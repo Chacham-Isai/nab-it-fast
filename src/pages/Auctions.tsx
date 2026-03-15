@@ -124,7 +124,7 @@ const Auctions = () => {
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
           <h1 className="font-heading font-bold text-foreground text-lg flex-1">Live Auctions</h1>
-          <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold">3 Active</span>
+          <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-success/10 text-success text-[10px] font-bold">3 Active</span>
         </div>
       </div>
 
@@ -190,7 +190,7 @@ const Auctions = () => {
                 <div className="flex items-center gap-4 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {auction.watchers} watching</span>
                   <span>Min bid: ${minBid.toLocaleString()}</span>
-                  {auction.buyNow && <span className="text-green-500 font-semibold">Buy Now: ${auction.buyNow.toLocaleString()}</span>}
+                  {auction.buyNow && <span className="text-success font-semibold">Buy Now: ${auction.buyNow.toLocaleString()}</span>}
                 </div>
 
                 {/* Tabs */}
@@ -264,7 +264,7 @@ const Auctions = () => {
 
                     {/* Buy Now */}
                     {auction.buyNow && (
-                      <Button variant="outline" className="w-full rounded-xl border-green-500/30 text-green-500 hover:bg-green-500/10">
+                      <Button variant="outline" className="w-full rounded-xl border-success/30 text-success hover:bg-success/10">
                         Buy Now — ${auction.buyNow.toLocaleString()}
                       </Button>
                     )}

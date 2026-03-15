@@ -67,7 +67,7 @@ const Profile = () => {
         <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center text-center space-y-3">
           <div className="relative">
             <div className="w-20 h-20 rounded-full bg-primary/10 border-2 border-primary/20 flex items-center justify-center text-3xl">{avatarEmoji}</div>
-            <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-green-500 border-2 border-background" />
+            <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-success border-2 border-background" />
           </div>
           {editing ? (
             <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} onBlur={handleNameSave} className="text-center max-w-[200px] bg-secondary/50 border-border rounded-xl" autoFocus />
