@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import usePageMeta from "@/hooks/usePageMeta";
+import { modeImages } from "@/lib/images";
 
 const Play = () => {
   usePageMeta({ title: "Play — nabbit.ai", description: "Explore breaks, grab bags, auctions, and mystery drops. Your deal playground.", path: "/play" });
@@ -58,26 +59,26 @@ const Play = () => {
       title: "Breaks", path: "/breaks", desc: "Pick your slot. Watch it rip live.",
       badge: "BROWSE", badgeColor: "bg-destructive text-destructive-foreground",
       stat: "Card breaks with live reveals", icon: Radio,
-      emoji: "🎴",
+      image: modeImages.breaks,
     },
     {
       title: "Grab Bags", path: "/grab-bags", desc: "Mystery boxes. Real hits.",
       badge: "4 Tiers", badgeColor: "bg-primary text-primary-foreground",
       stat: "Avg hit rate 94%", icon: Sparkles,
-      emoji: "📦",
+      image: modeImages.grabBags,
     },
     {
       title: "Auctions", path: "/auctions", desc: "Bid. Win. Own it.",
       badge: `${liveAuctionCount} LIVE`, badgeColor: "bg-success text-primary-foreground",
       stat: "Real-time bidding with auto-extend", icon: Gavel,
-      emoji: "🔨",
+      image: modeImages.auctions,
     },
   ];
 
   const tools = [
-    { title: "Browse All", path: "/browse", emoji: "🔍", desc: "Search & filter listings", icon: Search },
-    { title: "Sell", path: "/sell", emoji: "💰", desc: "List items for sale", icon: ShoppingBag },
-    { title: "My Orders", path: "/orders", emoji: "📦", desc: "Track purchases", icon: Package },
+    { title: "Browse All", path: "/browse", desc: "Search & filter listings", icon: Search },
+    { title: "Sell", path: "/sell", desc: "List items for sale", icon: ShoppingBag },
+    { title: "My Orders", path: "/orders", desc: "Track purchases", icon: Package },
   ];
 
   return (
@@ -118,7 +119,7 @@ const Play = () => {
           <p className="text-muted-foreground text-sm mt-1 relative z-10">Built for collectors. Powered by AI.</p>
         </motion.div>
 
-        {/* Mode Cards */}
+        {/* Mode Cards with images */}
         <div className="space-y-3">
           {modes.map((mode, i) => (
             <motion.button
@@ -127,13 +128,20 @@ const Play = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 + i * 0.08 }}
               onClick={() => navigate(mode.path)}
-              className="w-full p-5 rounded-2xl glass-card gradient-border text-left transition-all hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden group"
+              className="w-full rounded-2xl glass-card gradient-border text-left transition-all hover:scale-[1.02] active:scale-[0.98] relative overflow-hidden group h-[140px]"
             >
-              <div className="absolute -top-8 -right-8 w-32 h-32 rounded-full blur-[60px] opacity-10 group-hover:opacity-20 transition-opacity" style={{ background: "hsl(var(--primary))" }} />
-              <div className="flex items-start justify-between relative z-10">
+              {/* Background image */}
+              <img
+                src={mode.image}
+                alt={mode.title}
+                className="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-40 transition-opacity"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/70 to-transparent" />
+
+              <div className="relative z-10 p-5 flex items-start justify-between h-full">
                 <div className="space-y-1.5 flex-1">
                   <div className="flex items-center gap-2.5">
-                    <span className="text-2xl">{mode.emoji}</span>
+                    <mode.icon className="w-5 h-5 text-primary" />
                     <h3 className="font-heading font-bold text-foreground text-lg">{mode.title}</h3>
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${mode.badgeColor}`}>{mode.badge}</span>
                   </div>
@@ -177,7 +185,9 @@ const Play = () => {
               onClick={() => navigate(tool.path)}
               className="p-3 rounded-2xl bg-card border border-border text-center hover:border-primary/30 transition-all group"
             >
-              <span className="text-2xl block mb-1">{tool.emoji}</span>
+              <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mx-auto mb-1.5">
+                <tool.icon className="w-4 h-4 text-primary" />
+              </div>
               <p className="text-xs font-semibold text-foreground">{tool.title}</p>
               <p className="text-[10px] text-muted-foreground">{tool.desc}</p>
             </motion.button>
