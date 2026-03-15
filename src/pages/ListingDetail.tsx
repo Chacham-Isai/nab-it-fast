@@ -16,6 +16,7 @@ const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { track } = useAnalytics();
   const [listing, setListing] = useState<any>(null);
   const [seller, setSeller] = useState<any>(null);
   const [auction, setAuction] = useState<any>(null);
