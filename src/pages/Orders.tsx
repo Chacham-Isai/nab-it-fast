@@ -21,6 +21,7 @@ const Orders = () => {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
   const [orders, setOrders] = useState<any[]>([]);
+  const [reviewedOrderIds, setReviewedOrderIds] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -32,17 +33,25 @@ const Orders = () => {
 
   useEffect(() => {
     if (!user) return;
-    const loadOrders = async () => {
-      const { data } = await supabase
-        .from('orders')
-        .select('*, listings(title, category, images, listing_type)')
-        .eq('buyer_id', user.id)
-        .order('created_at', { ascending: false });
-      setOrders(data || []);
-      setLoading(false);
-    };
     loadOrders();
   }, [user]);
+
+  const loadOrders = async () => {
+    const [{ data: orderData }, { data: reviewData }] = await Promise.all([
+      supabase
+        .from('orders')
+        .select('*, listings(title, category, images, listing_type)')
+        .eq('buyer_id', user!.id)
+        .order('created_at', { ascending: false }),
+      supabase
+        .from('reviews')
+        .select('order_id')
+        .eq('reviewer_id', user!.id),
+    ]);
+    setOrders(orderData || []);
+    setReviewedOrderIds(new Set((reviewData || []).map((r: any) => r.order_id)));
+    setLoading(false);
+  };
 
   const confirmDelivery = async (orderId: string) => {
     await supabase.from('orders').update({ status: 'delivered' }).eq('id', orderId);
