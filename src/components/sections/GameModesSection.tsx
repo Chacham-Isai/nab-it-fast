@@ -38,7 +38,7 @@ const modes = [
     tagline: "Name your price. We hunt 24/7.",
     desc: "Set your dream price on any product. The Engine scans 200+ retailers nonstop and auto-buys the instant it hits.",
     tag: "🤖 AI-POWERED",
-    tagColor: "bg-[hsl(200,100%,60%)]/[0.1] text-[hsl(200,100%,60%)] border-[hsl(200,100%,60%)]/30",
+    tagColor: "bg-nab-blue/[0.1] text-nab-blue border-nab-blue/30",
     link: "/dream-buys",
   },
 ];

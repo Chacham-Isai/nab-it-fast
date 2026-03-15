@@ -22,7 +22,7 @@ const steps = [
     num: "03",
     title: "Deals drop. You decide.",
     desc: "Bid on auctions. Spin grab bags. Set auto-nab triggers. Your rules, your wins.",
-    accent: "from-[hsl(40,100%,55%)] to-primary",
+    accent: "from-nab-blue to-nab-purple",
   },
   {
     icon: PartyPopper,
