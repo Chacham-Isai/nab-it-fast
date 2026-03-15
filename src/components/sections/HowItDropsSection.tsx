@@ -8,7 +8,7 @@ const steps = [
     num: "01",
     title: "You spot it.",
     desc: "Drop a link, snap a photo, or just tell us what you want. The Nabbit Engine does the rest.",
-    accent: "from-primary to-[hsl(20,100%,60%)]",
+    accent: "from-nab-cyan to-nab-blue",
   },
   {
     icon: Brain,
