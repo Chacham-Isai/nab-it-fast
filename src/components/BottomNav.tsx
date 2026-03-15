@@ -5,7 +5,7 @@ const tabs = [
   { label: "Feed", icon: ShoppingBag, path: "/feed" },
   { label: "Dreams", icon: Zap, path: "/dream-buys" },
   { label: "Play", icon: Flame, path: "/play", isCenter: true },
-  { label: "Tribe", icon: Users, path: "/community" },
+  { label: "Crew", icon: Users, path: "/community" },
   { label: "Me", icon: User, path: "/profile" },
 ];
 
