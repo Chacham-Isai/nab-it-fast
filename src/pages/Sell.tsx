@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Plus, Package, DollarSign, BarChart3, Clock, CheckCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, Plus, Package, DollarSign, BarChart3, Clock, CheckCircle, Loader2, Trash2, Eye, XCircle, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
@@ -17,6 +18,7 @@ const Sell = () => {
   const [orders, setOrders] = useState<any[]>([]);
   const [sellerProfile, setSellerProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [trackingInputs, setTrackingInputs] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (!user) return;
@@ -58,6 +60,35 @@ const Sell = () => {
     setLoading(false);
   };
 
+  const cancelListing = async (id: string) => {
+    await supabase.from('listings').update({ status: 'cancelled' }).eq('id', id);
+    toast({ title: "Listing cancelled" });
+    loadData();
+  };
+
+  const deleteListing = async (id: string, status: string) => {
+    if (status !== 'draft' && status !== 'cancelled') {
+      toast({ title: "Can only delete draft/cancelled listings", variant: "destructive" });
+      return;
+    }
+    await supabase.from('listings').delete().eq('id', id);
+    toast({ title: "Listing deleted" });
+    loadData();
+  };
+
+  const markShipped = async (orderId: string, trackingNumber?: string) => {
+    const updates: Record<string, unknown> = { status: 'shipped' };
+    if (trackingNumber) {
+      updates.tracking_number = trackingNumber;
+      updates.tracking_url = trackingNumber.length > 15
+        ? `https://tools.usps.com/go/TrackConfirmAction?tLabels=${trackingNumber}`
+        : `https://www.google.com/search?q=${trackingNumber}+tracking`;
+    }
+    await supabase.from('orders').update(updates).eq('id', orderId);
+    toast({ title: "Marked as shipped ✈️" });
+    loadData();
+  };
+
   const statusColors: Record<string, string> = {
     draft: "bg-secondary text-secondary-foreground",
     active: "bg-success/10 text-success",
@@ -89,7 +120,7 @@ const Sell = () => {
         <div className="flex gap-2 mt-3 max-w-lg mx-auto">
           {(["listings", "orders", "stats"] as const).map((t) => (
             <button key={t} onClick={() => setTab(t)} className={`px-4 py-1.5 rounded-full text-xs font-medium capitalize transition-all ${tab === t ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
-              {t}
+              {t} {t === "orders" && orders.filter(o => o.status === 'paid').length > 0 ? `(${orders.filter(o => o.status === 'paid').length})` : ""}
             </button>
           ))}
         </div>
@@ -132,15 +163,19 @@ const Sell = () => {
                 ) : listings.map((listing, i) => (
                   <motion.div key={listing.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="p-4 rounded-2xl bg-card border border-border">
                     <div className="flex items-start gap-3">
-                      {listing.images?.[0] && (
-                        <img src={listing.images[0]} alt={listing.title} className="w-14 h-14 rounded-xl object-cover shrink-0" />
-                      )}
-                      <div className="flex-1">
+                      <div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center shrink-0 overflow-hidden">
+                        {listing.images?.[0] ? (
+                          <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-2xl">{listing.listing_type === 'auction' ? '🔨' : '🛍️'}</span>
+                        )}
+                      </div>
+                      <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
                           <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${statusColors[listing.status] || ''}`}>{listing.status}</span>
-                          <span className="text-[10px] text-muted-foreground">{listing.listing_type}</span>
+                          <span className="text-[10px] text-muted-foreground">{listing.listing_type.replace('_', ' ')}</span>
                         </div>
-                        <h3 className="font-semibold text-foreground text-sm">{listing.title}</h3>
+                        <h3 className="font-semibold text-foreground text-sm truncate">{listing.title}</h3>
                         <p className="text-xs text-muted-foreground">{listing.category} · {listing.condition}</p>
                       </div>
                       <div className="text-right">
@@ -149,6 +184,22 @@ const Sell = () => {
                           <p className="text-xs text-primary">{listing.auctions[0].bid_count} bids</p>
                         )}
                       </div>
+                    </div>
+                    {/* Action buttons */}
+                    <div className="flex gap-2 mt-3">
+                      <Button variant="outline" size="sm" className="flex-1 rounded-xl text-xs gap-1 h-8" onClick={() => navigate(`/listing/${listing.id}`)}>
+                        <Eye className="w-3 h-3" /> View
+                      </Button>
+                      {listing.status === 'active' && (
+                        <Button variant="outline" size="sm" className="rounded-xl text-xs gap-1 h-8 text-destructive hover:text-destructive" onClick={() => cancelListing(listing.id)}>
+                          <XCircle className="w-3 h-3" /> Cancel
+                        </Button>
+                      )}
+                      {(listing.status === 'draft' || listing.status === 'cancelled') && (
+                        <Button variant="outline" size="sm" className="rounded-xl text-xs gap-1 h-8 text-destructive hover:text-destructive" onClick={() => deleteListing(listing.id, listing.status)}>
+                          <Trash2 className="w-3 h-3" /> Delete
+                        </Button>
+                      )}
                     </div>
                   </motion.div>
                 ))}
@@ -176,13 +227,22 @@ const Sell = () => {
                       </div>
                     </div>
                     {order.status === 'paid' && (
-                      <Button size="sm" className="mt-3 rounded-xl w-full text-xs" onClick={async () => {
-                        await supabase.from('orders').update({ status: 'shipped' }).eq('id', order.id);
-                        loadData();
-                        toast({ title: "Marked as shipped ✈️" });
-                      }}>
-                        Mark as Shipped
-                      </Button>
+                      <div className="mt-3 space-y-2">
+                        <Input
+                          placeholder="Tracking number (optional)"
+                          value={trackingInputs[order.id] || ""}
+                          onChange={(e) => setTrackingInputs(p => ({ ...p, [order.id]: e.target.value }))}
+                          className="h-9 rounded-xl bg-secondary/50 border-border text-xs"
+                        />
+                        <Button size="sm" className="rounded-xl w-full text-xs gap-1" onClick={() => markShipped(order.id, trackingInputs[order.id])}>
+                          <Truck className="w-3.5 h-3.5" /> Mark as Shipped
+                        </Button>
+                      </div>
+                    )}
+                    {order.status === 'shipped' && order.tracking_number && (
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Tracking: <a href={order.tracking_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{order.tracking_number}</a>
+                      </p>
                     )}
                   </motion.div>
                 ))}

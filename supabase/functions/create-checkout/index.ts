@@ -1,10 +1,10 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@14.21.0";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import Stripe from "https://esm.sh/stripe@18.5.0";
+import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
 serve(async (req) => {
@@ -20,15 +20,14 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // Get user from auth header
     const authHeader = req.headers.get('Authorization')!;
     const token = authHeader.replace('Bearer ', '');
     const { data: { user }, error: authError } = await supabase.auth.getUser(token);
     if (authError || !user) throw new Error('Unauthorized');
 
-    const { listing_id, type, quantity = 1 } = await req.json();
+    const { listing_id, type, quantity = 1, slot_id } = await req.json();
+    if (!listing_id || !type) throw new Error('Missing listing_id or type');
 
-    // Fetch listing
     const { data: listing, error: listingError } = await supabase
       .from('listings')
       .select('*, auctions(*)')
@@ -36,17 +35,18 @@ serve(async (req) => {
       .single();
 
     if (listingError || !listing) throw new Error('Listing not found');
+    if (listing.seller_id === user.id) throw new Error('Cannot buy your own listing');
 
-    const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
+    const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: '2025-08-27.basil' });
 
     // Get or create Stripe customer
-    const customers = await stripe.customers.list({ email: user.email, limit: 1 });
+    const customers = await stripe.customers.list({ email: user.email!, limit: 1 });
     let customerId: string;
     if (customers.data.length > 0) {
       customerId = customers.data[0].id;
     } else {
       const customer = await stripe.customers.create({
-        email: user.email,
+        email: user.email!,
         metadata: { supabase_user_id: user.id },
       });
       customerId = customer.id;
@@ -55,20 +55,33 @@ serve(async (req) => {
     let amount: number;
     let description: string;
 
-    if (type === 'buy_now') {
-      amount = listing.buy_now_price! * 100; // cents
-      description = `Buy Now: ${listing.title}`;
-    } else if (type === 'grab_bag') {
-      amount = listing.starting_price * quantity * 100;
-      description = `Grab Bag: ${listing.title} x${quantity}`;
-    } else if (type === 'break_slot') {
-      amount = listing.starting_price * 100;
-      description = `Break Slot: ${listing.title}`;
-    } else {
-      throw new Error('Invalid checkout type');
+    switch (type) {
+      case 'buy_now':
+        if (!listing.buy_now_price) throw new Error('No buy now price set');
+        amount = Math.round(listing.buy_now_price * 100);
+        description = `Buy Now: ${listing.title}`;
+        break;
+      case 'grab_bag':
+        amount = Math.round(listing.starting_price * quantity * 100);
+        description = `Grab Bag: ${listing.title} x${quantity}`;
+        break;
+      case 'break_slot':
+        if (slot_id) {
+          const { data: slot } = await supabase.from('break_slots').select('*').eq('id', slot_id).single();
+          if (!slot || slot.taken) throw new Error('Slot unavailable');
+          amount = Math.round(slot.price * 100);
+          description = `Break Slot: ${slot.slot_label} — ${listing.title}`;
+        } else {
+          amount = Math.round(listing.starting_price * 100);
+          description = `Break Slot: ${listing.title}`;
+        }
+        break;
+      default:
+        throw new Error('Invalid checkout type');
     }
 
-    const platformFee = Math.round(amount * 0.10); // 10% platform fee
+    const platformFee = Math.round(amount * 0.10);
+    const origin = req.headers.get('origin') || 'https://nab-it-fast.lovable.app';
 
     const session = await stripe.checkout.sessions.create({
       customer: customerId,
@@ -77,15 +90,16 @@ serve(async (req) => {
           currency: 'usd',
           product_data: {
             name: listing.title,
-            description: description,
+            description,
+            ...(listing.images?.[0] ? { images: [listing.images[0]] } : {}),
           },
           unit_amount: amount,
         },
         quantity: 1,
       }],
       mode: 'payment',
-      success_url: `${req.headers.get('origin')}/play?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${req.headers.get('origin')}/play?cancelled=true`,
+      success_url: `${origin}/orders?success=true&session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/listing/${listing_id}?cancelled=true`,
       metadata: {
         listing_id,
         buyer_id: user.id,
@@ -93,6 +107,7 @@ serve(async (req) => {
         type,
         quantity: quantity.toString(),
         platform_fee: platformFee.toString(),
+        ...(slot_id ? { slot_id } : {}),
       },
     });
 
@@ -105,6 +120,7 @@ serve(async (req) => {
       platform_fee: platformFee / 100,
       stripe_checkout_session_id: session.id,
       status: 'pending',
+      ...(listing.auctions?.[0] ? { auction_id: listing.auctions[0].id } : {}),
     });
 
     return new Response(JSON.stringify({ url: session.url }), {
