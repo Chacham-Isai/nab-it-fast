@@ -91,11 +91,8 @@ const Onboarding = () => {
   const progress = (step / totalSteps) * 100;
 
   const toggleArray = (arr: string[], item: string, setter: (v: string[]) => void, max?: number) => {
-    if (arr.includes(item)) {
-      setter(arr.filter((i) => i !== item));
-    } else if (!max || arr.length < max) {
-      setter([...arr, item]);
-    }
+    if (arr.includes(item)) setter(arr.filter((i) => i !== item));
+    else if (!max || arr.length < max) setter([...arr, item]);
   };
 
   const canContinue = () => {
@@ -114,7 +111,6 @@ const Onboarding = () => {
   const saveProfile = async () => {
     if (!user) return;
     try {
-      // Update profile with taste data
       await supabase.from("profiles").update({
         taste_tags: [...vibes, ...categories],
         spending_style: spendStyle,
@@ -124,7 +120,6 @@ const Onboarding = () => {
         onboarding_complete: true,
       }).eq("id", user.id);
 
-      // Insert dream buys
       if (dreamBuys.length > 0) {
         const dreamRows = dreamBuys.map((name) => ({
           user_id: user.id,
@@ -144,10 +139,7 @@ const Onboarding = () => {
     } else {
       setLoading(true);
       setLoadingPhase(0);
-
-      // Save to DB before loading animation
       saveProfile();
-
       let phase = 0;
       const interval = setInterval(() => {
         phase++;
@@ -175,32 +167,21 @@ const Onboarding = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-4">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="text-center space-y-8"
-        >
-          <Loader2 className="w-12 h-12 text-primary animate-spin mx-auto" />
+      <div className="min-h-screen bg-background relative overflow-hidden flex flex-col items-center justify-center px-4">
+        <div className="absolute top-1/3 left-1/3 w-96 h-96 rounded-full opacity-20 blur-[120px]" style={{ background: "hsl(var(--coral))" }} />
+        <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center space-y-8 relative z-10">
+          <div className="relative">
+            <Loader2 className="w-14 h-14 text-primary animate-spin mx-auto" />
+            <div className="absolute inset-0 w-14 h-14 mx-auto rounded-full animate-ping opacity-20" style={{ background: "hsl(var(--coral))" }} />
+          </div>
           <AnimatePresence mode="wait">
-            <motion.p
-              key={loadingPhase}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              className="text-lg font-heading font-semibold text-foreground"
-            >
+            <motion.p key={loadingPhase} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="text-lg font-heading font-semibold text-foreground">
               {loadingPhases[loadingPhase]}
             </motion.p>
           </AnimatePresence>
           <div className="flex gap-2 justify-center">
             {loadingPhases.map((_, i) => (
-              <div
-                key={i}
-                className={`w-2 h-2 rounded-full transition-colors ${
-                  i <= loadingPhase ? "bg-primary" : "bg-muted"
-                }`}
-              />
+              <div key={i} className={`w-2.5 h-2.5 rounded-full transition-all duration-300 ${i <= loadingPhase ? "bg-primary scale-110" : "bg-muted"}`} />
             ))}
           </div>
         </motion.div>
@@ -208,9 +189,21 @@ const Onboarding = () => {
     );
   }
 
+  const stepTitles: Record<number, { title: string; sub: string }> = {
+    1: { title: "Vibe Check ✨", sub: "Pick up to 3 that match your style" },
+    2: { title: "What do you collect?", sub: "Select all that interest you" },
+    3: { title: "Dream Buys 🎯", sub: "What have you always wanted? (optional, max 3)" },
+    4: { title: "Spending Style", sub: "How do you shop?" },
+    5: { title: "Brand Affinities", sub: "Tap brands you love" },
+    6: { title: "Travel Vibes ✈️", sub: "Where do you love exploring?" },
+    7: { title: "Buy Speed ⚡", sub: "When you find something you want..." },
+  };
+
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <div className="sticky top-0 z-50 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3">
+    <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-72 h-72 rounded-full opacity-10 blur-[100px]" style={{ background: "hsl(var(--coral))" }} />
+
+      <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
         <div className="flex items-center justify-between max-w-lg mx-auto">
           <Link to="/">
             <img src={nabbitLogo} alt="nabbit" className="h-6" style={{ mixBlendMode: "lighten" }} />
@@ -222,215 +215,111 @@ const Onboarding = () => {
         </div>
       </div>
 
-      <div className="flex-1 px-4 py-6 max-w-lg mx-auto w-full">
+      <div className="flex-1 px-4 py-6 max-w-lg mx-auto w-full relative z-10">
         <AnimatePresence mode="wait">
-          <motion.div
-            key={step}
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: -20 }}
-            transition={{ duration: 0.2 }}
-          >
+          <motion.div key={step} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.2 }}>
+            <h2 className="text-2xl font-heading font-bold text-foreground mb-1">{stepTitles[step]?.title}</h2>
+            <p className="text-muted-foreground text-sm mb-6">{stepTitles[step]?.sub}</p>
+
             {step === 1 && (
-              <div>
-                <h2 className="text-2xl font-heading font-bold text-foreground mb-1">Vibe Check</h2>
-                <p className="text-muted-foreground text-sm mb-6">Pick up to 3 that match your style</p>
-                <div className="grid grid-cols-2 gap-3">
-                  {vibeOptions.map((v) => {
-                    const selected = vibes.includes(v.id);
-                    return (
-                      <button
-                        key={v.id}
-                        onClick={() => toggleArray(vibes, v.id, setVibes, 3)}
-                        className={`relative p-4 rounded-2xl border-2 transition-all text-left ${
-                          selected
-                            ? "border-primary bg-primary/10"
-                            : "border-border bg-card hover:border-muted-foreground/30"
-                        }`}
-                      >
-                        {selected && (
-                          <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center">
-                            <Check className="w-3 h-3 text-primary-foreground" />
-                          </div>
-                        )}
-                        <span className="text-2xl">{v.emoji}</span>
-                        <p className="text-sm font-medium text-foreground mt-2">{v.label}</p>
-                      </button>
-                    );
-                  })}
-                </div>
+              <div className="grid grid-cols-2 gap-3">
+                {vibeOptions.map((v) => {
+                  const selected = vibes.includes(v.id);
+                  return (
+                    <button key={v.id} onClick={() => toggleArray(vibes, v.id, setVibes, 3)} className={`relative p-4 rounded-2xl border-2 transition-all text-left ${selected ? "border-primary bg-primary/10" : "border-border bg-card hover:border-muted-foreground/30"}`}>
+                      {selected && <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-primary flex items-center justify-center"><Check className="w-3 h-3 text-primary-foreground" /></div>}
+                      <span className="text-2xl">{v.emoji}</span>
+                      <p className="text-sm font-medium text-foreground mt-2">{v.label}</p>
+                    </button>
+                  );
+                })}
               </div>
             )}
 
             {step === 2 && (
-              <div>
-                <h2 className="text-2xl font-heading font-bold text-foreground mb-1">What do you collect?</h2>
-                <p className="text-muted-foreground text-sm mb-6">Select all that interest you</p>
-                <div className="flex flex-wrap gap-2">
-                  {categoryOptions.map((cat) => {
-                    const selected = categories.includes(cat);
-                    return (
-                      <button
-                        key={cat}
-                        onClick={() => toggleArray(categories, cat, setCategories)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                          selected
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                        }`}
-                      >
-                        {cat}
-                      </button>
-                    );
-                  })}
-                </div>
+              <div className="flex flex-wrap gap-2">
+                {categoryOptions.map((cat) => (
+                  <button key={cat} onClick={() => toggleArray(categories, cat, setCategories)} className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${categories.includes(cat) ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-secondary/80"}`}>
+                    {cat}
+                  </button>
+                ))}
               </div>
             )}
 
             {step === 3 && (
               <div>
-                <h2 className="text-2xl font-heading font-bold text-foreground mb-1">Dream Buys</h2>
-                <p className="text-muted-foreground text-sm mb-6">What have you always wanted? (optional, max 3)</p>
                 {dreamBuys.length > 0 && (
                   <div className="flex flex-wrap gap-2 mb-4">
                     {dreamBuys.map((db) => (
                       <span key={db} className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-primary text-sm text-primary bg-primary/10">
                         {db}
-                        <button onClick={() => setDreamBuys(dreamBuys.filter((d) => d !== db))}>
-                          <X className="w-3 h-3" />
-                        </button>
+                        <button onClick={() => setDreamBuys(dreamBuys.filter((d) => d !== db))}><X className="w-3 h-3" /></button>
                       </span>
                     ))}
                   </div>
                 )}
                 {dreamBuys.length < 3 && (
                   <div className="flex gap-2">
-                    <Input
-                      value={dreamInput}
-                      onChange={(e) => setDreamInput(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && addDreamBuy()}
-                      placeholder="e.g. 1952 Topps Mickey Mantle, Air Jordan 1 Bred 2013..."
-                      className="flex-1 bg-secondary border-border"
-                    />
-                    <Button onClick={addDreamBuy} size="icon" variant="outline">
-                      <Plus className="w-4 h-4" />
-                    </Button>
+                    <Input value={dreamInput} onChange={(e) => setDreamInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addDreamBuy()} placeholder="e.g. 1952 Topps Mickey Mantle..." className="flex-1 bg-secondary/50 border-border h-12 rounded-xl" />
+                    <Button onClick={addDreamBuy} size="icon" variant="outline" className="h-12 w-12 rounded-xl"><Plus className="w-4 h-4" /></Button>
                   </div>
                 )}
               </div>
             )}
 
             {step === 4 && (
-              <div>
-                <h2 className="text-2xl font-heading font-bold text-foreground mb-1">Spending Style</h2>
-                <p className="text-muted-foreground text-sm mb-6">How do you shop?</p>
-                <div className="space-y-3">
-                  {spendOptions.map((opt) => (
-                    <button
-                      key={opt.id}
-                      onClick={() => setSpendStyle(opt.id)}
-                      className={`w-full p-4 rounded-2xl border-2 text-left transition-all ${
-                        spendStyle === opt.id
-                          ? "border-primary bg-primary/10"
-                          : "border-border bg-card hover:border-muted-foreground/30"
-                      }`}
-                    >
-                      <p className="font-semibold text-foreground">{opt.label}</p>
-                      <p className="text-sm text-muted-foreground">{opt.desc}</p>
-                    </button>
-                  ))}
-                </div>
+              <div className="space-y-3">
+                {spendOptions.map((opt) => (
+                  <button key={opt.id} onClick={() => setSpendStyle(opt.id)} className={`w-full p-4 rounded-2xl border-2 text-left transition-all ${spendStyle === opt.id ? "border-primary bg-primary/10" : "border-border bg-card hover:border-muted-foreground/30"}`}>
+                    <p className="font-semibold text-foreground">{opt.label}</p>
+                    <p className="text-sm text-muted-foreground">{opt.desc}</p>
+                  </button>
+                ))}
               </div>
             )}
 
             {step === 5 && (
-              <div>
-                <h2 className="text-2xl font-heading font-bold text-foreground mb-1">Brand Affinities</h2>
-                <p className="text-muted-foreground text-sm mb-6">Tap brands you love</p>
-                <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
-                  {brandOptions.map((b) => {
-                    const selected = brands.includes(b.id);
-                    return (
-                      <button
-                        key={b.id}
-                        onClick={() => toggleArray(brands, b.id, setBrands)}
-                        className={`flex flex-col items-center p-3 rounded-xl border-2 transition-all ${
-                          selected
-                            ? "border-primary bg-primary/10"
-                            : "border-border bg-card hover:border-muted-foreground/30"
-                        }`}
-                      >
-                        <span className="text-lg">{b.emoji}</span>
-                        <span className="text-[10px] font-medium text-foreground mt-1 leading-tight text-center">{b.label}</span>
-                      </button>
-                    );
-                  })}
-                </div>
+              <div className="grid grid-cols-4 sm:grid-cols-7 gap-2">
+                {brandOptions.map((b) => (
+                  <button key={b.id} onClick={() => toggleArray(brands, b.id, setBrands)} className={`flex flex-col items-center p-3 rounded-xl border-2 transition-all ${brands.includes(b.id) ? "border-primary bg-primary/10" : "border-border bg-card hover:border-muted-foreground/30"}`}>
+                    <span className="text-lg">{b.emoji}</span>
+                    <span className="text-[10px] font-medium text-foreground mt-1 leading-tight text-center">{b.label}</span>
+                  </button>
+                ))}
               </div>
             )}
 
             {step === 6 && (
-              <div>
-                <h2 className="text-2xl font-heading font-bold text-foreground mb-1">Travel Vibes</h2>
-                <p className="text-muted-foreground text-sm mb-6">Where do you love exploring?</p>
-                <div className="flex flex-wrap gap-2">
-                  {travelOptions.map((t) => {
-                    const selected = travel.includes(t);
-                    return (
-                      <button
-                        key={t}
-                        onClick={() => toggleArray(travel, t, setTravel)}
-                        className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
-                          selected
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-secondary text-secondary-foreground hover:bg-secondary/80"
-                        }`}
-                      >
-                        {t}
-                      </button>
-                    );
-                  })}
-                </div>
+              <div className="flex flex-wrap gap-2">
+                {travelOptions.map((t) => (
+                  <button key={t} onClick={() => toggleArray(travel, t, setTravel)} className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${travel.includes(t) ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground hover:bg-secondary/80"}`}>
+                    {t}
+                  </button>
+                ))}
               </div>
             )}
 
             {step === 7 && (
-              <div>
-                <h2 className="text-2xl font-heading font-bold text-foreground mb-1">Buy Speed</h2>
-                <p className="text-muted-foreground text-sm mb-6">When you find something you want...</p>
-                <div className="space-y-3">
-                  {speedOptions.map((opt) => (
-                    <button
-                      key={opt.id}
-                      onClick={() => setBuySpeed(opt.id)}
-                      className={`w-full p-4 rounded-2xl border-2 text-left transition-all ${
-                        buySpeed === opt.id
-                          ? "border-primary bg-primary/10"
-                          : "border-border bg-card hover:border-muted-foreground/30"
-                      }`}
-                    >
-                      <p className="font-semibold text-foreground">{opt.label}</p>
-                      <p className="text-sm text-muted-foreground">{opt.desc}</p>
-                    </button>
-                  ))}
-                </div>
+              <div className="space-y-3">
+                {speedOptions.map((opt) => (
+                  <button key={opt.id} onClick={() => setBuySpeed(opt.id)} className={`w-full p-4 rounded-2xl border-2 text-left transition-all ${buySpeed === opt.id ? "border-primary bg-primary/10" : "border-border bg-card hover:border-muted-foreground/30"}`}>
+                    <p className="font-semibold text-foreground">{opt.label}</p>
+                    <p className="text-sm text-muted-foreground">{opt.desc}</p>
+                  </button>
+                ))}
               </div>
             )}
           </motion.div>
         </AnimatePresence>
       </div>
 
-      <div className="sticky bottom-0 bg-background/90 backdrop-blur-xl border-t border-border px-4 py-4">
+      <div className="sticky bottom-0 bg-background/80 backdrop-blur-2xl border-t border-border px-4 py-4">
         <div className="flex justify-between max-w-lg mx-auto">
-          <Button variant="ghost" onClick={handleBack} className="gap-2">
+          <Button variant="ghost" onClick={handleBack} className="gap-2 rounded-xl">
             <ArrowLeft className="w-4 h-4" /> Back
           </Button>
-          <Button
-            onClick={handleNext}
-            disabled={!canContinue()}
-            className="rounded-full px-8"
-          >
-            {step === totalSteps ? "Build My Feed" : "Continue"}
+          <Button onClick={handleNext} disabled={!canContinue()} className="rounded-xl px-8 shimmer-btn">
+            {step === totalSteps ? "Build My Feed ⚡" : "Continue"}
           </Button>
         </div>
       </div>

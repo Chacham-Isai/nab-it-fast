@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Zap, TrendingDown, Users, Heart, ShoppingBag, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -30,7 +31,7 @@ const mockNotifs: NotifItem[] = [
 
 const typeIcons: Record<string, { icon: typeof Zap; color: string }> = {
   dream_match: { icon: Zap, color: "text-primary" },
-  price_drop: { icon: TrendingDown, color: "text-success" },
+  price_drop: { icon: TrendingDown, color: "text-green-500" },
   group_deal: { icon: Users, color: "text-blue-500" },
   tribe: { icon: Users, color: "text-purple-500" },
   giving: { icon: Heart, color: "text-pink-500" },
@@ -48,53 +49,23 @@ const Notifications = () => {
   const [loading, setLoading] = useState(true);
   const [isDemo, setIsDemo] = useState(false);
 
-  useEffect(() => {
-    if (user) fetchNotifications();
-  }, [user]);
+  useEffect(() => { if (user) fetchNotifications(); }, [user]);
 
   const fetchNotifications = async () => {
     if (!user) return;
     setLoading(true);
-    const { data, error } = await supabase
-      .from("notifications_log")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
-
-    if (error || !data || data.length === 0) {
-      setNotifs(mockNotifs);
-      setIsDemo(true);
-    } else {
-      setNotifs(data.map((n: any) => ({
-        id: n.id,
-        type: n.type,
-        title: n.title,
-        body: n.body || "",
-        emoji: n.type === "dream_match" ? "🎯" : n.type === "price_drop" ? "📉" : n.type === "group_deal" ? "👥" : "📦",
-        time: new Date(n.created_at).toLocaleDateString(),
-        read: n.is_read,
-        actionLabel: n.action_label,
-      })));
+    const { data, error } = await supabase.from("notifications_log").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
+    if (error || !data || data.length === 0) { setNotifs(mockNotifs); setIsDemo(true); }
+    else {
+      setNotifs(data.map((n: any) => ({ id: n.id, type: n.type, title: n.title, body: n.body || "", emoji: n.type === "dream_match" ? "🎯" : n.type === "price_drop" ? "📉" : n.type === "group_deal" ? "👥" : "📦", time: new Date(n.created_at).toLocaleDateString(), read: n.is_read, actionLabel: n.action_label })));
       setIsDemo(false);
     }
     setLoading(false);
   };
 
   const unreadCount = notifs.filter((n) => !n.read).length;
-
-  const markAllRead = async () => {
-    setNotifs(notifs.map((n) => ({ ...n, read: true })));
-    if (!isDemo && user) {
-      await supabase.from("notifications_log").update({ is_read: true }).eq("user_id", user.id);
-    }
-  };
-
-  const markRead = async (id: string) => {
-    setNotifs(notifs.map((n) => (n.id === id ? { ...n, read: true } : n)));
-    if (!id.startsWith("m") && user) {
-      await supabase.from("notifications_log").update({ is_read: true }).eq("id", id);
-    }
-  };
+  const markAllRead = async () => { setNotifs(notifs.map((n) => ({ ...n, read: true }))); if (!isDemo && user) await supabase.from("notifications_log").update({ is_read: true }).eq("user_id", user.id); };
+  const markRead = async (id: string) => { setNotifs(notifs.map((n) => (n.id === id ? { ...n, read: true } : n))); if (!id.startsWith("m") && user) await supabase.from("notifications_log").update({ is_read: true }).eq("id", id); };
 
   const filtered = notifs.filter((n) => {
     if (filter === "All") return true;
@@ -105,17 +76,11 @@ const Notifications = () => {
     return true;
   });
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-primary animate-spin" />
-      </div>
-    );
-  }
+  if (loading) return <div className="min-h-screen bg-background flex items-center justify-center"><Loader2 className="w-8 h-8 text-primary animate-spin" /></div>;
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <div className="sticky top-0 z-40 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3">
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
           <h1 className="font-heading font-bold text-foreground text-lg flex-1">Notifications</h1>
@@ -131,19 +96,18 @@ const Notifications = () => {
       <div className="px-4 py-3 overflow-x-auto">
         <div className="flex gap-2 max-w-lg mx-auto">
           {filters.map((f) => (
-            <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${filter === f ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
-              {f}{f === "Unread" && unreadCount > 0 ? ` (${unreadCount})` : ""}
-            </button>
+            <button key={f} onClick={() => setFilter(f)} className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${filter === f ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>{f}{f === "Unread" && unreadCount > 0 ? ` (${unreadCount})` : ""}</button>
           ))}
         </div>
       </div>
 
       <div className="max-w-lg mx-auto px-4 space-y-2">
-        {filtered.map((n) => {
+        {filtered.map((n, i) => {
           const typeInfo = typeIcons[n.type] || typeIcons.feed;
           const Icon = typeInfo.icon;
           return (
-            <button key={n.id} onClick={() => markRead(n.id)} className={`w-full flex items-start gap-3 p-3 rounded-xl text-left transition-all ${!n.read ? "bg-primary/5 border border-primary/20" : "bg-card border border-border"}`}>
+            <motion.button key={n.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} onClick={() => markRead(n.id)}
+              className={`w-full flex items-start gap-3 p-3 rounded-xl text-left transition-all ${!n.read ? "bg-primary/5 border border-primary/20" : "bg-card border border-border"}`}>
               <div className="relative">
                 <div className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center text-lg">{n.emoji}</div>
                 {!n.read && <div className="absolute -top-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-primary border-2 border-background" />}
@@ -160,7 +124,7 @@ const Notifications = () => {
                   {n.actionLabel && <span className="text-[10px] text-primary font-semibold">{n.actionLabel} →</span>}
                 </div>
               </div>
-            </button>
+            </motion.button>
           );
         })}
       </div>

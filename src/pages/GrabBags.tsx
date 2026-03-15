@@ -33,6 +33,13 @@ const rarityLabels = [
   { key: "legendary", label: "🏆 LEGENDARY", color: "bg-amber-500/20 text-amber-600" },
 ];
 
+const tierBorders: Record<string, string> = {
+  Standard: "border-border",
+  Premium: "border-blue-500/30",
+  Ultra: "border-primary/30",
+  Legendary: "border-amber-500/30",
+};
+
 type RevealPhase = "idle" | "shake" | "reveal" | "result";
 
 const GrabBags = () => {
@@ -78,52 +85,42 @@ const GrabBags = () => {
 
   const filters = ["All", "Cards", "Sneakers", "Mixed", "Watches"];
 
-  // Reveal overlay
   if (revealPhase !== "idle" && revealBag) {
     return (
       <div className="fixed inset-0 z-50 bg-background flex items-center justify-center px-4">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full opacity-20 blur-[120px]" style={{ background: "hsl(var(--coral))" }} />
+        </div>
         <AnimatePresence mode="wait">
           {revealPhase === "shake" && (
-            <motion.div key="shake" initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="text-center">
-              <motion.span
-                className="text-7xl block"
-                animate={{ y: [0, -10, 0, 10, 0], rotate: [-5, 5, -5, 5, 0] }}
-                transition={{ repeat: Infinity, duration: 0.3 }}
-              >
+            <motion.div key="shake" initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="text-center relative z-10">
+              <motion.span className="text-7xl block" animate={{ y: [0, -10, 0, 10, 0], rotate: [-5, 5, -5, 5, 0] }} transition={{ repeat: Infinity, duration: 0.3 }}>
                 📦
               </motion.span>
               <p className="text-lg font-heading font-semibold text-foreground mt-6 animate-pulse">Opening your bag...</p>
             </motion.div>
           )}
           {revealPhase === "reveal" && (
-            <motion.div key="reveal" initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 200 }} className="text-center">
+            <motion.div key="reveal" initial={{ scale: 0, rotate: -180 }} animate={{ scale: 1, rotate: 0 }} transition={{ type: "spring", stiffness: 200 }} className="text-center relative z-10">
               <span className="text-8xl block">{revealEmoji}</span>
               <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ delay: 0.4 }}>
-                <span className={`inline-block mt-4 px-4 py-1.5 rounded-full text-sm font-bold ${
-                  rarityLabels.find((r) => r.key === revealRarity)?.color
-                }`}>
+                <span className={`inline-block mt-4 px-4 py-1.5 rounded-full text-sm font-bold ${rarityLabels.find((r) => r.key === revealRarity)?.color}`}>
                   {rarityLabels.find((r) => r.key === revealRarity)?.label}
                 </span>
               </motion.div>
             </motion.div>
           )}
           {revealPhase === "result" && (
-            <motion.div key="result" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-4">
+            <motion.div key="result" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center space-y-4 relative z-10">
               <span className="text-7xl block">{revealEmoji}</span>
-              <span className={`inline-block px-4 py-1.5 rounded-full text-lg font-bold ${
-                rarityLabels.find((r) => r.key === revealRarity)?.color
-              }`}>
+              <span className={`inline-block px-4 py-1.5 rounded-full text-lg font-bold ${rarityLabels.find((r) => r.key === revealRarity)?.color}`}>
                 {rarityLabels.find((r) => r.key === revealRarity)?.label}
               </span>
               <h2 className="text-3xl font-heading font-black text-foreground">{resultHeadlines[revealRarity]}</h2>
               <p className="text-sm text-muted-foreground">Ships in 2–3 business days 📦</p>
               <div className="flex flex-col gap-2 pt-4">
-                <Button className="rounded-full" onClick={() => openBag(revealBag)}>
-                  Open Another — ${revealBag.price}
-                </Button>
-                <Button variant="ghost" onClick={() => { setRevealPhase("idle"); setRevealBag(null); }}>
-                  Back to Grab Bags
-                </Button>
+                <Button className="rounded-xl shimmer-btn h-12" onClick={() => openBag(revealBag)}>Open Another — ${revealBag.price}</Button>
+                <Button variant="ghost" className="rounded-xl" onClick={() => { setRevealPhase("idle"); setRevealBag(null); }}>Back to Grab Bags</Button>
               </div>
             </motion.div>
           )}
@@ -134,7 +131,7 @@ const GrabBags = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <div className="sticky top-0 z-40 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3">
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
           <h1 className="font-heading font-bold text-foreground text-lg flex-1">Grab Bags</h1>
@@ -142,29 +139,24 @@ const GrabBags = () => {
         </div>
       </div>
 
-      {/* Filter chips */}
       <div className="px-4 py-3 overflow-x-auto">
         <div className="flex gap-2 max-w-lg mx-auto">
           {filters.map((f) => (
-            <button key={f} onClick={() => setFilter(f)} className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${filter === f ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
-              {f}
-            </button>
+            <button key={f} onClick={() => setFilter(f)} className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${filter === f ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>{f}</button>
           ))}
         </div>
       </div>
 
       <div className="max-w-lg mx-auto px-4 space-y-4">
-        {bags.map((bag) => {
+        {bags.map((bag, i) => {
           const qty = quantities[bag.id] || 1;
           return (
-            <div key={bag.id} className="rounded-2xl bg-card border border-border p-4 space-y-4">
+            <motion.div key={bag.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className={`rounded-2xl bg-card border ${tierBorders[bag.tier]} p-4 space-y-4`}>
               <div className="flex items-start gap-3">
-                <motion.span className="text-4xl" animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>
-                  {bag.emoji}
-                </motion.span>
+                <motion.span className="text-4xl" animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>{bag.emoji}</motion.span>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-muted-foreground uppercase">{bag.tier}</span>
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{bag.tier}</span>
                     <span className="text-xs font-bold text-foreground">${bag.price}</span>
                   </div>
                   <h3 className="font-heading font-bold text-foreground">{bag.name}</h3>
@@ -172,34 +164,30 @@ const GrabBags = () => {
                 </div>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-primary/10 flex items-center gap-2">
+              <div className="p-2.5 rounded-xl bg-primary/5 border border-primary/10 flex items-center gap-2">
                 <Zap className="w-4 h-4 text-primary shrink-0" />
                 <span className="text-xs font-semibold text-primary">{bag.guarantee}</span>
               </div>
 
-              {/* Odds */}
               <div className="flex flex-wrap gap-1.5">
                 {rarityLabels.map((r) => (
-                  <span key={r.key} className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${r.color}`}>
-                    {r.label} {(bag.odds as any)[r.key]}%
-                  </span>
+                  <span key={r.key} className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${r.color}`}>{r.label} {(bag.odds as any)[r.key]}%</span>
                 ))}
               </div>
 
               <p className="text-xs text-muted-foreground">{bag.items} · {bag.sold.toLocaleString()} sold</p>
 
-              {/* Quantity + Buy */}
               <div className="flex items-center gap-3">
                 <div className="flex items-center gap-2 bg-secondary rounded-full px-2">
                   <button onClick={() => setQty(bag.id, -1)} className="p-1.5 text-muted-foreground hover:text-foreground"><Minus className="w-4 h-4" /></button>
                   <span className="text-sm font-bold text-foreground w-6 text-center">{qty}</span>
                   <button onClick={() => setQty(bag.id, 1)} className="p-1.5 text-muted-foreground hover:text-foreground"><Plus className="w-4 h-4" /></button>
                 </div>
-                <Button className="flex-1 rounded-full" onClick={() => openBag(bag)}>
+                <Button className="flex-1 rounded-xl shimmer-btn" onClick={() => openBag(bag)}>
                   Open {qty > 1 ? `${qty}x` : ""} — ${(bag.price * qty).toLocaleString()}
                 </Button>
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>

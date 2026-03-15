@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Radio, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 import Countdown from "@/components/Countdown";
 import BottomNav from "@/components/BottomNav";
 
@@ -83,7 +84,7 @@ const Breaks = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <div className="sticky top-0 z-40 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3">
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
           <h1 className="font-heading font-bold text-foreground text-lg flex-1">Navigator Breaks</h1>
@@ -101,8 +102,8 @@ const Breaks = () => {
       </div>
 
       <div className="max-w-lg mx-auto px-4 py-4 space-y-4">
-        {tab === "live" && breaks.map((brk) => (
-          <div key={brk.id} className="rounded-2xl bg-card border border-border overflow-hidden">
+        {tab === "live" && breaks.map((brk, i) => (
+          <motion.div key={brk.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="rounded-2xl bg-card border border-border overflow-hidden">
             <div className="p-4 space-y-3">
               <div className="flex items-start gap-3">
                 <span className="text-3xl">{brk.emoji}</span>
@@ -121,7 +122,7 @@ const Breaks = () => {
                 <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {brk.viewers}</span>
                 <Countdown seconds={brk.endsIn} urgentThreshold={60} className="text-xs" />
               </div>
-              <div className="p-3 rounded-xl bg-secondary">
+              <div className="p-3 rounded-xl bg-primary/5 border border-primary/10">
                 <p className="text-xs font-semibold text-foreground">{brk.prize}</p>
                 <p className="text-[10px] text-muted-foreground">Total Value: {brk.totalValue}</p>
               </div>
@@ -166,31 +167,31 @@ const Breaks = () => {
                 🎲 Random Slot — Best Value Pick
               </button>
             </div>
-          </div>
+          </motion.div>
         ))}
 
         {tab === "upcoming" && (
           <div className="space-y-3">
-            {upcomingBreaks.map((brk) => (
-              <div key={brk.id} className="flex items-center gap-3 p-4 rounded-2xl bg-card border border-border">
+            {upcomingBreaks.map((brk, i) => (
+              <motion.div key={brk.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} className="flex items-center gap-3 p-4 rounded-2xl bg-card border border-border">
                 <span className="text-3xl">{brk.emoji}</span>
                 <div className="flex-1">
                   <h3 className="font-semibold text-foreground text-sm">{brk.title}</h3>
                   <p className="text-xs text-muted-foreground">${brk.price}/slot · {brk.slotsLeft} slots left</p>
                   <p className="text-xs text-muted-foreground">{brk.time}</p>
                 </div>
-                <Button size="sm" className="rounded-full text-xs">Reserve</Button>
-              </div>
+                <Button size="sm" className="rounded-xl text-xs">Reserve</Button>
+              </motion.div>
             ))}
           </div>
         )}
 
         {tab === "my-breaks" && (
-          <div className="text-center py-12">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
             <span className="text-4xl mb-4 block">🎴</span>
             <p className="text-muted-foreground">No breaks joined yet</p>
-            <Button className="mt-4 rounded-full" onClick={() => setTab("live")}>Browse Live Breaks</Button>
-          </div>
+            <Button className="mt-4 rounded-xl shimmer-btn" onClick={() => setTab("live")}>Browse Live Breaks</Button>
+          </motion.div>
         )}
       </div>
 
