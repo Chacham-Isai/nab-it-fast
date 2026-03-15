@@ -470,17 +470,32 @@ const Community = () => {
           {/* ===== CREW DEALS ===== */}
           {tab === "crew-deals" && (
             <motion.div key="crew-deals" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-5">
-              {/* Hero banner */}
+              {/* Crew Deals Header */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative rounded-2xl overflow-hidden h-32"
+                className="rounded-2xl glass-card gradient-border p-5 relative overflow-hidden"
               >
-                <img src={dealsHeroImg} alt="Deals" className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-                <div className="relative h-full flex flex-col justify-end p-4">
-                  <h2 className="font-heading font-bold text-foreground text-lg">Crew Deals</h2>
-                  <p className="text-xs text-muted-foreground">Team up. Unlock discounts. Win together.</p>
+                <motion.div animate={{ x: ["-100%", "200%"] }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }} className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-primary/[0.03] to-transparent pointer-events-none" />
+                <div className="relative">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Target className="w-4 h-4 text-primary" />
+                    <span className="text-[10px] font-black text-primary uppercase tracking-widest">Group Buying Power</span>
+                  </div>
+                  <h2 className="font-heading font-black text-foreground text-xl tracking-tight">
+                    CREW <span className="gradient-text">DEALS</span>
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-1">Team up → Unlock discounts → Win together</p>
+                  <div className="flex gap-3 mt-3">
+                    <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-success/10 border border-success/20">
+                      <TrendingUp className="w-3 h-3 text-success" />
+                      <span className="text-[10px] font-bold text-success">{deals.length} active</span>
+                    </div>
+                    <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/10 border border-primary/20">
+                      <Users className="w-3 h-3 text-primary" />
+                      <span className="text-[10px] font-bold text-primary">{deals.reduce((s, d) => s + d.current_participants, 0)} joined</span>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
 
