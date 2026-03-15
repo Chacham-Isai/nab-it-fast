@@ -1,30 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Sparkles, Zap, Minus, Plus } from "lucide-react";
+import { ArrowLeft, Sparkles, Zap, Minus, Plus, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import BottomNav from "@/components/BottomNav";
-
-interface GrabBag {
-  id: number;
-  tier: string;
-  name: string;
-  desc: string;
-  price: number;
-  items: string;
-  guarantee: string;
-  emoji: string;
-  sold: number;
-  odds: { common: number; rare: number; ultra: number; legendary: number };
-  reveals: string[];
-}
-
-const bags: GrabBag[] = [
-  { id: 1, tier: "Standard", name: "The Card Hunter", desc: "3–5 cards from top sets", price: 29, items: "3–5 cards", guarantee: "1 card $20+ guaranteed", emoji: "🃏", sold: 1240, odds: { common: 60, rare: 25, ultra: 12, legendary: 3 }, reveals: ["🃏", "⭐", "🏆", "💎"] },
-  { id: 2, tier: "Premium", name: "The Sneaker Stash", desc: "1 pair + accessories", price: 79, items: "1 pair + extras", guarantee: "$100+ guaranteed", emoji: "👟", sold: 860, odds: { common: 50, rare: 30, ultra: 15, legendary: 5 }, reveals: ["👟", "🧢", "🏆", "💎"] },
-  { id: 3, tier: "Ultra", name: "The Grail Box", desc: "5–8 premium items", price: 199, items: "5–8 items", guarantee: "$300+ guaranteed", emoji: "📦", sold: 420, odds: { common: 40, rare: 30, ultra: 20, legendary: 10 }, reveals: ["📦", "⌚", "🏆", "💎"] },
-  { id: 4, tier: "Legendary", name: "The Watch Vault", desc: "1–2 authenticated watches", price: 349, items: "1–2 watches", guarantee: "$500+ guaranteed", emoji: "⌚", sold: 180, odds: { common: 30, rare: 30, ultra: 25, legendary: 15 }, reveals: ["⌚", "💎", "🏆", "👑"] },
-];
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "@/hooks/use-toast";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const rarityLabels = [
   { key: "common", label: "Hit", color: "bg-secondary text-secondary-foreground" },
@@ -40,22 +23,95 @@ const tierBorders: Record<string, string> = {
   Legendary: "border-[hsl(40_90%_55%)]/30",
 };
 
+const getCategoryEmoji = (cat: string) => {
+  const map: Record<string, string> = { Cards: "🃏", Sneakers: "👟", Watches: "⌚", Electronics: "🥽", Collectibles: "🏆", Fashion: "🧥" };
+  return map[cat] || "📦";
+};
+
+const defaultReveals: Record<string, string[]> = {
+  Cards: ["🃏", "⭐", "🏆", "💎"],
+  Sneakers: ["👟", "🧢", "🏆", "💎"],
+  Watches: ["⌚", "💎", "🏆", "👑"],
+  default: ["📦", "⭐", "🏆", "💎"],
+};
+
 type RevealPhase = "idle" | "shake" | "reveal" | "result";
 
+interface GrabBagItem {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  price: number;
+  quantity: number;
+  emoji: string;
+  tier: string;
+  guarantee: string;
+  items_desc: string;
+  sold: number;
+  odds: { common: number; rare: number; ultra: number; legendary: number };
+  reveals: string[];
+}
+
 const GrabBags = () => {
+  usePageMeta({ title: "Grab Bags — nabbit.ai", description: "Mystery grab bags with guaranteed value", path: "/grab-bags" });
   const navigate = useNavigate();
-  const [quantities, setQuantities] = useState<Record<number, number>>({ 1: 1, 2: 1, 3: 1, 4: 1 });
+  const { user } = useAuth();
+  const [bags, setBags] = useState<GrabBagItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [quantities, setQuantities] = useState<Record<string, number>>({});
   const [revealPhase, setRevealPhase] = useState<RevealPhase>("idle");
-  const [revealBag, setRevealBag] = useState<GrabBag | null>(null);
+  const [revealBag, setRevealBag] = useState<GrabBagItem | null>(null);
   const [revealRarity, setRevealRarity] = useState("");
   const [revealEmoji, setRevealEmoji] = useState("");
   const [filter, setFilter] = useState("All");
 
-  const setQty = (id: number, delta: number) => {
+  useEffect(() => {
+    loadBags();
+  }, []);
+
+  const loadBags = async () => {
+    setLoading(true);
+    const { data } = await supabase
+      .from("listings")
+      .select("*")
+      .eq("listing_type", "grab_bag")
+      .eq("status", "active")
+      .order("starting_price", { ascending: true })
+      .limit(20);
+
+    if (data) {
+      const items: GrabBagItem[] = data.map((l: any) => {
+        const meta = (l.metadata || {}) as any;
+        return {
+          id: l.id,
+          title: l.title,
+          description: l.description || "",
+          category: l.category,
+          price: l.starting_price,
+          quantity: l.quantity,
+          emoji: getCategoryEmoji(l.category),
+          tier: meta.tier || "Standard",
+          guarantee: meta.guarantee || `$${Math.round(l.starting_price * 1.5)}+ guaranteed`,
+          items_desc: meta.items_desc || `${l.quantity} items`,
+          sold: meta.sold || 0,
+          odds: meta.odds || { common: 55, rare: 28, ultra: 13, legendary: 4 },
+          reveals: defaultReveals[l.category] || defaultReveals.default,
+        };
+      });
+      setBags(items);
+      const initQty: Record<string, number> = {};
+      items.forEach((b) => { initQty[b.id] = 1; });
+      setQuantities(initQty);
+    }
+    setLoading(false);
+  };
+
+  const setQty = (id: string, delta: number) => {
     setQuantities((q) => ({ ...q, [id]: Math.max(1, Math.min(10, (q[id] || 1) + delta)) }));
   };
 
-  const rollRarity = (odds: GrabBag["odds"]): string => {
+  const rollRarity = (odds: GrabBagItem["odds"]): string => {
     const roll = Math.random() * 100;
     if (roll < odds.legendary) return "legendary";
     if (roll < odds.legendary + odds.ultra) return "ultra";
@@ -63,7 +119,23 @@ const GrabBags = () => {
     return "common";
   };
 
-  const openBag = (bag: GrabBag) => {
+  const openBag = async (bag: GrabBagItem) => {
+    if (!user) { navigate("/login"); return; }
+
+    // Create order for the grab bag
+    try {
+      await supabase.from("orders").insert({
+        buyer_id: user.id,
+        seller_id: (await supabase.from("listings").select("seller_id").eq("id", bag.id).single()).data?.seller_id || user.id,
+        listing_id: bag.id,
+        amount: bag.price * (quantities[bag.id] || 1),
+        platform_fee: Math.round(bag.price * (quantities[bag.id] || 1) * 0.1 * 100) / 100,
+        status: "pending",
+      });
+    } catch (err) {
+      console.error("Order error:", err);
+    }
+
     setRevealBag(bag);
     setRevealPhase("shake");
     setTimeout(() => {
@@ -83,8 +155,9 @@ const GrabBags = () => {
     common: "You got a hit!",
   };
 
-  const filters = ["All", "Cards", "Sneakers", "Mixed", "Watches"];
+  const filters = ["All", "Cards", "Sneakers", "Watches", "Electronics", "Collectibles"];
 
+  // Reveal overlay
   if (revealPhase !== "idle" && revealBag) {
     return (
       <div className="fixed inset-0 z-50 bg-background flex items-center justify-center px-4">
@@ -129,6 +202,8 @@ const GrabBags = () => {
     );
   }
 
+  const filteredBags = filter === "All" ? bags : bags.filter((b) => b.category === filter);
+
   return (
     <div className="min-h-screen bg-background pb-20">
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
@@ -142,54 +217,66 @@ const GrabBags = () => {
       <div className="px-4 py-3 overflow-x-auto">
         <div className="flex gap-2 max-w-lg mx-auto">
           {filters.map((f) => (
-            <button key={f} onClick={() => setFilter(f)} className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${filter === f ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>{f}</button>
+            <button key={f} onClick={() => setFilter(f)} className={`px-4 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${filter === f ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>{f}</button>
           ))}
         </div>
       </div>
 
       <div className="max-w-lg mx-auto px-4 space-y-4">
-        {bags.map((bag, i) => {
-          const qty = quantities[bag.id] || 1;
-          return (
-            <motion.div key={bag.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className={`rounded-2xl bg-card border ${tierBorders[bag.tier]} p-4 space-y-4`}>
-              <div className="flex items-start gap-3">
-                <motion.span className="text-4xl" animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>{bag.emoji}</motion.span>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{bag.tier}</span>
-                    <span className="text-xs font-bold text-foreground">${bag.price}</span>
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          </div>
+        ) : filteredBags.length === 0 ? (
+          <div className="text-center py-16">
+            <span className="text-5xl block mb-4">📦</span>
+            <p className="text-muted-foreground">No grab bags available</p>
+            <p className="text-xs text-muted-foreground mt-1">Check back soon for new mystery drops</p>
+          </div>
+        ) : (
+          filteredBags.map((bag, i) => {
+            const qty = quantities[bag.id] || 1;
+            return (
+              <motion.div key={bag.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className={`rounded-2xl bg-card border ${tierBorders[bag.tier] || "border-border"} p-4 space-y-4`}>
+                <div className="flex items-start gap-3">
+                  <motion.span className="text-4xl" animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>{bag.emoji}</motion.span>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{bag.tier}</span>
+                      <span className="text-xs font-bold text-foreground">${bag.price}</span>
+                    </div>
+                    <h3 className="font-heading font-bold text-foreground">{bag.title}</h3>
+                    <p className="text-xs text-muted-foreground">{bag.description}</p>
                   </div>
-                  <h3 className="font-heading font-bold text-foreground">{bag.name}</h3>
-                  <p className="text-xs text-muted-foreground">{bag.desc}</p>
                 </div>
-              </div>
 
-              <div className="p-2.5 rounded-xl bg-primary/5 border border-primary/10 flex items-center gap-2">
-                <Zap className="w-4 h-4 text-primary shrink-0" />
-                <span className="text-xs font-semibold text-primary">{bag.guarantee}</span>
-              </div>
-
-              <div className="flex flex-wrap gap-1.5">
-                {rarityLabels.map((r) => (
-                  <span key={r.key} className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${r.color}`}>{r.label} {(bag.odds as any)[r.key]}%</span>
-                ))}
-              </div>
-
-              <p className="text-xs text-muted-foreground">{bag.items} · {bag.sold.toLocaleString()} sold</p>
-
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-2 bg-secondary rounded-full px-2">
-                  <button onClick={() => setQty(bag.id, -1)} className="p-1.5 text-muted-foreground hover:text-foreground"><Minus className="w-4 h-4" /></button>
-                  <span className="text-sm font-bold text-foreground w-6 text-center">{qty}</span>
-                  <button onClick={() => setQty(bag.id, 1)} className="p-1.5 text-muted-foreground hover:text-foreground"><Plus className="w-4 h-4" /></button>
+                <div className="p-2.5 rounded-xl bg-primary/5 border border-primary/10 flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-primary shrink-0" />
+                  <span className="text-xs font-semibold text-primary">{bag.guarantee}</span>
                 </div>
-                <Button className="flex-1 rounded-xl shimmer-btn" onClick={() => openBag(bag)}>
-                  Open {qty > 1 ? `${qty}x` : ""} — ${(bag.price * qty).toLocaleString()}
-                </Button>
-              </div>
-            </motion.div>
-          );
-        })}
+
+                <div className="flex flex-wrap gap-1.5">
+                  {rarityLabels.map((r) => (
+                    <span key={r.key} className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${r.color}`}>{r.label} {(bag.odds as any)[r.key]}%</span>
+                  ))}
+                </div>
+
+                <p className="text-xs text-muted-foreground">{bag.items_desc} · {bag.sold > 0 ? `${bag.sold.toLocaleString()} sold` : `${bag.quantity} available`}</p>
+
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2 bg-secondary rounded-full px-2">
+                    <button onClick={() => setQty(bag.id, -1)} className="p-1.5 text-muted-foreground hover:text-foreground"><Minus className="w-4 h-4" /></button>
+                    <span className="text-sm font-bold text-foreground w-6 text-center">{qty}</span>
+                    <button onClick={() => setQty(bag.id, 1)} className="p-1.5 text-muted-foreground hover:text-foreground"><Plus className="w-4 h-4" /></button>
+                  </div>
+                  <Button className="flex-1 rounded-xl shimmer-btn" onClick={() => openBag(bag)}>
+                    Open {qty > 1 ? `${qty}x` : ""} — ${(bag.price * qty).toLocaleString()}
+                  </Button>
+                </div>
+              </motion.div>
+            );
+          })
+        )}
       </div>
 
       <BottomNav />
