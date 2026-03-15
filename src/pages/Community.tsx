@@ -1,13 +1,17 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Users, Flame, Clock, Loader2 } from "lucide-react";
+import { ArrowLeft, Users, Flame, Clock, Loader2, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import usePageMeta from "@/hooks/usePageMeta";
+import GroupDealCard from "@/components/community/GroupDealCard";
+import LeaderboardTab from "@/components/community/LeaderboardTab";
+import StreakWidget from "@/components/community/StreakWidget";
+import AIPicksBanner from "@/components/community/AIPicksBanner";
+import { toast } from "@/hooks/use-toast";
 
 const activityFeed = [
   { id: 1, user: "🧑‍🎤", name: "Alex K.", action: "just nabbed", item: "Jordan 1 Chicago", price: 289, tribe: "Sneakerheads", time: "2m ago", hot: true },
@@ -15,12 +19,6 @@ const activityFeed = [
   { id: 3, user: "🧔", name: "Mike D.", action: "just nabbed", item: "Rolex Sub", price: 12800, tribe: "Watch Collectors", time: "12m ago", hot: false },
   { id: 4, user: "👩‍🎨", name: "Luna R.", action: "just nabbed", item: "Supreme Box Logo", price: 425, tribe: "Streetwear", time: "18m ago", hot: false },
   { id: 5, user: "🧑‍💻", name: "Dev P.", action: "just nabbed", item: "Vision Pro", price: 3299, tribe: "Tech Heads", time: "25m ago", hot: false },
-];
-
-const groupDeals = [
-  { id: 1, emoji: "👟", tribe: "Sneakerheads", item: "Nike Dunk Low Pack (3 pairs)", price: 180, retail: 330, pct: 45, current: 8, target: 10, endsIn: "2h 15m" },
-  { id: 2, emoji: "🃏", tribe: "Card Collectors", item: "2024 Topps Chrome Hobby Box", price: 195, retail: 250, pct: 22, current: 5, target: 15, endsIn: "5h 30m" },
-  { id: 3, emoji: "🧱", tribe: "Tech Heads", item: "PS5 Slim + Extra Controller", price: 410, retail: 530, pct: 23, current: 14, target: 15, endsIn: "45m" },
 ];
 
 const tribes = [
@@ -32,59 +30,107 @@ const tribes = [
   { name: "Streetwear", emoji: "🧥", members: 1980, active: true },
 ];
 
-interface ActivityItem {
-  id: number;
-  user: string;
-  name: string;
-  action: string;
-  item: string;
-  price: number;
-  tribe: string;
-  time: string;
-  hot: boolean;
-}
-
-interface GroupDeal {
-  id: number;
-  emoji: string;
-  tribe: string;
-  item: string;
-  price: number;
-  retail: number;
-  pct: number;
-  current: number;
-  target: number;
-  endsIn: string;
-}
-
-interface Tribe {
-  name: string;
-  emoji: string;
-  members: number;
-  active: boolean;
-}
+type TabType = "feed" | "deals" | "tribes" | "leaderboard";
 
 const Community = () => {
   usePageMeta({ title: "Community — nabbit.ai", description: "Join tribes, group deals, and connect with fellow deal hunters.", path: "/community" });
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [tab, setTab] = useState<"feed" | "deals" | "tribes">("feed");
+  const [tab, setTab] = useState<TabType>("feed");
   const [joinedTribes, setJoinedTribes] = useState<string[]>([]);
-  const [joinedDeals, setJoinedDeals] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => { if (user) fetchMemberships(); }, [user]);
+  // Group deals state
+  const [deals, setDeals] = useState<any[]>([]);
+  const [joinedDeals, setJoinedDeals] = useState<string[]>([]);
+  const [dealAvatars, setDealAvatars] = useState<Record<string, string[]>>({});
 
-  const fetchMemberships = async () => {
-    if (!user) return;
+  useEffect(() => {
+    loadData();
+  }, [user]);
+
+  // Realtime subscription for group deals
+  useEffect(() => {
+    const channel = supabase
+      .channel("group-deals-realtime")
+      .on("postgres_changes", { event: "*", schema: "public", table: "group_deals" }, (payload) => {
+        if (payload.eventType === "UPDATE") {
+          setDeals((prev) => prev.map((d) => (d.id === payload.new.id ? { ...d, ...payload.new } : d)));
+        } else if (payload.eventType === "INSERT") {
+          setDeals((prev) => [payload.new as any, ...prev]);
+        }
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "group_deal_participants" }, () => {
+        // Reload avatars when participants change
+        loadDealAvatars();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, []);
+
+  const loadData = async () => {
     setLoading(true);
-    const { data } = await supabase.from("tribe_memberships").select("tribe_name").eq("user_id", user.id);
-    setJoinedTribes(data?.map((d: any) => d.tribe_name) || []);
+    const promises: Promise<any>[] = [
+      supabase.from("group_deals").select("*").in("status", ["active", "funded"]).order("created_at", { ascending: false }),
+    ];
+
+    if (user) {
+      promises.push(
+        supabase.from("tribe_memberships").select("tribe_name").eq("user_id", user.id),
+        supabase.from("group_deal_participants").select("deal_id").eq("user_id", user.id),
+      );
+    }
+
+    const results = await Promise.all(promises);
+    setDeals(results[0].data || []);
+
+    if (user) {
+      setJoinedTribes(results[1].data?.map((d: any) => d.tribe_name) || []);
+      setJoinedDeals(results[2].data?.map((d: any) => d.deal_id) || []);
+    }
+
+    await loadDealAvatars();
     setLoading(false);
   };
 
-  const toggleTribe = async (tribeName: string, tribeEmoji: string) => {
+  const loadDealAvatars = async () => {
+    const { data } = await supabase
+      .from("group_deal_participants")
+      .select("deal_id, profiles:user_id(avatar_emoji)")
+      .order("joined_at", { ascending: false })
+      .limit(100);
+
+    const avatarMap: Record<string, string[]> = {};
+    data?.forEach((p: any) => {
+      if (!avatarMap[p.deal_id]) avatarMap[p.deal_id] = [];
+      avatarMap[p.deal_id].push(p.profiles?.avatar_emoji || "🐇");
+    });
+    setDealAvatars(avatarMap);
+  };
+
+  const joinDeal = async (dealId: string) => {
+    if (!user) { navigate("/login"); return; }
+    const { error } = await supabase.from("group_deal_participants").insert({ deal_id: dealId, user_id: user.id });
+    if (error) {
+      toast({ title: "Couldn't join", description: error.message, variant: "destructive" });
+      return;
+    }
+    setJoinedDeals((prev) => [...prev, dealId]);
+
+    // Award XP
+    await supabase.from("profiles").update({ total_xp: (await supabase.from("profiles").select("total_xp").eq("id", user.id).single()).data?.total_xp + 50 }).eq("id", user.id);
+    toast({ title: "+50 XP! 🎮", description: "You joined a group deal!" });
+  };
+
+  const leaveDeal = async (dealId: string) => {
     if (!user) return;
+    await supabase.from("group_deal_participants").delete().eq("deal_id", dealId).eq("user_id", user.id);
+    setJoinedDeals((prev) => prev.filter((d) => d !== dealId));
+  };
+
+  const toggleTribe = async (tribeName: string, tribeEmoji: string) => {
+    if (!user) { navigate("/login"); return; }
     if (joinedTribes.includes(tribeName)) {
       await supabase.from("tribe_memberships").delete().eq("user_id", user.id).eq("tribe_name", tribeName);
       setJoinedTribes((prev) => prev.filter((t) => t !== tribeName));
@@ -94,7 +140,37 @@ const Community = () => {
     }
   };
 
-  const toggleDeal = (id: number) => setJoinedDeals((prev) => prev.includes(id) ? prev.filter((d) => d !== id) : [...prev, id]);
+  const handleCreateFromAI = async (deal: any) => {
+    if (!user) { navigate("/login"); return; }
+    const endsAt = new Date();
+    endsAt.setHours(endsAt.getHours() + 24);
+
+    const { error } = await supabase.from("group_deals").insert({
+      title: deal.title,
+      description: deal.description,
+      emoji: deal.emoji,
+      category: deal.category,
+      tribe_name: deal.tribe_name,
+      deal_price: deal.deal_price,
+      retail_price: deal.retail_price,
+      discount_pct: deal.discount_pct,
+      target_participants: deal.target_participants,
+      ends_at: endsAt.toISOString(),
+      created_by: user.id,
+    });
+
+    if (error) {
+      toast({ title: "Failed to create deal", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Deal created! 🚀", description: "Share it with your tribe." });
+    }
+  };
+
+  const shareDeal = (dealId: string) => {
+    const url = `${window.location.origin}/community?deal=${dealId}`;
+    navigator.clipboard.writeText(url);
+    toast({ title: "Link copied!", description: "Share it with your tribe." });
+  };
 
   if (loading) {
     return (
@@ -104,8 +180,16 @@ const Community = () => {
     );
   }
 
+  const tabs: { key: TabType; label: string }[] = [
+    { key: "feed", label: "Feed" },
+    { key: "deals", label: "Group Deals" },
+    { key: "tribes", label: "Tribes" },
+    { key: "leaderboard", label: "🏆" },
+  ];
+
   return (
     <div className="min-h-screen bg-background pb-20">
+      {/* Header */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
@@ -113,13 +197,25 @@ const Community = () => {
           <span className="text-xs text-muted-foreground flex items-center gap-1"><Users className="w-3 h-3" /> 12.6K</span>
         </div>
         <div className="flex gap-2 mt-3 max-w-lg mx-auto">
-          {(["feed", "deals", "tribes"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)} className={`px-4 py-1.5 rounded-full text-xs font-medium capitalize transition-all ${tab === t ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>{t === "deals" ? "Group Deals" : t}</button>
+          {tabs.map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setTab(t.key)}
+              className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
+                tab === t.key ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"
+              }`}
+            >
+              {t.label}
+            </button>
           ))}
         </div>
       </div>
 
       <div className="max-w-lg mx-auto px-4 py-4">
+        {/* Streak widget for logged-in users */}
+        {user && <StreakWidget />}
+
+        {/* Feed Tab */}
         {tab === "feed" && (
           <div className="space-y-2">
             {activityFeed.map((a, i) => (
@@ -135,42 +231,35 @@ const Community = () => {
           </div>
         )}
 
+        {/* Group Deals Tab */}
         {tab === "deals" && (
           <div className="space-y-4">
-            {groupDeals.map((deal, i) => {
-              const joined = joinedDeals.includes(deal.id);
-              const almostThere = deal.current / deal.target > 0.85;
-              return (
-                <motion.div key={deal.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} className="p-4 rounded-2xl bg-card border border-border space-y-3">
-                  <div className="flex items-start gap-3">
-                    <span className="text-3xl">{deal.emoji}</span>
-                    <div className="flex-1">
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{deal.tribe}</span>
-                      <h3 className="font-semibold text-foreground text-sm">{deal.item}</h3>
-                      <div className="flex items-baseline gap-2 mt-1">
-                        <span className="text-lg font-bold text-foreground">${deal.price}</span>
-                        <span className="text-sm text-muted-foreground line-through">${deal.retail}</span>
-                        <span className="text-xs font-bold text-success">-{deal.pct}%</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <div className="flex justify-between text-xs mb-1">
-                      <span className="text-muted-foreground">{deal.current} of {deal.target} joined</span>
-                      {almostThere && <span className="text-primary font-bold">Almost there!</span>}
-                    </div>
-                    <Progress value={(deal.current / deal.target) * 100} className="h-2" />
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" /> {deal.endsIn}</span>
-                    <Button size="sm" variant={joined ? "secondary" : "default"} className="rounded-xl text-xs" onClick={() => toggleDeal(deal.id)}>{joined ? "Joined! ✓" : "Join Deal"}</Button>
-                  </div>
-                </motion.div>
-              );
-            })}
+            <AIPicksBanner onCreateDeal={handleCreateFromAI} />
+
+            {deals.length === 0 && (
+              <div className="text-center py-12">
+                <span className="text-4xl mb-3 block">🤝</span>
+                <p className="text-muted-foreground text-sm">No group deals yet. Use AI picks above to create one!</p>
+              </div>
+            )}
+
+            <AnimatePresence>
+              {deals.map((deal) => (
+                <GroupDealCard
+                  key={deal.id}
+                  deal={deal}
+                  participantAvatars={dealAvatars[deal.id] || []}
+                  isJoined={joinedDeals.includes(deal.id)}
+                  onJoin={joinDeal}
+                  onLeave={leaveDeal}
+                  onShare={shareDeal}
+                />
+              ))}
+            </AnimatePresence>
           </div>
         )}
 
+        {/* Tribes Tab */}
         {tab === "tribes" && (
           <div className="grid grid-cols-2 gap-3">
             {tribes.map((tribe, i) => {
@@ -189,6 +278,9 @@ const Community = () => {
             })}
           </div>
         )}
+
+        {/* Leaderboard Tab */}
+        {tab === "leaderboard" && <LeaderboardTab />}
       </div>
 
       <BottomNav />
