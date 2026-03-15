@@ -142,6 +142,7 @@ const CrewDetail = () => {
     if (isJoined) {
       await supabase.from("tribe_memberships").delete().eq("user_id", user.id).eq("tribe_name", crewName);
       setIsJoined(false);
+      track("crew_left", { crew_name: crewName });
       setCrew((prev) => prev ? { ...prev, member_count: Math.max(prev.member_count - 1, 0) } : prev);
     } else {
       await supabase.from("tribe_memberships").insert({
@@ -150,6 +151,7 @@ const CrewDetail = () => {
         tribe_emoji: crew?.emoji || "🎯",
       });
       setIsJoined(true);
+      track("crew_joined", { crew_name: crewName });
       setCrew((prev) => prev ? { ...prev, member_count: prev.member_count + 1 } : prev);
     }
   };
