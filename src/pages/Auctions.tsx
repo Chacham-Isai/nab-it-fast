@@ -23,6 +23,7 @@ const Auctions = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
+  const { track } = useAnalytics();
   const [auctions, setAuctions] = useState<any[]>([]);
   const [bidsMap, setBidsMap] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(true);
