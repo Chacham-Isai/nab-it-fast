@@ -136,8 +136,8 @@ const Sell = () => {
 
   const orderStatusColors: Record<string, string> = {
     pending: "bg-amber-500/10 text-amber-500",
-    paid: "bg-green-500/10 text-green-500",
-    shipped: "bg-blue-500/10 text-blue-500",
+    paid: "bg-success/10 text-success",
+    shipped: "bg-nab-blue/10 text-nab-blue",
     delivered: "bg-primary/10 text-primary",
   };
 
