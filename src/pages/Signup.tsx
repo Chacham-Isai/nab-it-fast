@@ -66,7 +66,7 @@ const Signup = () => {
       <div className="absolute top-1/4 right-1/4 w-96 h-96 rounded-full opacity-20 blur-[120px]" style={{ background: "hsl(var(--coral))" }} />
 
       <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="w-full max-w-md relative z-10">
-        <form onSubmit={handleSubmit} className="glass-card p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="glass-card gradient-border p-8 space-y-6">
           <div className="text-center space-y-4">
             <Link to="/" className="inline-block">
               <img src={nabbitLogo} alt="nabbit.ai" className="h-8 mx-auto" style={{ mixBlendMode: "lighten" }} />

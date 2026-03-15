@@ -220,11 +220,18 @@
     inset: 0;
     border-radius: inherit;
     padding: 1px;
-    background: linear-gradient(135deg, hsl(var(--coral) / 0.5), transparent 40%, transparent 60%, hsl(var(--coral) / 0.3));
+    background: conic-gradient(from var(--border-angle, 0deg), hsl(var(--coral) / 0.5), transparent 30%, transparent 70%, hsl(var(--coral) / 0.3));
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     pointer-events: none;
+    animation: rotate-border 6s linear infinite;
+  }
+
+  @property --border-angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
   }
 
   /* Noise texture overlay */
