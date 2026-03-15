@@ -26,7 +26,7 @@ const categories = ["All", "Cards", "Sneakers", "Tech", "Watches", "Streetwear",
 const tagColors: Record<string, string> = {
   "DREAM MATCH": "bg-primary text-primary-foreground",
   "LIMITED DROP": "bg-destructive text-destructive-foreground",
-  "PRICE DROP": "bg-green-500/20 text-green-500",
+  "PRICE DROP": "bg-success/20 text-success",
   "FIND": "bg-primary/20 text-primary",
   "VINTAGE FIND": "bg-secondary text-secondary-foreground",
 };
