@@ -207,10 +207,14 @@ const Profile = () => {
                 initial={{ opacity: 0, x: -16 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.05, type: "spring", stiffness: 300, damping: 25 }}
-                className="flex items-center gap-3.5 p-3.5 rounded-2xl glass-card border border-border/50 group"
+                className="flex items-center gap-3.5 p-3 rounded-2xl glass-card border border-border/50 group overflow-hidden"
               >
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-secondary/80 to-secondary/40 border border-border/50 flex items-center justify-center text-xl shrink-0">
-                  {item.image_emoji || "📦"}
+                <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-border/50">
+                  <img
+                    src={guessItemImage(item.item_name)}
+                    alt={item.item_name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-bold text-foreground truncate">{item.item_name}</p>

@@ -246,24 +246,24 @@ const Auctions = () => {
                 </div>
 
                 <div className="grid grid-cols-3 gap-2">
-                  <div className="p-2.5 rounded-xl bg-secondary text-center">
-                    <p className="text-lg font-bold text-foreground">${auction.current_price?.toLocaleString()}</p>
-                    <p className="text-[10px] text-muted-foreground">Current Bid</p>
+                  <div className="p-2.5 rounded-xl bg-gradient-to-br from-primary/5 to-accent/5 border border-primary/15 text-center">
+                    <p className="text-lg font-heading font-black text-foreground">${auction.current_price?.toLocaleString()}</p>
+                    <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-wider">Current Bid</p>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-secondary text-center">
+                  <div className="p-2.5 rounded-xl bg-secondary/30 border border-border/50 text-center">
                     <div className="flex items-center justify-center gap-1">
                       <Gavel className="w-3 h-3 text-muted-foreground" />
-                      <p className="text-lg font-bold text-foreground">{auction.bid_count}</p>
+                      <p className="text-lg font-heading font-black text-foreground">{auction.bid_count}</p>
                     </div>
-                    <p className="text-[10px] text-muted-foreground">Bids</p>
+                    <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-wider">Bids</p>
                   </div>
-                  <div className="p-2.5 rounded-xl bg-secondary text-center">
+                  <div className="p-2.5 rounded-xl bg-secondary/30 border border-border/50 text-center">
                     {isEnded ? (
-                      <p className="text-lg font-bold text-destructive">Ended</p>
+                      <p className="text-lg font-heading font-black text-destructive">Ended</p>
                     ) : (
                       <Countdown seconds={timeLeft} urgentThreshold={300} className="text-lg" />
                     )}
-                    <p className="text-[10px] text-muted-foreground">Time Left</p>
+                    <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-wider">Time Left</p>
                   </div>
                 </div>
 

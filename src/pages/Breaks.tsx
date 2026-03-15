@@ -165,7 +165,7 @@ const Breaks = () => {
               const timeLeft = getTimeLeft(listing.ends_at);
 
               return (
-                <motion.div key={listing.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="rounded-2xl bg-card border border-border overflow-hidden">
+                <motion.div key={listing.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="rounded-2xl glass-card border border-border/50 overflow-hidden">
                   <div className="p-4 space-y-3">
                     <div className="flex items-start gap-3">
                        <img src={getCategoryImage(listing.category)} alt="" className="w-10 h-10 rounded-xl object-cover" />

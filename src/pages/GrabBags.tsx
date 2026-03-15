@@ -219,7 +219,7 @@ const GrabBags = () => {
           filteredBags.map((bag, i) => {
             const qty = quantities[bag.id] || 1;
             return (
-              <motion.div key={bag.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className={`rounded-2xl bg-card border ${tierBorders[bag.tier] || "border-border"} p-4 space-y-4`}>
+              <motion.div key={bag.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className={`rounded-2xl glass-card border ${tierBorders[bag.tier] || "border-border/50"} p-4 space-y-4`}>
                  <div className="flex items-start gap-3">
                    <motion.img src={bag.emoji} alt="" className="w-14 h-14 rounded-xl object-cover shrink-0" animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }} />
                   <div className="flex-1">
