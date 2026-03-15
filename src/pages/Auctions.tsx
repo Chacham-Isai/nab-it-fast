@@ -224,18 +224,20 @@ const Auctions = () => {
           const isEnded = auction.status === 'ended' || timeLeft <= 0;
 
           return (
-            <motion.div key={auction.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="rounded-2xl bg-card border border-border overflow-hidden">
+            <motion.div key={auction.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="rounded-2xl glass-card border border-border/50 overflow-hidden">
               <div className="p-4 space-y-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-16 h-16 rounded-xl bg-secondary flex items-center justify-center text-4xl">
+                <div className="flex items-start gap-3.5">
+                  <div className="w-16 h-16 rounded-xl overflow-hidden shrink-0 border border-border/50">
                     {listing.images?.[0] ? (
-                      <img src={listing.images[0]} alt={listing.title} className="w-full h-full rounded-xl object-cover" />
-                    ) : getCategoryEmoji(listing.category)}
+                      <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover" />
+                    ) : (
+                      <img src={getCategoryImage(listing.category)} alt={listing.category} className="w-full h-full object-cover" />
+                    )}
                   </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-1.5 flex-wrap">
-                      <span className="text-[10px] bg-secondary px-2 py-0.5 rounded-full text-secondary-foreground font-medium">{listing.category}</span>
-                      {timeLeft < 300 && !isEnded && <span className="text-[10px] bg-destructive text-destructive-foreground px-2 py-0.5 rounded-full font-bold">🔥 HOT</span>}
+                      <span className="text-[10px] bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full text-primary font-bold">{listing.category}</span>
+                      {timeLeft < 300 && !isEnded && <span className="text-[10px] bg-destructive text-destructive-foreground px-2 py-0.5 rounded-full font-black">🔥 HOT</span>}
                       {isEnded && <span className="text-[10px] bg-muted text-muted-foreground px-2 py-0.5 rounded-full font-bold">ENDED</span>}
                     </div>
                     <h3 className="font-heading font-bold text-foreground text-sm mt-1">{listing.title}</h3>
