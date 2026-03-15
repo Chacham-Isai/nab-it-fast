@@ -83,7 +83,7 @@ const PricingSection = () => {
               transition={{ delay: i * 0.1, duration: 0.5 }}
               className={`rounded-3xl p-8 relative group ${
                 plan.featured
-                  ? "glass-card border-primary/50 shadow-[0_0_80px_-12px_hsl(var(--coral-glow))]"
+                  ? "glass-card border-primary/50 shadow-[0_0_80px_-12px_hsl(var(--nab-glow))]"
                   : "glass-card"
               }`}
             >
