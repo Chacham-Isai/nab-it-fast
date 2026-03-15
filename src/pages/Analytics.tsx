@@ -34,6 +34,7 @@ const Analytics = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [range, setRange] = useState<"today" | "7d" | "30d" | "all">("7d");
   const [stats, setStats] = useState<StatCard[]>([]);
   const [swipeData, setSwipeData] = useState<any[]>([]);
   const [categoryData, setCategoryData] = useState<any[]>([]);
@@ -41,9 +42,18 @@ const Analytics = () => {
   const [dealConversion, setDealConversion] = useState<any[]>([]);
   const [funnelData, setFunnelData] = useState<any[]>([]);
 
+  const rangeStart = useMemo(() => {
+    if (range === "all") return null;
+    const d = new Date();
+    if (range === "today") d.setHours(0, 0, 0, 0);
+    else if (range === "7d") d.setDate(d.getDate() - 7);
+    else if (range === "30d") d.setDate(d.getDate() - 30);
+    return d.toISOString();
+  }, [range]);
+
   useEffect(() => {
     if (user) loadAnalytics();
-  }, [user]);
+  }, [user, range]);
 
   const loadAnalytics = async () => {
     setLoading(true);
