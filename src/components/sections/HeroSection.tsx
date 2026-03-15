@@ -114,7 +114,7 @@ const HeroSection = () => {
           </div>
 
           {/* Live nab ticker */}
-          <div className="pt-3">
+          <div className="pt-2 hidden xl:block">
             <AnimatePresence mode="wait">
               <motion.div
                 key={nabIndex}
