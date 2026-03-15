@@ -14,6 +14,146 @@ export type Database = {
   }
   public: {
     Tables: {
+      auctions: {
+        Row: {
+          auto_extend: boolean | null
+          bid_count: number
+          bid_increment: number
+          created_at: string | null
+          current_price: number
+          ends_at: string
+          highest_bidder_id: string | null
+          id: string
+          listing_id: string
+          reserve_price: number | null
+          starts_at: string
+          status: string
+        }
+        Insert: {
+          auto_extend?: boolean | null
+          bid_count?: number
+          bid_increment?: number
+          created_at?: string | null
+          current_price?: number
+          ends_at: string
+          highest_bidder_id?: string | null
+          id?: string
+          listing_id: string
+          reserve_price?: number | null
+          starts_at?: string
+          status?: string
+        }
+        Update: {
+          auto_extend?: boolean | null
+          bid_count?: number
+          bid_increment?: number
+          created_at?: string | null
+          current_price?: number
+          ends_at?: string
+          highest_bidder_id?: string | null
+          id?: string
+          listing_id?: string
+          reserve_price?: number | null
+          starts_at?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auctions_highest_bidder_id_fkey"
+            columns: ["highest_bidder_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auctions_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bids: {
+        Row: {
+          amount: number
+          auction_id: string
+          bid_type: string
+          bidder_id: string
+          created_at: string | null
+          id: string
+          max_proxy_amount: number | null
+        }
+        Insert: {
+          amount: number
+          auction_id: string
+          bid_type?: string
+          bidder_id: string
+          created_at?: string | null
+          id?: string
+          max_proxy_amount?: number | null
+        }
+        Update: {
+          amount?: number
+          auction_id?: string
+          bid_type?: string
+          bidder_id?: string
+          created_at?: string | null
+          id?: string
+          max_proxy_amount?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bids_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "auctions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bids_bidder_id_fkey"
+            columns: ["bidder_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chat_messages: {
+        Row: {
+          created_at: string | null
+          id: string
+          message: string
+          message_type: string | null
+          room_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          message: string
+          message_type?: string | null
+          room_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          message?: string
+          message_type?: string | null
+          room_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       dream_buys: {
         Row: {
           created_at: string | null
@@ -90,6 +230,71 @@ export type Database = {
           },
         ]
       }
+      listings: {
+        Row: {
+          buy_now_price: number | null
+          category: string
+          condition: string | null
+          created_at: string | null
+          description: string | null
+          ends_at: string | null
+          id: string
+          images: string[] | null
+          listing_type: string
+          metadata: Json | null
+          quantity: number
+          seller_id: string
+          starting_price: number
+          status: string
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          buy_now_price?: number | null
+          category?: string
+          condition?: string | null
+          created_at?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          images?: string[] | null
+          listing_type?: string
+          metadata?: Json | null
+          quantity?: number
+          seller_id: string
+          starting_price: number
+          status?: string
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          buy_now_price?: number | null
+          category?: string
+          condition?: string | null
+          created_at?: string | null
+          description?: string | null
+          ends_at?: string | null
+          id?: string
+          images?: string[] | null
+          listing_type?: string
+          metadata?: Json | null
+          quantity?: number
+          seller_id?: string
+          starting_price?: number
+          status?: string
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "listings_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications_log: {
         Row: {
           action_label: string | null
@@ -125,6 +330,89 @@ export type Database = {
           {
             foreignKeyName: "notifications_log_user_id_fkey"
             columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          amount: number
+          auction_id: string | null
+          buyer_id: string
+          created_at: string | null
+          id: string
+          listing_id: string
+          platform_fee: number
+          seller_id: string
+          shipping_address: Json | null
+          status: string
+          stripe_checkout_session_id: string | null
+          stripe_payment_intent_id: string | null
+          tracking_number: string | null
+          tracking_url: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amount: number
+          auction_id?: string | null
+          buyer_id: string
+          created_at?: string | null
+          id?: string
+          listing_id: string
+          platform_fee?: number
+          seller_id: string
+          shipping_address?: Json | null
+          status?: string
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          tracking_number?: string | null
+          tracking_url?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amount?: number
+          auction_id?: string | null
+          buyer_id?: string
+          created_at?: string | null
+          id?: string
+          listing_id?: string
+          platform_fee?: number
+          seller_id?: string
+          shipping_address?: Json | null
+          status?: string
+          stripe_checkout_session_id?: string | null
+          stripe_payment_intent_id?: string | null
+          tracking_number?: string | null
+          tracking_url?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_auction_id_fkey"
+            columns: ["auction_id"]
+            isOneToOne: false
+            referencedRelation: "auctions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_listing_id_fkey"
+            columns: ["listing_id"]
+            isOneToOne: false
+            referencedRelation: "listings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_seller_id_fkey"
+            columns: ["seller_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
@@ -170,6 +458,58 @@ export type Database = {
         }
         Relationships: []
       }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string | null
+          id: string
+          order_id: string
+          rating: number
+          reviewer_id: string
+          seller_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          order_id: string
+          rating: number
+          reviewer_id: string
+          seller_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string | null
+          id?: string
+          order_id?: string
+          rating?: number
+          reviewer_id?: string
+          seller_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_reviewer_id_fkey"
+            columns: ["reviewer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_seller_id_fkey"
+            columns: ["seller_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       saved_items: {
         Row: {
           category: string | null
@@ -212,6 +552,59 @@ export type Database = {
             foreignKeyName: "saved_items_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      seller_profiles: {
+        Row: {
+          created_at: string | null
+          id: string
+          rating: number | null
+          review_count: number | null
+          shop_avatar: string | null
+          shop_description: string | null
+          shop_name: string | null
+          stripe_account_id: string | null
+          stripe_onboarding_complete: boolean | null
+          total_revenue: number | null
+          total_sales: number | null
+          verified: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          id: string
+          rating?: number | null
+          review_count?: number | null
+          shop_avatar?: string | null
+          shop_description?: string | null
+          shop_name?: string | null
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean | null
+          total_revenue?: number | null
+          total_sales?: number | null
+          verified?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          rating?: number | null
+          review_count?: number | null
+          shop_avatar?: string | null
+          shop_description?: string | null
+          shop_name?: string | null
+          stripe_account_id?: string | null
+          stripe_onboarding_complete?: boolean | null
+          total_revenue?: number | null
+          total_sales?: number | null
+          verified?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "seller_profiles_id_fkey"
+            columns: ["id"]
+            isOneToOne: true
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
