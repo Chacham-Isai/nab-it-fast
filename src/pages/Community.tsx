@@ -234,7 +234,19 @@ const Community = () => {
         {/* Group Deals Tab */}
         {tab === "deals" && (
           <div className="space-y-4">
-            <AIPicksBanner onCreateDeal={handleCreateFromAI} />
+            <div className="flex items-center justify-between mb-2">
+              <AIPicksBanner onCreateDeal={handleCreateFromAI} />
+            </div>
+
+            {user && (
+              <Button
+                className="w-full rounded-xl h-11 mb-2"
+                variant="outline"
+                onClick={() => setShowCreateDeal(true)}
+              >
+                <Plus className="w-4 h-4 mr-2" /> Create Group Deal
+              </Button>
+            )}
 
             {deals.length === 0 && (
               <div className="text-center py-12">
