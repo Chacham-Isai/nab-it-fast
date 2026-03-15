@@ -9,11 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import usePageMeta from "@/hooks/usePageMeta";
-
-const getCategoryEmoji = (cat: string) => {
-  const map: Record<string, string> = { Cards: "🃏", Sneakers: "👟", Watches: "⌚", Electronics: "🥽", Collectibles: "🏆", Fashion: "🧥" };
-  return map[cat] || "📦";
-};
+import { getCategoryImage, modeImages } from "@/lib/images";
 
 const Breaks = () => {
   usePageMeta({ title: "Breaks — nabbit.ai", description: "Join live card breaks and claim your slots", path: "/breaks" });
