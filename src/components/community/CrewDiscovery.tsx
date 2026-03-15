@@ -189,7 +189,7 @@ const CrewDiscovery = ({ joinedCrews, onToggleCrew }: CrewDiscoveryProps) => {
                       size="sm"
                       variant={joined ? "secondary" : "default"}
                       className="rounded-xl text-xs h-8"
-                      onClick={() => handleJoin(crew)}
+                      onClick={(e) => { e.stopPropagation(); handleJoin(crew); }}
                     >
                       {joined ? "Joined ✓" : "Join"}
                     </Button>
