@@ -106,15 +106,46 @@ const Feed = () => {
 
   const loadFeed = async () => {
     setLoading(true);
-    const { data: listings } = await supabase
-      .from('listings')
-      .select('*, auctions(*)')
-      .eq('status', 'active')
-      .order('created_at', { ascending: false })
-      .limit(30);
+    const [{ data: listings }, { data: hotDeals }] = await Promise.all([
+      supabase
+        .from('listings')
+        .select('*, auctions(*)')
+        .eq('status', 'active')
+        .order('created_at', { ascending: false })
+        .limit(30),
+      supabase
+        .from('group_deals')
+        .select('*')
+        .eq('status', 'active')
+        .order('current_participants', { ascending: false })
+        .limit(5),
+    ]);
+
+    const feedItems: FeedItem[] = [];
+
+    // Add hot group deals to feed
+    if (hotDeals) {
+      hotDeals
+        .filter((d: any) => d.current_participants / d.target_participants > 0.5)
+        .forEach((d: any) => {
+          feedItems.push({
+            id: `deal-${d.id}`,
+            name: `🤝 Group Deal: ${d.title}`,
+            category: d.category || "Deals",
+            price: d.deal_price,
+            was: d.retail_price,
+            emoji: d.emoji || "🤝",
+            tag: d.current_participants / d.target_participants > 0.8 ? "LIMITED DROP" : "FIND",
+            hot: d.current_participants / d.target_participants > 0.8,
+            left: d.target_participants - d.current_participants,
+            reason: `${d.current_participants}/${d.target_participants} joined · group deal`,
+            score: Math.round((d.current_participants / d.target_participants) * 100),
+          });
+        });
+    }
 
     if (listings && listings.length > 0) {
-      const feedItems: FeedItem[] = listings.map((l: any) => {
+      listings.forEach((l: any) => {
         const auction = l.auctions?.[0];
         const currentPrice = auction ? auction.current_price : l.starting_price;
         const marketPrice = l.buy_now_price || l.starting_price * 1.3;
@@ -122,7 +153,7 @@ const Feed = () => {
         const tags = ["NEW LISTING", "FIND", "PRICE DROP", "LIMITED DROP"];
         const tag = l.quantity <= 3 ? "LIMITED DROP" : (l.buy_now_price && l.buy_now_price < marketPrice * 0.8) ? "PRICE DROP" : tags[Math.floor(Math.random() * 2)];
 
-        return {
+        feedItems.push({
           id: l.id,
           name: l.title,
           category: l.category,
@@ -136,10 +167,10 @@ const Feed = () => {
           score,
           listing_id: l.id,
           listing_type: l.listing_type,
-        };
+        });
       });
-      setItems(feedItems);
     }
+    setItems(feedItems);
     setLoading(false);
   };
 
