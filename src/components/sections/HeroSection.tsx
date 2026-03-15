@@ -114,7 +114,7 @@ const HeroSection = () => {
             <strong className="text-foreground">bid, spin, grab,</strong> or <strong className="text-foreground">auto-buy</strong> — before anyone else.
           </p>
 
-          {/* Dopamine trust pills */}
+          {/* Trust pills */}
           <div className="flex flex-wrap items-center gap-3 text-xs font-semibold">
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/[0.1] border border-primary/30 text-primary">
               <Flame className="w-3.5 h-3.5" /> AI Deal Engine

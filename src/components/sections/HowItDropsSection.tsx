@@ -21,7 +21,7 @@ const steps = [
     icon: Zap,
     num: "03",
     title: "Deals drop. You decide.",
-    desc: "Bid on auctions. Spin grab bags. Set auto-nab triggers. Your rules, your dopamine hit.",
+    desc: "Bid on auctions. Spin grab bags. Set auto-nab triggers. Your rules, your wins.",
     accent: "from-[hsl(40,100%,55%)] to-primary",
   },
   {
@@ -43,7 +43,7 @@ const HowItDropsSection = () => {
           style={{ fontSize: "clamp(2rem, 4.5vw, 3.5rem)" }}
         >
           Four steps to{" "}
-          <span className="gradient-text">pure dopamine.</span>
+          <span className="gradient-text">your next win.</span>
         </h2>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
           From discovery to doorstep — the entire loop is engineered to feel like winning.

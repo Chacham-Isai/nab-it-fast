@@ -18,7 +18,7 @@ const modes = [
     icon: Radio,
     title: "Live Breaks",
     tagline: "Real-time pack rips. Lock your slot.",
-    desc: "Watch hosts break products live. Claim your team or slot. What you pull is what you keep. Pure adrenaline.",
+    desc: "Watch hosts break products live. Claim your team or slot. What you pull is what you keep. Real-time action.",
     tag: "⚡ LIVE NOW",
     tagColor: "bg-success/[0.1] text-success border-success/30",
     link: "/breaks",
@@ -58,7 +58,7 @@ const GameModesSection = () => {
           <span className="gradient-text">This isn't shopping.</span>
         </h2>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          Four addictive ways to score deals — each one powered by the Nabbit Engine and tuned to your vibe.
+          Four powerful ways to score deals — each one powered by the Nabbit Engine and tuned to your vibe.
         </p>
       </div>
 
