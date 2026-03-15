@@ -115,7 +115,7 @@ const Feed = () => {
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
         <div className="flex items-center justify-between max-w-lg mx-auto">
           <div className="flex items-center gap-2">
-            <img src={nabbitLogo} alt="nabbit" className="h-5" style={{ mixBlendMode: "lighten" }} />
+            <img src={nabbitLogo} alt="nabbit" className="h-5" />
             <span className="font-heading font-bold text-foreground text-lg">Today's Drops</span>
           </div>
           <div className="flex items-center gap-1">
