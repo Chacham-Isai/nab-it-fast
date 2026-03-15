@@ -360,17 +360,39 @@ const Community = () => {
         <AnimatePresence mode="wait">
           {tab === "feed" && (
             <motion.div key="feed" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-4">
-              {/* Hero banner */}
+              {/* Hot Now Banner */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative rounded-2xl overflow-hidden h-36"
+                className="relative rounded-2xl overflow-hidden glass-card gradient-border p-5"
               >
-                <img src={crewHeroImg} alt="Crew" className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-                <div className="relative h-full flex flex-col justify-end p-4">
-                  <h2 className="font-heading font-bold text-foreground text-xl">What's Hot Right Now</h2>
-                  <p className="text-xs text-muted-foreground mt-0.5">Fresh from the crew's top sellers</p>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-destructive/10 border border-destructive/20">
+                    <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.5, repeat: Infinity }} className="w-2 h-2 rounded-full bg-destructive" />
+                    <span className="text-[10px] font-black text-destructive uppercase tracking-wider">Hot Now</span>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground">{feedListings.length} active listings</span>
+                </div>
+                <h2 className="font-heading font-black text-foreground text-xl tracking-tight">
+                  YOUR CREW'S <span className="gradient-text">LATEST DROPS</span>
+                </h2>
+                <p className="text-xs text-muted-foreground mt-1">Curated from sellers your crew trusts</p>
+                {/* Mini preview images */}
+                <div className="flex gap-2 mt-3">
+                  {[imgCardsBox, imgSneakers, imgWatch, imgFashion].map((img, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.1 * i }}
+                      className="w-14 h-14 rounded-xl overflow-hidden ring-2 ring-border"
+                    >
+                      <img src={img} alt="" className="w-full h-full object-cover" />
+                    </motion.div>
+                  ))}
+                  <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <span className="text-[10px] font-bold text-primary">+{Math.max(0, feedListings.length - 4)}</span>
+                  </div>
                 </div>
               </motion.div>
 
