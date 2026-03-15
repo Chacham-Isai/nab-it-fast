@@ -9,6 +9,7 @@ import nabbitLogo from "@/assets/nabbit-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import usePageMeta from "@/hooks/usePageMeta";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface FeedItem {
   id: string;
