@@ -28,6 +28,7 @@ export type Database = {
           reserve_price: number | null
           starts_at: string
           status: string
+          watchers: number
         }
         Insert: {
           auto_extend?: boolean | null
@@ -42,6 +43,7 @@ export type Database = {
           reserve_price?: number | null
           starts_at?: string
           status?: string
+          watchers?: number
         }
         Update: {
           auto_extend?: boolean | null
@@ -56,6 +58,7 @@ export type Database = {
           reserve_price?: number | null
           starts_at?: string
           status?: string
+          watchers?: number
         }
         Relationships: [
           {
