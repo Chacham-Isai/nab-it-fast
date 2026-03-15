@@ -144,11 +144,9 @@ const GrabBags = () => {
         </div>
         <AnimatePresence mode="wait">
           {revealPhase === "shake" && (
-            <motion.div key="shake" initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="text-center relative z-10">
-              <motion.span className="text-7xl block" animate={{ y: [0, -10, 0, 10, 0], rotate: [-5, 5, -5, 5, 0] }} transition={{ repeat: Infinity, duration: 0.3 }}>
-                📦
-              </motion.span>
-              <p className="text-lg font-heading font-semibold text-foreground mt-6 animate-pulse">Opening your bag...</p>
+             <motion.div key="shake" initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="text-center relative z-10">
+               <motion.img src={modeImages.grabBags} alt="" className="w-28 h-28 rounded-2xl object-cover mx-auto" animate={{ y: [0, -10, 0, 10, 0], rotate: [-5, 5, -5, 5, 0] }} transition={{ repeat: Infinity, duration: 0.3 }} />
+               <p className="text-lg font-heading font-semibold text-foreground mt-6 animate-pulse">Opening your bag...</p>
             </motion.div>
           )}
           {revealPhase === "reveal" && (
