@@ -190,7 +190,7 @@ const Auctions = () => {
                 <div className="flex items-center gap-4 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {auction.watchers} watching</span>
                   <span>Min bid: ${minBid.toLocaleString()}</span>
-                  {auction.buyNow && <span className="text-green-500 font-semibold">Buy Now: ${auction.buyNow.toLocaleString()}</span>}
+                  {auction.buyNow && <span className="text-success font-semibold">Buy Now: ${auction.buyNow.toLocaleString()}</span>}
                 </div>
 
                 {/* Tabs */}
