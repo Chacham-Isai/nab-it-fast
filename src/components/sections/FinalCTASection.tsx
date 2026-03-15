@@ -3,6 +3,7 @@ import { ArrowRight, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import nabbitLogo from "@/assets/nabbit-logo.png";
 
 const FinalCTASection = () => {
   const navigate = useNavigate();
