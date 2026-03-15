@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import Countdown from "@/components/Countdown";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const categories = ["All", "Cards", "Sneakers", "Watches", "Electronics", "Collectibles", "Fashion"];
 const listingTypes = ["All", "Auction", "Buy Now", "Break", "Grab Bag"];
@@ -19,6 +20,7 @@ const sortOptions = [
 ];
 
 const Browse = () => {
+  usePageMeta({ title: "Browse — nabbit.ai", description: "Browse auctions, buy-now deals, breaks, and grab bags. Find your next nab.", path: "/browse" });
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [listings, setListings] = useState<any[]>([]);

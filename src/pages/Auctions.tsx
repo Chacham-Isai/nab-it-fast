@@ -9,6 +9,7 @@ import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const getIncrement = (bid: number) => {
   if (bid < 500) return 25;
@@ -17,6 +18,7 @@ const getIncrement = (bid: number) => {
 };
 
 const Auctions = () => {
+  usePageMeta({ title: "Auctions — nabbit.ai", description: "Bid on exclusive items in live auctions. Real-time bidding with auto-extend.", path: "/auctions" });
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();

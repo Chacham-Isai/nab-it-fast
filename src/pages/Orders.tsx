@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import ReviewForm from "@/components/reviews/ReviewForm";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const statusConfig: Record<string, { icon: any; color: string; label: string }> = {
   pending: { icon: Clock, color: "text-[hsl(40_90%_55%)]", label: "Pending Payment" },
@@ -17,6 +18,7 @@ const statusConfig: Record<string, { icon: any; color: string; label: string }> 
 };
 
 const Orders = () => {
+  usePageMeta({ title: "Orders — nabbit.ai", description: "Track your purchases and confirm deliveries.", path: "/orders" });
   const navigate = useNavigate();
   const { user } = useAuth();
   const [searchParams] = useSearchParams();

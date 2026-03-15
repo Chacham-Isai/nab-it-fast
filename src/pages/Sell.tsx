@@ -9,10 +9,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import CreateListingForm from "@/components/sell/CreateListingForm";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const Sell = () => {
+  usePageMeta({ title: "Sell — nabbit.ai", description: "List items, manage auctions, and track your seller dashboard.", path: "/sell" });
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [searchParams] = useState(() => new URLSearchParams(window.location.search));
   const [tab, setTab] = useState<"listings" | "orders" | "stats" | "create">("listings");
   const [listings, setListings] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
@@ -22,6 +25,9 @@ const Sell = () => {
 
   useEffect(() => {
     if (!user) return;
+    if (searchParams.get("stripe_connected") === "true") {
+      toast({ title: "✅ Stripe connected!", description: "Your payout account is set up." });
+    }
     loadData();
   }, [user]);
 
@@ -149,6 +155,38 @@ const Sell = () => {
                     </div>
                   ))}
                 </div>
+
+                {/* Stripe Connect */}
+                {!sellerProfile?.stripe_onboarding_complete && (
+                  <div className="p-4 rounded-2xl bg-card border border-primary/20 space-y-3">
+                    <div className="flex items-center gap-2">
+                      <DollarSign className="w-5 h-5 text-primary" />
+                      <h3 className="font-semibold text-foreground text-sm">Set Up Payouts</h3>
+                    </div>
+                    <p className="text-xs text-muted-foreground">Connect your bank account to receive payouts when your items sell.</p>
+                    <Button
+                      className="w-full rounded-xl shimmer-btn text-xs gap-1"
+                      onClick={async () => {
+                        try {
+                          const { data, error } = await supabase.functions.invoke("create-connect-account");
+                          if (error) throw error;
+                          if (data?.error) throw new Error(data.error);
+                          if (data?.url) window.open(data.url, "_blank");
+                        } catch (err: any) {
+                          toast({ title: "Setup failed", description: err.message, variant: "destructive" });
+                        }
+                      }}
+                    >
+                      <DollarSign className="w-3.5 h-3.5" /> Connect Stripe
+                    </Button>
+                  </div>
+                )}
+                {sellerProfile?.stripe_onboarding_complete && (
+                  <div className="p-3 rounded-xl bg-success/10 border border-success/20 flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-success" />
+                    <span className="text-xs font-medium text-success">Payouts connected</span>
+                  </div>
+                )}
               </motion.div>
             )}
 
