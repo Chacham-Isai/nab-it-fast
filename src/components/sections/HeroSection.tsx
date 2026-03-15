@@ -158,7 +158,7 @@ const HeroSection = () => {
               <Zap className="w-3.5 h-3.5" /> Sub-3s Auto-Nab
             </span>
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-nab-purple/[0.1] border border-nab-purple/30 text-nab-purple">
-              <Swords className="w-3.5 h-3.5" /> Rival Whatnot
+              <Swords className="w-3.5 h-3.5" /> Nab It
             </span>
           </div>
 
