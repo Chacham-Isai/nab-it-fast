@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Edit2, ShoppingBag, Star, Zap, Heart, Bell, DollarSign, Moon, Shield, Trash2, LogOut, ChevronRight, Loader2 } from "lucide-react";
+import { ArrowLeft, Edit2, ShoppingBag, Star, Zap, Heart, Bell, DollarSign, Moon, Shield, Trash2, LogOut, ChevronRight, Loader2, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
@@ -19,6 +19,7 @@ const Profile = () => {
   const [tasteTags, setTasteTags] = useState<string[]>([]);
   const [avatarEmoji, setAvatarEmoji] = useState("🐇");
   const [savedItems, setSavedItems] = useState<any[]>([]);
+  const [orderHistory, setOrderHistory] = useState<any[]>([]);
   const [dreamCount, setDreamCount] = useState(0);
   const [savedCount, setSavedCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -28,20 +29,31 @@ const Profile = () => {
   const fetchProfile = async () => {
     if (!user) return;
     setLoading(true);
-    const [profileRes, savedRes, dreamRes] = await Promise.all([
+    const [profileRes, savedRes, dreamRes, ordersRes] = await Promise.all([
       supabase.from("profiles").select("*").eq("id", user.id).single(),
       supabase.from("saved_items").select("*").eq("user_id", user.id).order("created_at", { ascending: false }),
       supabase.from("dream_buys").select("id").eq("user_id", user.id),
+      supabase.from("orders").select("*, listings(title, category)").eq("buyer_id", user.id).order("created_at", { ascending: false }),
     ]);
-    if (profileRes.data) { setDisplayName(profileRes.data.display_name || user.user_metadata?.display_name || "Navigator User"); setTasteTags(profileRes.data.taste_tags || []); setAvatarEmoji(profileRes.data.avatar_emoji || "🐇"); }
+    if (profileRes.data) {
+      setDisplayName(profileRes.data.display_name || user.user_metadata?.display_name || "Navigator User");
+      setTasteTags(profileRes.data.taste_tags || []);
+      setAvatarEmoji(profileRes.data.avatar_emoji || "🐇");
+    }
     setSavedItems(savedRes.data || []);
     setSavedCount(savedRes.data?.length || 0);
     setDreamCount(dreamRes.data?.length || 0);
+    setOrderHistory(ordersRes.data || []);
     setLoading(false);
   };
 
   const handleNameSave = async () => { setEditing(false); if (!user) return; await supabase.from("profiles").update({ display_name: displayName }).eq("id", user.id); };
   const handleSignOut = async () => { await signOut(); navigate("/login"); };
+  const handleDeleteSaved = async (id: string) => {
+    await supabase.from("saved_items").delete().eq("id", id);
+    setSavedItems(prev => prev.filter(i => i.id !== id));
+    setSavedCount(prev => prev - 1);
+  };
 
   const settingsGroups = [
     { label: "Preferences", items: [{ icon: Bell, label: "Notifications", value: "On" }, { icon: DollarSign, label: "Currency", value: "USD" }, { icon: Moon, label: "Theme", value: "System" }] },
@@ -83,7 +95,12 @@ const Profile = () => {
         </motion.div>
 
         <div className="grid grid-cols-4 gap-2">
-          {[{ icon: ShoppingBag, label: "Nabbed", value: String(savedCount) }, { icon: Star, label: "Saved", value: String(savedCount) }, { icon: Zap, label: "Dream Buys", value: String(dreamCount) }, { icon: Heart, label: "Gave Back", value: "$0" }].map((s) => (
+          {[
+            { icon: ShoppingBag, label: "Orders", value: String(orderHistory.length) },
+            { icon: Star, label: "Saved", value: String(savedCount) },
+            { icon: Zap, label: "Dream Buys", value: String(dreamCount) },
+            { icon: Heart, label: "Gave Back", value: "$0" },
+          ].map((s) => (
             <div key={s.label} className="p-3 rounded-xl bg-card border border-border text-center">
               <s.icon className="w-4 h-4 mx-auto text-primary mb-1" />
               <p className="text-lg font-bold text-foreground">{s.value}</p>
@@ -105,7 +122,7 @@ const Profile = () => {
                 <span className="text-2xl">{item.image_emoji || "📦"}</span>
                 <div className="flex-1 min-w-0"><p className="text-sm font-medium text-foreground truncate">{item.item_name}</p><p className="text-xs text-muted-foreground">{item.category}</p></div>
                 <span className="font-bold text-foreground text-sm">${item.price?.toLocaleString() || "—"}</span>
-                <Button variant="ghost" size="sm" className="text-primary text-xs">Buy</Button>
+                <Button variant="ghost" size="sm" className="text-destructive text-xs" onClick={() => handleDeleteSaved(item.id)}>×</Button>
               </div>
             )) : (
               <div className="text-center py-8">
@@ -117,10 +134,23 @@ const Profile = () => {
         )}
 
         {tab === "history" && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
-            <span className="text-4xl mb-4 block">📦</span>
-            <p className="text-muted-foreground">Purchase history coming soon</p>
-          </motion.div>
+          <div className="space-y-2">
+            {orderHistory.length > 0 ? orderHistory.map((order: any) => (
+              <div key={order.id} className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border">
+                <Package className="w-5 h-5 text-primary shrink-0" />
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-foreground truncate">{order.listings?.title || "Item"}</p>
+                  <p className="text-xs text-muted-foreground">{new Date(order.created_at).toLocaleDateString()} · {order.status}</p>
+                </div>
+                <span className="font-bold text-foreground text-sm">${order.amount}</span>
+              </div>
+            )) : (
+              <div className="text-center py-8">
+                <span className="text-4xl block mb-2">📦</span>
+                <p className="text-muted-foreground text-sm">No purchases yet</p>
+              </div>
+            )}
+          </div>
         )}
 
         {tab === "settings" && (

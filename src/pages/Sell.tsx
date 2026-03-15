@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Plus, Package, DollarSign, BarChart3, Clock, CheckCircle, Loader2 } from "lucide-react";
+import { ArrowLeft, Plus, Package, DollarSign, BarChart3, Clock, CheckCircle, Loader2, Camera, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
@@ -28,12 +28,15 @@ const conditions = ["New", "Like New", "Very Good", "Good", "Acceptable"];
 const Sell = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [tab, setTab] = useState<"listings" | "orders" | "stats" | "create">("listings");
   const [listings, setListings] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [sellerProfile, setSellerProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const [form, setForm] = useState<CreateListingForm>({
     title: "", description: "", category: "Cards", condition: "New",
     starting_price: "", buy_now_price: "", listing_type: "auction", ends_in_hours: "24",
@@ -48,7 +51,6 @@ const Sell = () => {
     if (!user) return;
     setLoading(true);
 
-    // Load or create seller profile
     const { data: sp } = await supabase
       .from('seller_profiles')
       .select('*')
@@ -63,7 +65,6 @@ const Sell = () => {
       setSellerProfile(sp);
     }
 
-    // Load listings
     const { data: ls } = await supabase
       .from('listings')
       .select('*, auctions(*)')
@@ -71,7 +72,6 @@ const Sell = () => {
       .order('created_at', { ascending: false });
     setListings(ls || []);
 
-    // Load orders
     const { data: os } = await supabase
       .from('orders')
       .select('*, listings(title)')
@@ -82,10 +82,45 @@ const Sell = () => {
     setLoading(false);
   };
 
+  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (imageFiles.length + files.length > 5) {
+      toast({ title: "Max 5 images", variant: "destructive" });
+      return;
+    }
+    setImageFiles(prev => [...prev, ...files]);
+    files.forEach(f => {
+      const reader = new FileReader();
+      reader.onload = (ev) => setImagePreviews(prev => [...prev, ev.target?.result as string]);
+      reader.readAsDataURL(f);
+    });
+  };
+
+  const removeImage = (idx: number) => {
+    setImageFiles(prev => prev.filter((_, i) => i !== idx));
+    setImagePreviews(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  const uploadImages = async (): Promise<string[]> => {
+    if (!user || imageFiles.length === 0) return [];
+    const urls: string[] = [];
+    for (const file of imageFiles) {
+      const ext = file.name.split('.').pop();
+      const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+      const { error } = await supabase.storage.from('listing-images').upload(path, file);
+      if (!error) {
+        const { data: urlData } = supabase.storage.from('listing-images').getPublicUrl(path);
+        urls.push(urlData.publicUrl);
+      }
+    }
+    return urls;
+  };
+
   const createListing = async () => {
     if (!user || !form.title || !form.starting_price) return;
     setCreating(true);
 
+    const imageUrls = await uploadImages();
     const endsAt = new Date(Date.now() + parseInt(form.ends_in_hours) * 3600000).toISOString();
 
     const { data: listing, error } = await supabase.from('listings').insert({
@@ -99,6 +134,7 @@ const Sell = () => {
       listing_type: form.listing_type,
       status: 'active',
       ends_at: endsAt,
+      images: imageUrls,
     }).select().single();
 
     if (error) {
@@ -107,7 +143,6 @@ const Sell = () => {
       return;
     }
 
-    // Create auction record if auction type
     if (form.listing_type === 'auction' && listing) {
       await supabase.from('auctions').insert({
         listing_id: listing.id,
@@ -123,6 +158,8 @@ const Sell = () => {
     setCreating(false);
     setTab("listings");
     setForm({ title: "", description: "", category: "Cards", condition: "New", starting_price: "", buy_now_price: "", listing_type: "auction", ends_in_hours: "24" });
+    setImageFiles([]);
+    setImagePreviews([]);
     loadData();
   };
 
@@ -143,7 +180,6 @@ const Sell = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      {/* Header */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
@@ -171,7 +207,6 @@ const Sell = () => {
           </div>
         ) : (
           <AnimatePresence mode="wait">
-            {/* Stats */}
             {tab === "stats" && (
               <motion.div key="stats" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
                 <div className="grid grid-cols-2 gap-3">
@@ -191,7 +226,6 @@ const Sell = () => {
               </motion.div>
             )}
 
-            {/* Listings */}
             {tab === "listings" && (
               <motion.div key="listings" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-3">
                 {listings.length === 0 ? (
@@ -202,7 +236,10 @@ const Sell = () => {
                   </div>
                 ) : listings.map((listing, i) => (
                   <motion.div key={listing.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="p-4 rounded-2xl bg-card border border-border">
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start gap-3">
+                      {listing.images?.[0] && (
+                        <img src={listing.images[0]} alt={listing.title} className="w-14 h-14 rounded-xl object-cover shrink-0" />
+                      )}
                       <div className="flex-1">
                         <div className="flex items-center gap-2 mb-1">
                           <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${statusColors[listing.status] || ''}`}>{listing.status}</span>
@@ -223,7 +260,6 @@ const Sell = () => {
               </motion.div>
             )}
 
-            {/* Orders */}
             {tab === "orders" && (
               <motion.div key="orders" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-3">
                 {orders.length === 0 ? (
@@ -258,12 +294,33 @@ const Sell = () => {
               </motion.div>
             )}
 
-            {/* Create Listing */}
             {tab === "create" && (
               <motion.div key="create" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-4">
                 <h2 className="font-heading font-bold text-foreground text-lg">New Listing</h2>
 
                 <div className="space-y-3">
+                  {/* Image upload */}
+                  <div>
+                    <label className="text-xs text-muted-foreground mb-2 block">Photos (up to 5)</label>
+                    <div className="flex gap-2 flex-wrap">
+                      {imagePreviews.map((src, i) => (
+                        <div key={i} className="relative w-20 h-20 rounded-xl overflow-hidden border border-border">
+                          <img src={src} alt="" className="w-full h-full object-cover" />
+                          <button onClick={() => removeImage(i)} className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center">
+                            <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                      {imagePreviews.length < 5 && (
+                        <button onClick={() => fileInputRef.current?.click()} className="w-20 h-20 rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center text-muted-foreground hover:border-primary hover:text-primary transition-colors">
+                          <Camera className="w-5 h-5" />
+                          <span className="text-[10px] mt-0.5">Add</span>
+                        </button>
+                      )}
+                    </div>
+                    <input ref={fileInputRef} type="file" accept="image/*" multiple onChange={handleImageSelect} className="hidden" />
+                  </div>
+
                   <Input placeholder="Item title *" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} className="bg-secondary/50 border-border h-12 rounded-xl" />
                   <textarea placeholder="Description" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} className="w-full bg-secondary/50 border border-border rounded-xl p-3 text-sm text-foreground placeholder:text-muted-foreground min-h-[80px] resize-none focus:outline-none focus:ring-2 focus:ring-ring" />
 
@@ -276,7 +333,6 @@ const Sell = () => {
                     </select>
                   </div>
 
-                  {/* Listing type */}
                   <div className="flex flex-wrap gap-2">
                     {(["auction", "buy_now", "break", "grab_bag"] as ListingType[]).map(t => (
                       <button key={t} onClick={() => setForm({ ...form, listing_type: t })} className={`px-3 py-1.5 rounded-full text-xs font-medium ${form.listing_type === t ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
