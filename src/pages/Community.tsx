@@ -12,6 +12,7 @@ import LeaderboardTab from "@/components/community/LeaderboardTab";
 import StreakWidget from "@/components/community/StreakWidget";
 import AIPicksBanner from "@/components/community/AIPicksBanner";
 import CreateDealForm from "@/components/community/CreateDealForm";
+import CrewDiscovery from "@/components/community/CrewDiscovery";
 import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
 
