@@ -97,16 +97,17 @@ const Analytics = () => {
       { label: "Crews", value: crewsJoined, icon: <TrendingUp className="w-5 h-5 text-primary" /> },
     ]);
 
-    // --- Swipe activity by day (last 7 days) ---
-    const last7 = Array.from({ length: 7 }, (_, i) => {
+    // --- Swipe activity by day ---
+    const dayCount = range === "today" ? 1 : range === "7d" ? 7 : range === "30d" ? 30 : 14;
+    const lastN = Array.from({ length: dayCount }, (_, i) => {
       const d = new Date();
-      d.setDate(d.getDate() - (6 - i));
+      d.setDate(d.getDate() - (dayCount - 1 - i));
       return d.toISOString().split("T")[0];
     });
-    const swipeByDay = last7.map(day => {
+    const swipeByDay = lastN.map(day => {
       const dayEvents = evts.filter(e => e.created_at?.startsWith(day));
       return {
-        day: new Date(day).toLocaleDateString("en", { weekday: "short" }),
+        day: new Date(day).toLocaleDateString("en", { weekday: "short", month: dayCount > 7 ? "short" : undefined, day: dayCount > 7 ? "numeric" : undefined }),
         nabbed: dayEvents.filter(e => e.event_name === "swipe_right").length,
         passed: dayEvents.filter(e => e.event_name === "swipe_left").length,
       };
