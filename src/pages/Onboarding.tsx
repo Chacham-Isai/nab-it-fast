@@ -168,7 +168,7 @@ const Onboarding = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background relative overflow-hidden flex flex-col items-center justify-center px-4">
-        <div className="absolute top-1/3 left-1/3 w-96 h-96 rounded-full opacity-20 blur-[120px]" style={{ background: "hsl(var(--coral))" }} />
+        <div className="absolute top-1/3 left-1/3 w-96 h-96 rounded-full opacity-20 blur-[120px]" style={{ background: "hsl(var(--nab-cyan))" }} />
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center space-y-8 relative z-10">
           <div className="relative">
             <Loader2 className="w-14 h-14 text-primary animate-spin mx-auto" />
