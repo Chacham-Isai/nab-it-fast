@@ -232,7 +232,7 @@ const Analytics = () => {
 
           {/* Swipe Activity */}
           <Card className="p-4 bg-card border-border">
-            <h3 className="font-heading font-bold text-foreground text-sm mb-4">Swipe Activity (7 Days)</h3>
+            <h3 className="font-heading font-bold text-foreground text-sm mb-4">Swipe Activity ({range === "today" ? "Today" : range === "7d" ? "7 Days" : range === "30d" ? "30 Days" : "All Time"})</h3>
             <ResponsiveContainer width="100%" height={200}>
               <AreaChart data={swipeData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
