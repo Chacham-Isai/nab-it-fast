@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, TrendingUp, Users, Zap, BarChart3, Loader2, RefreshCw } from "lucide-react";
+import { ArrowLeft, TrendingUp, Users, Zap, BarChart3, Loader2, RefreshCw, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -34,6 +34,7 @@ const Analytics = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
+  const [range, setRange] = useState<"today" | "7d" | "30d" | "all">("7d");
   const [stats, setStats] = useState<StatCard[]>([]);
   const [swipeData, setSwipeData] = useState<any[]>([]);
   const [categoryData, setCategoryData] = useState<any[]>([]);
@@ -41,12 +42,28 @@ const Analytics = () => {
   const [dealConversion, setDealConversion] = useState<any[]>([]);
   const [funnelData, setFunnelData] = useState<any[]>([]);
 
+  const rangeStart = useMemo(() => {
+    if (range === "all") return null;
+    const d = new Date();
+    if (range === "today") d.setHours(0, 0, 0, 0);
+    else if (range === "7d") d.setDate(d.getDate() - 7);
+    else if (range === "30d") d.setDate(d.getDate() - 30);
+    return d.toISOString();
+  }, [range]);
+
   useEffect(() => {
     if (user) loadAnalytics();
-  }, [user]);
+  }, [user, range]);
 
   const loadAnalytics = async () => {
     setLoading(true);
+
+    let eventsQuery = supabase.from("analytics_events" as any).select("*").eq("user_id", user!.id).order("created_at", { ascending: false }).limit(500);
+    let ordersQuery = supabase.from("orders").select("id, status, created_at").eq("buyer_id", user!.id);
+    if (rangeStart) {
+      eventsQuery = eventsQuery.gte("created_at", rangeStart);
+      ordersQuery = ordersQuery.gte("created_at", rangeStart);
+    }
 
     const [
       { data: events },
@@ -55,11 +72,11 @@ const Analytics = () => {
       { data: memberships },
       { data: orders },
     ] = await Promise.all([
-      supabase.from("analytics_events" as any).select("*").eq("user_id", user!.id).order("created_at", { ascending: false }).limit(500),
+      eventsQuery,
       supabase.from("crews" as any).select("name, member_count, created_at").eq("is_active", true).order("member_count", { ascending: false }).limit(10),
       supabase.from("group_deals").select("id, title, status, current_participants, target_participants").in("status", ["active", "funded", "completed"]),
       supabase.from("tribe_memberships").select("tribe_name, joined_at").eq("user_id", user!.id),
-      supabase.from("orders").select("id, status").eq("buyer_id", user!.id),
+      ordersQuery,
     ]);
 
     const evts = (events as any[]) || [];
@@ -80,16 +97,17 @@ const Analytics = () => {
       { label: "Crews", value: crewsJoined, icon: <TrendingUp className="w-5 h-5 text-primary" /> },
     ]);
 
-    // --- Swipe activity by day (last 7 days) ---
-    const last7 = Array.from({ length: 7 }, (_, i) => {
+    // --- Swipe activity by day ---
+    const dayCount = range === "today" ? 1 : range === "7d" ? 7 : range === "30d" ? 30 : 14;
+    const lastN = Array.from({ length: dayCount }, (_, i) => {
       const d = new Date();
-      d.setDate(d.getDate() - (6 - i));
+      d.setDate(d.getDate() - (dayCount - 1 - i));
       return d.toISOString().split("T")[0];
     });
-    const swipeByDay = last7.map(day => {
+    const swipeByDay = lastN.map(day => {
       const dayEvents = evts.filter(e => e.created_at?.startsWith(day));
       return {
-        day: new Date(day).toLocaleDateString("en", { weekday: "short" }),
+        day: new Date(day).toLocaleDateString("en", { weekday: "short", month: dayCount > 7 ? "short" : undefined, day: dayCount > 7 ? "numeric" : undefined }),
         nabbed: dayEvents.filter(e => e.event_name === "swipe_right").length,
         passed: dayEvents.filter(e => e.event_name === "swipe_left").length,
       };
@@ -180,6 +198,24 @@ const Analytics = () => {
         </div>
       ) : (
         <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+          {/* Date Range Filter */}
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-muted-foreground" />
+            {(["today", "7d", "30d", "all"] as const).map((r) => (
+              <button
+                key={r}
+                onClick={() => setRange(r)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                  range === r
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {r === "today" ? "Today" : r === "7d" ? "7 Days" : r === "30d" ? "30 Days" : "All Time"}
+              </button>
+            ))}
+          </div>
+
           {/* Stat Cards */}
           <div className="grid grid-cols-2 gap-3">
             {stats.map((s, i) => (
@@ -196,7 +232,7 @@ const Analytics = () => {
 
           {/* Swipe Activity */}
           <Card className="p-4 bg-card border-border">
-            <h3 className="font-heading font-bold text-foreground text-sm mb-4">Swipe Activity (7 Days)</h3>
+            <h3 className="font-heading font-bold text-foreground text-sm mb-4">Swipe Activity ({range === "today" ? "Today" : range === "7d" ? "7 Days" : range === "30d" ? "30 Days" : "All Time"})</h3>
             <ResponsiveContainer width="100%" height={200}>
               <AreaChart data={swipeData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
