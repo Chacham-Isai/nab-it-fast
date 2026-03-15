@@ -24,6 +24,7 @@ import Sell from "@/pages/Sell";
 import Browse from "@/pages/Browse";
 import Orders from "@/pages/Orders";
 import ListingDetail from "@/pages/ListingDetail";
+import CrewDetail from "@/pages/CrewDetail";
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -55,6 +56,7 @@ const AnimatedRoutes = () => {
         <Route path="/browse" element={<PageTransition><Browse /></PageTransition>} />
         <Route path="/orders" element={<PageTransition><ProtectedRoute><Orders /></ProtectedRoute></PageTransition>} />
         <Route path="/listing/:id" element={<PageTransition><ListingDetail /></PageTransition>} />
+        <Route path="/crew/:name" element={<PageTransition><CrewDetail /></PageTransition>} />
 
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
