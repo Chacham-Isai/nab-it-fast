@@ -29,7 +29,7 @@ const modes = [
     tagline: "Bid. Snipe. Win.",
     desc: "AI-timed auctions on curated drops. Set snipe bids and let the Nabbit Engine execute at the last second.",
     tag: "🎯 COMPETITIVE",
-    tagColor: "bg-[hsl(280,100%,70%)]/[0.1] text-[hsl(280,100%,70%)] border-[hsl(280,100%,70%)]/30",
+    tagColor: "bg-nab-purple/[0.1] text-nab-purple border-nab-purple/30",
     link: "/auctions",
   },
   {
