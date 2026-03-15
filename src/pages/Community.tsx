@@ -11,6 +11,8 @@ import GroupDealCard from "@/components/community/GroupDealCard";
 import LeaderboardTab from "@/components/community/LeaderboardTab";
 import StreakWidget from "@/components/community/StreakWidget";
 import AIPicksBanner from "@/components/community/AIPicksBanner";
+import CreateDealForm from "@/components/community/CreateDealForm";
+import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
 
 const activityFeed = [
@@ -44,6 +46,7 @@ const Community = () => {
   const [deals, setDeals] = useState<any[]>([]);
   const [joinedDeals, setJoinedDeals] = useState<string[]>([]);
   const [dealAvatars, setDealAvatars] = useState<Record<string, string[]>>({});
+  const [showCreateDeal, setShowCreateDeal] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -116,8 +119,8 @@ const Community = () => {
     setJoinedDeals((prev) => [...prev, dealId]);
 
     // Award XP
-    await supabase.from("profiles").update({ total_xp: (await supabase.from("profiles").select("total_xp").eq("id", user.id).single()).data?.total_xp + 50 }).eq("id", user.id);
-    toast({ title: "+50 XP! 🎮", description: "You joined a group deal!" });
+    const xpGain = await awardXP(user.id, "join_deal");
+    toast({ title: `+${xpGain} XP! 🎮`, description: "You joined a group deal!" });
   };
 
   const leaveDeal = async (dealId: string) => {
@@ -231,7 +234,19 @@ const Community = () => {
         {/* Group Deals Tab */}
         {tab === "deals" && (
           <div className="space-y-4">
-            <AIPicksBanner onCreateDeal={handleCreateFromAI} />
+            <div className="flex items-center justify-between mb-2">
+              <AIPicksBanner onCreateDeal={handleCreateFromAI} />
+            </div>
+
+            {user && (
+              <Button
+                className="w-full rounded-xl h-11 mb-2"
+                variant="outline"
+                onClick={() => setShowCreateDeal(true)}
+              >
+                <Plus className="w-4 h-4 mr-2" /> Create Group Deal
+              </Button>
+            )}
 
             {deals.length === 0 && (
               <div className="text-center py-12">
@@ -280,6 +295,11 @@ const Community = () => {
         {tab === "leaderboard" && <LeaderboardTab />}
       </div>
 
+      <CreateDealForm
+        open={showCreateDeal}
+        onClose={() => setShowCreateDeal(false)}
+        onCreated={loadData}
+      />
       <BottomNav />
     </div>
   );

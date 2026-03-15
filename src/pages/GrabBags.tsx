@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import usePageMeta from "@/hooks/usePageMeta";
+import { awardXP } from "@/lib/xp";
 
 const rarityLabels = [
   { key: "common", label: "Hit", color: "bg-secondary text-secondary-foreground" },
@@ -135,6 +136,9 @@ const GrabBags = () => {
     } catch (err) {
       console.error("Order error:", err);
     }
+
+    // Award XP for opening grab bag
+    awardXP(user.id, "open_grab_bag");
 
     setRevealBag(bag);
     setRevealPhase("shake");
