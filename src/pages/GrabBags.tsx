@@ -137,6 +137,9 @@ const GrabBags = () => {
       console.error("Order error:", err);
     }
 
+    // Award XP for opening grab bag
+    awardXP(user.id, "open_grab_bag");
+
     setRevealBag(bag);
     setRevealPhase("shake");
     setTimeout(() => {
