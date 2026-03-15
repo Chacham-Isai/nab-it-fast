@@ -217,7 +217,7 @@ const Analytics = () => {
           </div>
 
           {/* Stat Cards */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             {stats.map((s, i) => (
               <Card key={i} className="p-4 bg-card border-border">
                 <div className="flex items-center gap-2 mb-1">
