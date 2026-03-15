@@ -89,26 +89,13 @@ const GroupDealCard = ({ deal, participantAvatars, isJoined, onJoin, onLeave, on
         almostThere && "border-primary/30"
       )}
     >
-      {/* Confetti overlay */}
-      <AnimatePresence>
-        {showConfetti && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 z-20 flex items-center justify-center bg-background/60 backdrop-blur-sm rounded-2xl"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="text-center"
-            >
-              <span className="text-5xl">🎉</span>
-              <p className="font-heading font-bold text-primary text-lg mt-2">DEAL FUNDED!</p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Full-screen confetti + XP celebration */}
+      <ConfettiCelebration
+        show={showCelebration}
+        xpAmount={200}
+        dealTitle={deal.title}
+        onComplete={() => setShowCelebration(false)}
+      />
 
       {/* Header */}
       <div className="flex items-start gap-3">
