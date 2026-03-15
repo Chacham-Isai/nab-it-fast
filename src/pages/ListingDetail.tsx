@@ -19,6 +19,7 @@ const ListingDetail = () => {
   const [seller, setSeller] = useState<any>(null);
   const [auction, setAuction] = useState<any>(null);
   const [bids, setBids] = useState<any[]>([]);
+  const [reviews, setReviews] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [bidAmount, setBidAmount] = useState("");
   const [bidding, setBidding] = useState(false);
