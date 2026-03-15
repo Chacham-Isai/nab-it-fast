@@ -451,6 +451,11 @@ const Feed = () => {
         </div>
       </div>
 
+      {/* ─── AI Recommendations ─── */}
+      <div className="max-w-lg mx-auto px-4 pt-3 relative z-10">
+        <AIFeedRecommendations />
+      </div>
+
       {/* ─── Category Pills ─── */}
       <div className="px-4 py-3 overflow-x-auto max-w-lg mx-auto relative z-10">
         <div className="flex gap-2">
