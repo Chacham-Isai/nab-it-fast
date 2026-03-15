@@ -195,8 +195,10 @@ const Feed = () => {
     if (dir === "right") {
       setSaved((s) => [item, ...s]);
       saveToDb(item);
+      track("swipe_right", { item_id: item.id, category: item.category, price: item.price });
       toast({ title: "✅ Nabbed!", description: "Added to your saved items." });
     } else {
+      track("swipe_left", { item_id: item.id, category: item.category, price: item.price });
       toast({ title: "✗ Passed", description: item.name });
     }
     setItems((prev) => prev.filter((i) => i.id !== item.id));
