@@ -1,9 +1,9 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
-  ShoppingBag, X, Bookmark, Zap, Bell, Star, Loader2, Heart, MessageCircle,
-  Share2, Eye, Users, Play, Radio, TrendingUp, ChevronRight, Flame, Clock, Shield
+  ShoppingBag, Bookmark, Zap, Bell, Loader2, Heart, MessageCircle,
+  Share2, Eye, Radio, TrendingUp, ChevronRight, Flame, Shield
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
@@ -13,6 +13,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import usePageMeta from "@/hooks/usePageMeta";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import { getCategoryImage, modeImages } from "@/lib/images";
 
 // Premium product images
 import imgCardsBox from "@/assets/products/cards-box.jpg";
@@ -23,7 +24,6 @@ import imgCollectiblePokemon from "@/assets/products/collectible-pokemon.jpg";
 import imgFashionBag from "@/assets/products/fashion-bag.jpg";
 import imgCardsPrizm from "@/assets/products/cards-prizm.jpg";
 import imgSneakersDunks from "@/assets/products/sneakers-dunks.jpg";
-import imgLiveStreamBg from "@/assets/products/live-stream-bg.jpg";
 
 interface FeedItem {
   id: string;
@@ -48,7 +48,7 @@ interface FeedItem {
 
 const categories = ["All", "Cards", "Sneakers", "Electronics", "Watches", "Collectibles", "Fashion"];
 
-const categoryImages: Record<string, string[]> = {
+const categoryProductImages: Record<string, string[]> = {
   Cards: [imgCardsBox, imgCardsPrizm],
   Sneakers: [imgSneakersJordans, imgSneakersDunks],
   Electronics: [imgElectronicsVr],
@@ -60,7 +60,7 @@ const categoryImages: Record<string, string[]> = {
 const allImages = [imgCardsBox, imgSneakersJordans, imgWatchRolex, imgElectronicsVr, imgCollectiblePokemon, imgFashionBag, imgCardsPrizm, imgSneakersDunks];
 
 const getProductImage = (category: string, index: number) => {
-  const images = categoryImages[category] || allImages;
+  const images = categoryProductImages[category] || allImages;
   return images[index % images.length];
 };
 
@@ -75,33 +75,31 @@ const tagStyles: Record<string, string> = {
 const sellerNames = ["NabKing", "CardVault", "SoleHunter", "LuxFinds", "GrailHQ", "TechDrip", "BreakCity", "RarePulls"];
 const timeAgos = ["2m ago", "5m ago", "12m ago", "23m ago", "38m ago", "1h ago", "2h ago", "3h ago"];
 
-// Mock live streams
 const liveStreams = [
-  { id: "1", title: "🔥 PRIZM MEGA BREAK", seller: "CardVault", viewers: 1247, image: imgCardsPrizm, category: "Cards" },
-  { id: "2", title: "Jordan 1 Unboxing", seller: "SoleHunter", viewers: 892, image: imgSneakersJordans, category: "Sneakers" },
-  { id: "3", title: "Luxury Watch Auction", seller: "LuxFinds", viewers: 634, image: imgWatchRolex, category: "Watches" },
-  { id: "4", title: "Charizard Hunting 🐉", seller: "RarePulls", viewers: 2103, image: imgCollectiblePokemon, category: "Collectibles" },
-  { id: "5", title: "Designer Bag Drops", seller: "GrailHQ", viewers: 456, image: imgFashionBag, category: "Fashion" },
+  { id: "1", title: "PRIZM MEGA BREAK", seller: "CardVault", viewers: 1247, category: "Cards" },
+  { id: "2", title: "Jordan 1 Unboxing", seller: "SoleHunter", viewers: 892, category: "Sneakers" },
+  { id: "3", title: "Luxury Watch Auction", seller: "LuxFinds", viewers: 634, category: "Watches" },
+  { id: "4", title: "Charizard Hunting", seller: "RarePulls", viewers: 2103, category: "Collectibles" },
+  { id: "5", title: "Designer Bag Drops", seller: "GrailHQ", viewers: 456, category: "Fashion" },
 ];
 
 // ─── Live Stream Card ────────────────────────────────────
 const LiveStreamCard = ({ stream }: { stream: typeof liveStreams[0] }) => {
   const navigate = useNavigate();
+  const streamImage = getCategoryImage(stream.category);
+
   return (
-    <button
-      onClick={() => navigate("/play")}
-      className="flex-shrink-0 w-[140px] group"
-    >
-      <div className="relative h-[190px] rounded-2xl overflow-hidden">
-        <img src={stream.image} alt={stream.title} className="w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+    <button onClick={() => navigate("/play")} className="flex-shrink-0 w-[140px] group">
+      <div className="relative h-[190px] rounded-2xl overflow-hidden glass-card gradient-border">
+        <img src={streamImage} alt={stream.title} className="w-full h-full object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
         {/* Live badge */}
         <div className="absolute top-2 left-2 flex items-center gap-1 px-2 py-0.5 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold">
           <span className="w-1.5 h-1.5 rounded-full bg-destructive-foreground animate-pulse" />
           LIVE
         </div>
         {/* Viewers */}
-        <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-black/60 text-[10px] text-white/90">
+        <div className="absolute top-2 right-2 flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-black/50 backdrop-blur-sm text-[10px] text-white/90">
           <Eye className="w-3 h-3" /> {stream.viewers.toLocaleString()}
         </div>
         {/* Bottom info */}
@@ -109,18 +107,17 @@ const LiveStreamCard = ({ stream }: { stream: typeof liveStreams[0] }) => {
           <p className="text-[11px] font-bold text-white leading-tight line-clamp-2">{stream.title}</p>
           <p className="text-[10px] text-white/60 mt-0.5">{stream.seller}</p>
         </div>
-        {/* Ring glow on hover */}
         <div className="absolute inset-0 rounded-2xl ring-2 ring-transparent group-hover:ring-primary/50 transition-all" />
       </div>
     </button>
   );
 };
 
-// ─── Social Feed Card (TikTok/IG style vertical scroll) ──
+// ─── Social Feed Card ────────────────────────────────────
 const SocialFeedCard = ({
-  item, index, onNab, onBookmark, onLike
+  item, onNab, onBookmark, onLike
 }: {
-  item: FeedItem; index: number;
+  item: FeedItem;
   onNab: () => void; onBookmark: () => void; onLike: () => void;
 }) => {
   const ref = useRef(null);
@@ -128,33 +125,24 @@ const SocialFeedCard = ({
   const navigate = useNavigate();
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
+  const categoryImg = getCategoryImage(item.category);
 
-  const handleLike = () => {
-    setLiked(!liked);
-    onLike();
-  };
-
-  const handleSave = () => {
-    setSaved(!saved);
-    onBookmark();
-  };
+  const handleLike = () => { setLiked(!liked); onLike(); };
+  const handleSave = () => { setSaved(!saved); onBookmark(); };
 
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0.3, y: 20 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
+      initial={{ opacity: 0, y: 30 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0.3, y: 15 }}
+      transition={{ duration: 0.45, ease: "easeOut" }}
       className="relative w-full"
     >
-      <div className="rounded-3xl overflow-hidden bg-card border border-border/50 backdrop-blur-sm"
-        style={{ boxShadow: "0 8px 40px -12px hsl(var(--nab-cyan) / 0.1), 0 2px 16px -4px rgba(0,0,0,0.2)" }}
-      >
+      <div className="rounded-2xl overflow-hidden glass-card gradient-border">
         {/* Seller Header */}
         <div className="flex items-center gap-2.5 px-4 py-3">
-          <div className="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold"
-            style={{ background: "linear-gradient(135deg, hsl(var(--nab-cyan)), hsl(var(--nab-purple)))" }}>
-            {item.seller[0]}
+          <div className="w-9 h-9 rounded-full overflow-hidden border-2 border-primary/30">
+            <img src={categoryImg} alt="" className="w-full h-full object-cover" />
           </div>
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1">
@@ -173,26 +161,19 @@ const SocialFeedCard = ({
           onClick={() => item.listing_id && navigate(`/listing/${item.listing_id}`)}
           className="relative w-full aspect-square overflow-hidden group"
         >
-          <img
-            src={item.image}
-            alt={item.name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            loading="lazy"
-          />
+          <img src={item.image} alt={item.name} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
-          {/* Urgency badge */}
           {item.hot && (
             <motion.div
               animate={{ scale: [1, 1.05, 1] }}
               transition={{ repeat: Infinity, duration: 2 }}
-              className="absolute bottom-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-destructive text-destructive-foreground text-xs font-bold shadow-lg"
+              className="absolute bottom-4 right-4 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-destructive text-destructive-foreground text-xs font-bold shadow-lg backdrop-blur-sm"
             >
               <Flame className="w-3.5 h-3.5" /> {item.left} left
             </motion.div>
           )}
 
-          {/* Double-tap heart animation */}
           <AnimatePresence>
             {liked && (
               <motion.div
@@ -209,15 +190,15 @@ const SocialFeedCard = ({
         </button>
 
         {/* Action Row */}
-        <div className="px-4 py-3">
-          <div className="flex items-center justify-between mb-3">
+        <div className="px-4 py-3 space-y-3">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <button onClick={handleLike} className="flex items-center gap-1.5 group/btn">
-                <Heart className={`w-6 h-6 transition-all active:scale-125 ${liked ? "text-destructive fill-destructive" : "text-muted-foreground group-hover/btn:text-foreground"}`} />
+                <Heart className={`w-5.5 h-5.5 transition-all active:scale-125 ${liked ? "text-destructive fill-destructive" : "text-muted-foreground group-hover/btn:text-foreground"}`} />
                 <span className={`text-xs font-medium ${liked ? "text-destructive" : "text-muted-foreground"}`}>{(item.likes + (liked ? 1 : 0)).toLocaleString()}</span>
               </button>
               <button className="flex items-center gap-1.5 group/btn">
-                <MessageCircle className="w-5.5 h-5.5 text-muted-foreground group-hover/btn:text-foreground transition-colors" />
+                <MessageCircle className="w-5 h-5 text-muted-foreground group-hover/btn:text-foreground transition-colors" />
                 <span className="text-xs text-muted-foreground font-medium">{item.comments}</span>
               </button>
               <button className="group/btn">
@@ -225,36 +206,33 @@ const SocialFeedCard = ({
               </button>
             </div>
             <button onClick={handleSave} className="active:scale-110 transition-transform">
-              <Bookmark className={`w-6 h-6 transition-all ${saved ? "text-primary fill-primary" : "text-muted-foreground hover:text-foreground"}`} />
+              <Bookmark className={`w-5.5 h-5.5 transition-all ${saved ? "text-primary fill-primary" : "text-muted-foreground hover:text-foreground"}`} />
             </button>
           </div>
 
-          {/* Product Info */}
           <h3 className="font-heading font-bold text-foreground text-base leading-tight">{item.name}</h3>
-          <p className="text-xs text-muted-foreground mt-1">{item.reason}</p>
+          <p className="text-xs text-muted-foreground">{item.reason}</p>
 
           {/* Price */}
-          <div className="flex items-center justify-between mt-3">
-            <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-black text-foreground">${item.price.toLocaleString()}</span>
-              {item.was > item.price && (
-                <>
-                  <span className="text-sm text-muted-foreground line-through">${item.was.toLocaleString()}</span>
-                  <span className="text-xs font-bold text-success px-1.5 py-0.5 rounded bg-success/10">
-                    -{Math.round((1 - item.price / item.was) * 100)}%
-                  </span>
-                </>
-              )}
-            </div>
+          <div className="flex items-baseline gap-2">
+            <span className="text-2xl font-black text-foreground">${item.price.toLocaleString()}</span>
+            {item.was > item.price && (
+              <>
+                <span className="text-sm text-muted-foreground line-through">${item.was.toLocaleString()}</span>
+                <span className="text-[10px] font-bold text-success px-2 py-0.5 rounded-full bg-success/10">
+                  -{Math.round((1 - item.price / item.was) * 100)}%
+                </span>
+              </>
+            )}
           </div>
 
           {/* AI Match Score */}
-          <div className="flex items-center gap-3 mt-3 p-2.5 rounded-xl bg-secondary/50">
+          <div className="flex items-center gap-3 p-2.5 rounded-xl bg-secondary/30 border border-border/50">
             <div className="flex items-center gap-1.5">
               <Zap className="w-4 h-4 text-primary" />
-              <span className="text-xs font-bold text-primary">AI Match</span>
+              <span className="text-[10px] font-bold text-primary uppercase tracking-wider">AI Match</span>
             </div>
-            <div className="flex-1 h-2 bg-secondary rounded-full overflow-hidden">
+            <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden">
               <motion.div
                 initial={{ width: 0 }}
                 animate={isInView ? { width: `${item.score}%` } : { width: 0 }}
@@ -267,11 +245,7 @@ const SocialFeedCard = ({
           </div>
 
           {/* CTA */}
-          <Button
-            onClick={onNab}
-            className="w-full mt-3 rounded-xl h-12 text-sm font-bold gap-2 shimmer-btn"
-            style={{ background: "linear-gradient(135deg, hsl(var(--nab-cyan)), hsl(var(--nab-blue)))", boxShadow: "0 4px 20px hsl(var(--nab-cyan) / 0.3)" }}
-          >
+          <Button onClick={onNab} className="w-full rounded-xl h-11 text-sm font-bold gap-2 shimmer-btn">
             <ShoppingBag className="w-4 h-4" /> Nab It Now
           </Button>
         </div>
@@ -283,16 +257,16 @@ const SocialFeedCard = ({
 // ─── Trending Ticker ─────────────────────────────────────
 const TrendingTicker = () => {
   const items = [
-    "🔥 Jordan 4 Thunder dropped 12%",
-    "🃏 Topps Chrome Hobby Box selling fast",
-    "⌚ Submariner hit lowest price this month",
-    "🏆 PSA 10 Charizard matched your Dream Buy",
-    "👟 Dunk Low Panda restocked",
-    "🥽 Vision Pro deals trending",
+    "Jordan 4 Thunder dropped 12%",
+    "Topps Chrome Hobby Box selling fast",
+    "Submariner hit lowest price this month",
+    "PSA 10 Charizard matched your Dream Buy",
+    "Dunk Low Panda restocked",
+    "Vision Pro deals trending",
   ];
 
   return (
-    <div className="overflow-hidden py-2.5 bg-secondary/30 border-y border-border/50">
+    <div className="overflow-hidden py-2 glass-card border-y border-border/30">
       <motion.div
         animate={{ x: ["0%", "-50%"] }}
         transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
@@ -334,7 +308,7 @@ const Feed = () => {
     if (hotDeals) {
       hotDeals.filter((d: any) => d.current_participants / d.target_participants > 0.5).forEach((d: any) => {
         feedItems.push({
-          id: `deal-${d.id}`, name: `🤝 Group Deal: ${d.title}`, category: d.category || "Deals",
+          id: `deal-${d.id}`, name: `Group Deal: ${d.title}`, category: d.category || "Deals",
           price: d.deal_price, was: d.retail_price, image: allImages[imgIdx++ % allImages.length],
           tag: d.current_participants / d.target_participants > 0.8 ? "LIMITED DROP" : "FIND",
           hot: d.current_participants / d.target_participants > 0.8,
@@ -369,7 +343,6 @@ const Feed = () => {
       });
     }
 
-    // If no real data, create premium demo items
     if (feedItems.length === 0) {
       const demoItems: Omit<FeedItem, "id">[] = [
         { name: "2024 Topps Chrome Hobby Box", category: "Cards", price: 185, was: 250, image: imgCardsBox, tag: "LIMITED DROP", hot: true, left: 3, reason: "Sealed · hobby box", score: 94, likes: 1832, comments: 67, seller: "CardVault", sellerVerified: true, timeAgo: "2m ago" },
@@ -420,22 +393,28 @@ const Feed = () => {
 
   return (
     <div className="min-h-screen bg-background pb-24">
+      {/* Background glow orbs */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute top-20 -left-32 w-64 h-64 rounded-full blur-[120px] opacity-[0.06]" style={{ background: "hsl(var(--nab-cyan))" }} />
+        <div className="absolute top-[50%] -right-32 w-64 h-64 rounded-full blur-[120px] opacity-[0.06]" style={{ background: "hsl(var(--nab-purple))" }} />
+      </div>
+
       {/* ─── Premium Header ─── */}
-      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border/50">
+      <div className="sticky top-0 z-40 bg-background/60 backdrop-blur-2xl border-b border-border/30">
         <div className="flex items-center justify-between max-w-lg mx-auto px-4 h-14">
           <Link to="/" className="flex items-center gap-2">
             <img src={nabbitLogo} alt="nabbit" className="h-6" />
             <span className="font-heading font-bold text-foreground text-base">nabbit<span className="text-primary">.ai</span></span>
           </Link>
           <div className="flex items-center gap-0.5">
-            <Button variant="ghost" size="icon" className="w-9 h-9" onClick={() => navigate("/dream-buys")}>
+            <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl" onClick={() => navigate("/dream-buys")}>
               <Zap className="w-4.5 h-4.5 text-primary" />
             </Button>
-            <Button variant="ghost" size="icon" className="w-9 h-9 relative" onClick={() => navigate("/notifications")}>
+            <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl relative" onClick={() => navigate("/notifications")}>
               <Bell className="w-4.5 h-4.5" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-destructive rounded-full animate-pulse" />
             </Button>
-            <Button variant="ghost" size="icon" className="w-9 h-9 relative">
+            <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl relative">
               <Bookmark className="w-4.5 h-4.5" />
               {savedItems.length > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 text-[9px] bg-primary text-primary-foreground rounded-full w-4 h-4 flex items-center justify-center font-bold">
@@ -450,17 +429,17 @@ const Feed = () => {
       {/* ─── Trending Ticker ─── */}
       <TrendingTicker />
 
-      {/* ─── Live Streams Section ─── */}
-      <div className="px-4 pt-4 pb-2 max-w-lg mx-auto">
+      {/* ─── Live Streams ─── */}
+      <div className="px-4 pt-4 pb-2 max-w-lg mx-auto relative z-10">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-2">
-            <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-destructive/10">
+            <div className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-destructive/10 border border-destructive/20">
               <Radio className="w-3 h-3 text-destructive animate-pulse" />
-              <span className="text-xs font-bold text-destructive">LIVE</span>
+              <span className="text-[10px] font-bold text-destructive uppercase tracking-wider">Live</span>
             </div>
             <span className="text-sm font-heading font-bold text-foreground">Streams</span>
           </div>
-          <Button variant="ghost" size="sm" className="text-xs text-muted-foreground gap-1" onClick={() => navigate("/play")}>
+          <Button variant="ghost" size="sm" className="text-xs text-muted-foreground gap-1 rounded-xl" onClick={() => navigate("/play")}>
             See all <ChevronRight className="w-3 h-3" />
           </Button>
         </div>
@@ -472,16 +451,16 @@ const Feed = () => {
       </div>
 
       {/* ─── Category Pills ─── */}
-      <div className="px-4 py-3 overflow-x-auto max-w-lg mx-auto">
+      <div className="px-4 py-3 overflow-x-auto max-w-lg mx-auto relative z-10">
         <div className="flex gap-2">
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+              className={`px-4 py-2 rounded-full text-xs font-bold whitespace-nowrap transition-all border ${
                 activeCategory === cat
-                  ? "text-primary-foreground shadow-lg"
-                  : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  ? "text-primary-foreground border-primary/30 shadow-lg"
+                  : "bg-card/50 backdrop-blur-sm border-border/50 text-muted-foreground hover:border-primary/20 hover:text-foreground"
               }`}
               style={activeCategory === cat ? {
                 background: "linear-gradient(135deg, hsl(var(--nab-cyan)), hsl(var(--nab-blue)))",
@@ -495,22 +474,20 @@ const Feed = () => {
       </div>
 
       {/* ─── Social Feed ─── */}
-      <div className="max-w-lg mx-auto px-4">
+      <div className="max-w-lg mx-auto px-4 relative z-10">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, hsl(var(--nab-cyan) / 0.2), hsl(var(--nab-purple) / 0.2))" }}>
+            <div className="w-12 h-12 rounded-2xl glass-card gradient-border flex items-center justify-center">
               <Loader2 className="w-6 h-6 animate-spin text-primary" />
             </div>
             <span className="text-sm text-muted-foreground">Loading your feed...</span>
           </div>
         ) : (
-          <div className="flex flex-col gap-6">
-            {filtered.map((item, index) => (
+          <div className="flex flex-col gap-5">
+            {filtered.map((item) => (
               <SocialFeedCard
                 key={item.id}
                 item={item}
-                index={index}
                 onNab={() => handleNab(item)}
                 onBookmark={() => handleBookmark(item)}
                 onLike={() => handleLike(item)}
@@ -523,10 +500,10 @@ const Feed = () => {
                 animate={{ opacity: 1, scale: 1 }}
                 className="flex flex-col items-center justify-center py-20 text-center"
               >
-                <span className="text-5xl mb-4">🎉</span>
+                <img src={modeImages.emptyState} alt="" className="w-24 h-24 rounded-2xl object-cover mx-auto mb-4 opacity-80" />
                 <h3 className="font-heading font-bold text-foreground text-xl">You've seen it all!</h3>
                 <p className="text-muted-foreground text-sm mt-2">Check back for new drops</p>
-                <Button className="mt-4 rounded-xl" onClick={loadFeed}>Refresh Feed</Button>
+                <Button className="mt-4 rounded-xl shimmer-btn" onClick={loadFeed}>Refresh Feed</Button>
               </motion.div>
             )}
           </div>
