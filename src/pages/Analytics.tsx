@@ -197,7 +197,7 @@ const Analytics = () => {
           <Loader2 className="w-6 h-6 animate-spin text-primary" />
         </div>
       ) : (
-        <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+        <div className="max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
           {/* Date Range Filter */}
           <div className="flex items-center gap-2">
             <Calendar className="w-4 h-4 text-muted-foreground" />
