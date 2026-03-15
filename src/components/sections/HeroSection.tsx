@@ -72,7 +72,7 @@ const HeroSection = () => {
             <span className="text-sm font-bold text-nab-cyan tracking-wide uppercase">Live Deals Dropping Now</span>
           </motion.div>
 
-          <h1 className="font-heading font-black text-foreground leading-[0.95]" style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)" }}>
+          <h1 className="font-heading font-black text-foreground leading-[0.95]" style={{ fontSize: "clamp(2.4rem, 6vw, 4.8rem)" }}>
             Stop Chasing.<br />
             <span className="gradient-text">Start Nabbing.</span>
           </h1>
