@@ -1,6 +1,7 @@
 import SectionWrapper from "@/components/SectionWrapper";
 import { motion } from "framer-motion";
 import { Eye, BarChart3, Bot, ShieldCheck } from "lucide-react";
+import nabbitLogo from "@/assets/nabbit-logo.png";
 
 const layers = [
   {
