@@ -20,6 +20,9 @@ import Play from "@/pages/Play";
 import Breaks from "@/pages/Breaks";
 import GrabBags from "@/pages/GrabBags";
 import Auctions from "@/pages/Auctions";
+import Sell from "@/pages/Sell";
+import Browse from "@/pages/Browse";
+import Orders from "@/pages/Orders";
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -47,6 +50,9 @@ const AnimatedRoutes = () => {
         <Route path="/breaks" element={<PageTransition><ProtectedRoute><Breaks /></ProtectedRoute></PageTransition>} />
         <Route path="/grab-bags" element={<PageTransition><ProtectedRoute><GrabBags /></ProtectedRoute></PageTransition>} />
         <Route path="/auctions" element={<PageTransition><ProtectedRoute><Auctions /></ProtectedRoute></PageTransition>} />
+        <Route path="/sell" element={<PageTransition><ProtectedRoute><Sell /></ProtectedRoute></PageTransition>} />
+        <Route path="/browse" element={<PageTransition><ProtectedRoute><Browse /></ProtectedRoute></PageTransition>} />
+        <Route path="/orders" element={<PageTransition><ProtectedRoute><Orders /></ProtectedRoute></PageTransition>} />
 
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
