@@ -206,7 +206,7 @@ const Community = () => {
   const tabs: { key: TabType; label: string }[] = [
     { key: "feed", label: "Feed" },
     { key: "deals", label: "Group Deals" },
-    { key: "tribes", label: "Tribes" },
+    { key: "tribes", label: "Crews" },
     { key: "leaderboard", label: "🏆" },
   ];
 
