@@ -7,6 +7,7 @@ import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
+import ReviewForm from "@/components/reviews/ReviewForm";
 
 const statusConfig: Record<string, { icon: any; color: string; label: string }> = {
   pending: { icon: Clock, color: "text-[hsl(40_90%_55%)]", label: "Pending Payment" },
