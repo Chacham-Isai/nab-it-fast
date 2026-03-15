@@ -50,7 +50,7 @@ const HeroSection = () => {
         <div className="absolute inset-0" style={{ background: `var(--radial-overlay)` }} />
       </div>
 
-      <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-10 lg:gap-16 items-center relative z-10">
+      <div className="max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-8 lg:gap-12 items-center relative z-10">
         {/* Left — Copy */}
         <motion.div
           initial={{ opacity: 0, y: 40 }}
