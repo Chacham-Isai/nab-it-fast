@@ -80,7 +80,7 @@ const GrabBags = () => {
           category: l.category,
           price: l.starting_price,
           quantity: l.quantity,
-          emoji: getCategoryEmoji(l.category),
+          emoji: getCategoryImage(l.category),
           tier: meta.tier || "Standard",
           guarantee: meta.guarantee || `$${Math.round(l.starting_price * 1.5)}+ guaranteed`,
           items_desc: meta.items_desc || `${l.quantity} items`,
