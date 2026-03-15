@@ -5,6 +5,7 @@ import LiveFeedSection from "@/components/sections/LiveFeedSection";
 import HowItDropsSection from "@/components/sections/HowItDropsSection";
 import GameModesSection from "@/components/sections/GameModesSection";
 import NabbitEngineSection from "@/components/sections/NabbitEngineSection";
+import CategoriesSection from "@/components/sections/CategoriesSection";
 import SocialProofSection from "@/components/sections/SocialProofSection";
 import FinalCTASection from "@/components/sections/FinalCTASection";
 import BackToTop from "@/components/BackToTop";
