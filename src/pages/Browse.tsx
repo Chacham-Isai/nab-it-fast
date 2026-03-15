@@ -109,10 +109,7 @@ const Browse = () => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.04 }}
-                  onClick={() => {
-                    if (listing.listing_type === 'auction') navigate(`/auctions?id=${listing.id}`);
-                    else navigate(`/play`);
-                  }}
+                  onClick={() => navigate(`/listing/${listing.id}`)}
                   className="p-4 rounded-2xl bg-card border border-border cursor-pointer hover:border-primary/30 transition-all"
                 >
                   <div className="flex gap-3">

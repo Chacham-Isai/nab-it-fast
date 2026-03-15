@@ -247,10 +247,7 @@ const Feed = () => {
                 <span className="text-2xl">{item.emoji}</span>
                 <div className="flex-1 min-w-0"><p className="text-sm font-medium text-foreground truncate">{item.name}</p><p className="text-xs text-muted-foreground">{item.category}</p></div>
                 <span className="font-bold text-foreground text-sm">${item.price.toLocaleString()}</span>
-                <Button variant="ghost" size="sm" className="text-primary text-xs" onClick={() => {
-                  if (item.listing_type === 'auction') navigate(`/auctions`);
-                  else navigate(`/play`);
-                }}>View</Button>
+                <Button variant="ghost" size="sm" className="text-primary text-xs" onClick={() => navigate(`/listing/${item.listing_id}`)}>View</Button>
               </div>
             ))}
           </div>
