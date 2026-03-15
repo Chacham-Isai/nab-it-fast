@@ -44,6 +44,16 @@ const Login = () => {
     if (error) setError(error.message);
   };
 
+  const handleAppleSignIn = async () => {
+    setError("");
+    setAppleLoading(true);
+    const { error } = await lovable.auth.signInWithOAuth("apple", {
+      redirect_uri: window.location.origin,
+    });
+    setAppleLoading(false);
+    if (error) setError(error.message);
+  };
+
   // Redirect if already authenticated
   if (!authLoading && session) {
     return <Navigate to="/feed" replace />;
