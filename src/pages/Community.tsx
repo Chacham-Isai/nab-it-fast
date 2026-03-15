@@ -192,7 +192,7 @@ const Community = () => {
       }
     }
 
-    toast({ title: "Link copied!", description: "Your tribe has been notified too! 🔔" });
+    toast({ title: "Link copied!", description: "Your crew has been notified too! 🔔" });
   };
 
   if (loading) {
