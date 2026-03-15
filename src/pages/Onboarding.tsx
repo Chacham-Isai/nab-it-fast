@@ -172,7 +172,7 @@ const Onboarding = () => {
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center space-y-8 relative z-10">
           <div className="relative">
             <Loader2 className="w-14 h-14 text-primary animate-spin mx-auto" />
-            <div className="absolute inset-0 w-14 h-14 mx-auto rounded-full animate-ping opacity-20" style={{ background: "hsl(var(--coral))" }} />
+            <div className="absolute inset-0 w-14 h-14 mx-auto rounded-full animate-ping opacity-20" style={{ background: "hsl(var(--nab-cyan))" }} />
           </div>
           <AnimatePresence mode="wait">
             <motion.p key={loadingPhase} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="text-lg font-heading font-semibold text-foreground">
