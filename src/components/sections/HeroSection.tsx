@@ -28,7 +28,7 @@ const HeroSection = () => {
   const currentNab = recentNabs[nabIndex];
 
   return (
-    <section className="relative min-h-screen flex items-center pt-20 pb-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
+    <section className="relative min-h-[calc(100svh-4.5rem)] lg:min-h-screen flex items-center pt-16 lg:pt-20 pb-8 lg:pb-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
       {/* Background — cyan/purple gradient blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
