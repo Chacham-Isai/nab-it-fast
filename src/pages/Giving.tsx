@@ -138,7 +138,7 @@ const Giving = () => {
                         <h3 className="font-semibold text-foreground text-sm">{cause.name}</h3>
                         {selected && <Check className="w-4 h-4 text-primary" />}
                       </div>
-                      <span className="text-[10px] text-muted-foreground">{cause.tribe}</span>
+                      <span className="text-[10px] text-muted-foreground">{cause.crew}</span>
                       <p className="text-xs text-muted-foreground mt-1">{cause.desc}</p>
                       <div className="mt-2">
                         <div className="flex justify-between text-xs mb-1">
