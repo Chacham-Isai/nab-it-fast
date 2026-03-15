@@ -9,12 +9,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import usePageMeta from "@/hooks/usePageMeta";
 import { awardXP } from "@/lib/xp";
+import { getCategoryImage, modeImages } from "@/lib/images";
 
 const rarityLabels = [
   { key: "common", label: "Hit", color: "bg-secondary text-secondary-foreground" },
   { key: "rare", label: "Rare Hit", color: "bg-nab-blue/20 text-nab-blue" },
   { key: "ultra", label: "Ultra Hit", color: "bg-primary/20 text-primary" },
-  { key: "legendary", label: "🏆 LEGENDARY", color: "bg-[hsl(40_90%_55%)]/20 text-[hsl(40_90%_45%)]" },
+  { key: "legendary", label: "LEGENDARY", color: "bg-[hsl(40_90%_55%)]/20 text-[hsl(40_90%_45%)]" },
 ];
 
 const tierBorders: Record<string, string> = {
@@ -22,18 +23,6 @@ const tierBorders: Record<string, string> = {
   Premium: "border-nab-blue/30",
   Ultra: "border-primary/30",
   Legendary: "border-[hsl(40_90%_55%)]/30",
-};
-
-const getCategoryEmoji = (cat: string) => {
-  const map: Record<string, string> = { Cards: "🃏", Sneakers: "👟", Watches: "⌚", Electronics: "🥽", Collectibles: "🏆", Fashion: "🧥" };
-  return map[cat] || "📦";
-};
-
-const defaultReveals: Record<string, string[]> = {
-  Cards: ["🃏", "⭐", "🏆", "💎"],
-  Sneakers: ["👟", "🧢", "🏆", "💎"],
-  Watches: ["⌚", "💎", "🏆", "👑"],
-  default: ["📦", "⭐", "🏆", "💎"],
 };
 
 type RevealPhase = "idle" | "shake" | "reveal" | "result";
