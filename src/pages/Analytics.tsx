@@ -199,7 +199,7 @@ const Analytics = () => {
       ) : (
         <div className="max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
           {/* Date Range Filter */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-hide">
             <Calendar className="w-4 h-4 text-muted-foreground" />
             {(["today", "7d", "30d", "all"] as const).map((r) => (
               <button
