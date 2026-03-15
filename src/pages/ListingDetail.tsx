@@ -341,6 +341,14 @@ const ListingDetail = () => {
             </div>
           )}
 
+          {/* Seller Reviews */}
+          {reviews.length > 0 && (
+            <div>
+              <h2 className="font-heading font-bold text-foreground text-sm mb-3">Seller Reviews</h2>
+              <ReviewList reviews={reviews} />
+            </div>
+          )}
+
           {/* Bid History */}
           {bids.length > 0 && (
             <div>
