@@ -123,33 +123,18 @@ const GrabBags = () => {
   const openBag = async (bag: GrabBagItem) => {
     if (!user) { navigate("/login"); return; }
 
-    // Create order for the grab bag
+    // Redirect to Stripe checkout for payment
     try {
-      await supabase.from("orders").insert({
-        buyer_id: user.id,
-        seller_id: (await supabase.from("listings").select("seller_id").eq("id", bag.id).single()).data?.seller_id || user.id,
-        listing_id: bag.id,
-        amount: bag.price * (quantities[bag.id] || 1),
-        platform_fee: Math.round(bag.price * (quantities[bag.id] || 1) * 0.1 * 100) / 100,
-        status: "pending",
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { listing_id: bag.id, type: "grab_bag", quantity: quantities[bag.id] || 1 },
       });
-    } catch (err) {
-      console.error("Order error:", err);
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      if (data?.url) window.open(data.url, "_blank");
+    } catch (err: any) {
+      toast({ title: "Checkout failed", description: err.message, variant: "destructive" });
+      return;
     }
-
-    // Award XP for opening grab bag
-    awardXP(user.id, "open_grab_bag");
-
-    setRevealBag(bag);
-    setRevealPhase("shake");
-    setTimeout(() => {
-      const rarity = rollRarity(bag.odds);
-      const emojiIdx = rarity === "legendary" ? 3 : rarity === "ultra" ? 2 : rarity === "rare" ? 1 : 0;
-      setRevealRarity(rarity);
-      setRevealEmoji(bag.reveals[emojiIdx]);
-      setRevealPhase("reveal");
-      setTimeout(() => setRevealPhase("result"), 1200);
-    }, 2000);
   };
 
   const resultHeadlines: Record<string, string> = {
