@@ -378,7 +378,7 @@ const HeroSection = () => {
                 </span>
                 <span>2,847 users nabbing right now</span>
               </div>
-              <span className="text-nab-cyan font-bold">Faster than Whatnot ⚡</span>
+              <span className="text-nab-cyan font-bold">Sub-3s auto-checkout ⚡</span>
             </div>
           </div>
         </motion.div>
