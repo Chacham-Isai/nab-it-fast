@@ -1,30 +1,69 @@
-import { useState, useEffect, useMemo } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { ArrowLeft, Search, SlidersHorizontal, Loader2, Gavel, X, ArrowUpDown } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { useNavigate, useSearchParams, Link } from "react-router-dom";
+import { Search, SlidersHorizontal, Loader2, Gavel, X, Eye, Clock, Flame, Tag, ChevronRight, ShoppingBag, Bookmark, Heart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import Countdown from "@/components/Countdown";
 import usePageMeta from "@/hooks/usePageMeta";
+import nabbitLogo from "@/assets/nabbit-logo.png";
+
+// Product placeholder images
+import imgCardsBox from "@/assets/products/cards-box.jpg";
+import imgSneakersJordans from "@/assets/products/sneakers-jordans.jpg";
+import imgWatchRolex from "@/assets/products/watch-rolex.jpg";
+import imgElectronicsVr from "@/assets/products/electronics-vr.jpg";
+import imgCollectiblePokemon from "@/assets/products/collectible-pokemon.jpg";
+import imgFashionBag from "@/assets/products/fashion-bag.jpg";
+import imgCardsPrizm from "@/assets/products/cards-prizm.jpg";
+import imgSneakersDunks from "@/assets/products/sneakers-dunks.jpg";
 
 const categories = ["All", "Cards", "Sneakers", "Watches", "Electronics", "Collectibles", "Fashion"];
 const listingTypes = ["All", "Auction", "Buy Now", "Break", "Grab Bag"];
 const sortOptions = [
-  { label: "Newest", value: "newest" },
-  { label: "Price: Low", value: "price_asc" },
-  { label: "Price: High", value: "price_desc" },
+  { label: "Newest First", value: "newest" },
+  { label: "Price: Low → High", value: "price_asc" },
+  { label: "Price: High → Low", value: "price_desc" },
   { label: "Ending Soon", value: "ending_soon" },
   { label: "Most Bids", value: "most_bids" },
 ];
+
+const categoryImages: Record<string, string[]> = {
+  Cards: [imgCardsBox, imgCardsPrizm],
+  Sneakers: [imgSneakersJordans, imgSneakersDunks],
+  Electronics: [imgElectronicsVr],
+  Watches: [imgWatchRolex],
+  Collectibles: [imgCollectiblePokemon],
+  Fashion: [imgFashionBag],
+};
+const allPlaceholders = [imgCardsBox, imgSneakersJordans, imgWatchRolex, imgElectronicsVr, imgCollectiblePokemon, imgFashionBag, imgCardsPrizm, imgSneakersDunks];
+
+const getPlaceholderImage = (category: string, index: number) => {
+  const imgs = categoryImages[category] || allPlaceholders;
+  return imgs[index % imgs.length];
+};
+
+const typeMap: Record<string, string> = {
+  Auction: "auction",
+  "Buy Now": "buy_now",
+  Break: "break",
+  "Grab Bag": "grab_bag",
+};
 
 const Browse = () => {
   usePageMeta({ title: "Browse — nabbit.ai", description: "Browse auctions, buy-now deals, breaks, and grab bags. Find your next nab.", path: "/browse" });
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
+
   const [listings, setListings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [totalCount, setTotalCount] = useState(0);
+
+  // Filters from URL
   const [search, setSearch] = useState(searchParams.get("q") || "");
   const [category, setCategory] = useState(searchParams.get("cat") || "All");
   const [type, setType] = useState(searchParams.get("type") || "All");
@@ -34,15 +73,11 @@ const Browse = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [debouncedSearch, setDebouncedSearch] = useState(search);
 
-  // Debounce search
+  // Debounce search input
   useEffect(() => {
-    const t = setTimeout(() => setDebouncedSearch(search), 300);
+    const t = setTimeout(() => setDebouncedSearch(search), 400);
     return () => clearTimeout(t);
   }, [search]);
-
-  useEffect(() => {
-    loadListings();
-  }, [category, type]);
 
   // Sync URL params
   useEffect(() => {
@@ -56,74 +91,76 @@ const Browse = () => {
     setSearchParams(params, { replace: true });
   }, [search, category, type, sort, minPrice, maxPrice]);
 
-  const loadListings = async () => {
+  // Server-side query — runs when any filter changes
+  const loadListings = useCallback(async () => {
     setLoading(true);
+
     let query = supabase
-      .from('listings')
-      .select('*, auctions(*)')
-      .eq('status', 'active')
-      .order('created_at', { ascending: false })
-      .limit(100);
+      .from("listings")
+      .select("*, auctions(*)", { count: "exact" })
+      .eq("status", "active");
 
-    if (category !== "All") query = query.eq('category', category);
-    if (type !== "All") {
-      const typeMap: Record<string, string> = { "Auction": "auction", "Buy Now": "buy_now", "Break": "break", "Grab Bag": "grab_bag" };
-      query = query.eq('listing_type', typeMap[type] || type.toLowerCase());
+    // Category filter
+    if (category !== "All") {
+      query = query.eq("category", category);
     }
 
-    const { data } = await query;
-    setListings(data || []);
-    setLoading(false);
-  };
-
-  const filtered = useMemo(() => {
-    let result = listings;
-
-    // Text search
-    if (debouncedSearch) {
-      const q = debouncedSearch.toLowerCase();
-      result = result.filter(l =>
-        l.title.toLowerCase().includes(q) ||
-        l.description?.toLowerCase().includes(q) ||
-        l.category?.toLowerCase().includes(q)
-      );
+    // Listing type filter
+    if (type !== "All" && typeMap[type]) {
+      query = query.eq("listing_type", typeMap[type]);
     }
 
-    // Price range
+    // Text search — use ilike for server-side search
+    if (debouncedSearch.trim()) {
+      query = query.ilike("title", `%${debouncedSearch.trim()}%`);
+    }
+
+    // Price range — filter on starting_price server-side
     const min = parseFloat(minPrice);
     const max = parseFloat(maxPrice);
     if (!isNaN(min)) {
-      result = result.filter(l => {
-        const price = l.auctions?.[0]?.current_price ?? l.starting_price;
-        return price >= min;
-      });
+      query = query.gte("starting_price", min);
     }
     if (!isNaN(max)) {
-      result = result.filter(l => {
-        const price = l.auctions?.[0]?.current_price ?? l.starting_price;
-        return price <= max;
-      });
+      query = query.lte("starting_price", max);
     }
 
     // Sort
-    result = [...result].sort((a, b) => {
-      const priceA = a.auctions?.[0]?.current_price ?? a.starting_price;
-      const priceB = b.auctions?.[0]?.current_price ?? b.starting_price;
-      switch (sort) {
-        case "price_asc": return priceA - priceB;
-        case "price_desc": return priceB - priceA;
-        case "ending_soon": {
-          const ea = a.ends_at ? new Date(a.ends_at).getTime() : Infinity;
-          const eb = b.ends_at ? new Date(b.ends_at).getTime() : Infinity;
-          return ea - eb;
-        }
-        case "most_bids": return (b.auctions?.[0]?.bid_count ?? 0) - (a.auctions?.[0]?.bid_count ?? 0);
-        default: return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      }
-    });
+    switch (sort) {
+      case "price_asc":
+        query = query.order("starting_price", { ascending: true });
+        break;
+      case "price_desc":
+        query = query.order("starting_price", { ascending: false });
+        break;
+      case "ending_soon":
+        query = query.not("ends_at", "is", null).order("ends_at", { ascending: true });
+        break;
+      default:
+        query = query.order("created_at", { ascending: false });
+        break;
+    }
 
-    return result;
-  }, [listings, debouncedSearch, minPrice, maxPrice, sort]);
+    query = query.limit(100);
+
+    const { data, count } = await query;
+    let results = data || [];
+
+    // Client-side sort for "most_bids" (requires joined data)
+    if (sort === "most_bids") {
+      results = [...results].sort(
+        (a: any, b: any) => (b.auctions?.[0]?.bid_count ?? 0) - (a.auctions?.[0]?.bid_count ?? 0)
+      );
+    }
+
+    setListings(results);
+    setTotalCount(count ?? results.length);
+    setLoading(false);
+  }, [category, type, debouncedSearch, minPrice, maxPrice, sort]);
+
+  useEffect(() => {
+    loadListings();
+  }, [loadListings]);
 
   const getTimeLeft = (endsAt: string) => Math.max(0, Math.floor((new Date(endsAt).getTime() - Date.now()) / 1000));
 
@@ -135,129 +172,275 @@ const Browse = () => {
     setMinPrice("");
     setMaxPrice("");
     setSort("newest");
+    setSearch("");
   };
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3 space-y-3">
-        <div className="flex items-center gap-3 max-w-lg mx-auto">
-          <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
-          <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-            <Input
-              placeholder="Search items..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-9 bg-secondary/50 border-border h-10 rounded-xl"
-            />
-            {search && (
-              <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2">
-                <X className="w-3.5 h-3.5 text-muted-foreground" />
-              </button>
-            )}
-          </div>
-          <button onClick={() => setShowFilters(!showFilters)} className={`p-2 rounded-xl relative ${showFilters ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
-            <SlidersHorizontal className="w-4 h-4" />
-            {activeFilterCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">{activeFilterCount}</span>
-            )}
-          </button>
-        </div>
-
-        <AnimatePresence>
-          {showFilters && (
-            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="max-w-lg mx-auto space-y-2.5 overflow-hidden">
-              {/* Categories */}
-              <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-                {categories.map(c => (
-                  <button key={c} onClick={() => setCategory(c)} className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${category === c ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>{c}</button>
-                ))}
-              </div>
-              {/* Types */}
-              <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
-                {listingTypes.map(t => (
-                  <button key={t} onClick={() => setType(t)} className={`px-3 py-1 rounded-full text-xs font-medium whitespace-nowrap transition-all ${type === t ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>{t}</button>
-                ))}
-              </div>
-              {/* Price range & Sort */}
-              <div className="flex gap-2 items-center">
-                <div className="flex items-center gap-1 flex-1">
-                  <Input type="number" placeholder="Min $" value={minPrice} onChange={e => setMinPrice(e.target.value)} className="h-8 rounded-lg bg-secondary/50 border-border text-xs" />
-                  <span className="text-muted-foreground text-xs">—</span>
-                  <Input type="number" placeholder="Max $" value={maxPrice} onChange={e => setMaxPrice(e.target.value)} className="h-8 rounded-lg bg-secondary/50 border-border text-xs" />
-                </div>
-                <select value={sort} onChange={e => setSort(e.target.value)} className="h-8 rounded-lg bg-secondary/50 border border-border text-xs text-foreground px-2">
-                  {sortOptions.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
-                </select>
-              </div>
-              {activeFilterCount > 0 && (
-                <button onClick={clearFilters} className="text-xs text-primary hover:underline">Clear all filters</button>
+      {/* ─── Sticky Header ─── */}
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border/50">
+        <div className="max-w-5xl mx-auto px-4 py-3 space-y-3">
+          {/* Search Bar */}
+          <div className="flex items-center gap-3">
+            <Link to="/" className="shrink-0">
+              <img src={nabbitLogo} alt="nabbit" className="h-6" />
+            </Link>
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
+              <Input
+                placeholder="Search cards, sneakers, watches..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-9 pr-9 bg-secondary/50 border-border/50 h-11 rounded-xl text-sm"
+              />
+              {search && (
+                <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                  <X className="w-4 h-4" />
+                </button>
               )}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-
-      <div className="max-w-lg mx-auto px-4 py-4">
-        {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+            </div>
+            <button
+              onClick={() => setShowFilters(!showFilters)}
+              className={`p-2.5 rounded-xl relative transition-all ${showFilters ? "bg-primary text-primary-foreground" : "bg-secondary/50 text-muted-foreground hover:text-foreground hover:bg-secondary"}`}
+            >
+              <SlidersHorizontal className="w-4 h-4" />
+              {activeFilterCount > 0 && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center"
+                  style={{ background: "linear-gradient(135deg, hsl(var(--nab-cyan)), hsl(var(--nab-purple)))", color: "white" }}>
+                  {activeFilterCount}
+                </span>
+              )}
+            </button>
           </div>
-        ) : filtered.length === 0 ? (
-          <div className="text-center py-16">
-            <Search className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground">No listings found</p>
-            <p className="text-xs text-muted-foreground mt-1">Try adjusting your filters</p>
-          </div>
-        ) : (
-          <div className="space-y-3">
-            <p className="text-xs text-muted-foreground">{filtered.length} items</p>
-            {filtered.map((listing, i) => {
-              const auction = listing.auctions?.[0];
-              const timeLeft = listing.ends_at ? getTimeLeft(listing.ends_at) : 0;
-              const price = auction?.current_price ?? listing.starting_price;
 
-              return (
-                <motion.div
-                  key={listing.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.04 }}
-                  onClick={() => navigate(`/listing/${listing.id}`)}
-                  className="p-3 rounded-2xl bg-card border border-border cursor-pointer hover:border-primary/30 transition-all"
-                >
-                  <div className="flex gap-3">
-                    <div className="w-16 h-16 rounded-xl bg-secondary flex items-center justify-center shrink-0 overflow-hidden">
-                      {listing.images?.[0] ? (
-                        <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-3xl">{listing.listing_type === 'auction' ? '🔨' : listing.listing_type === 'grab_bag' ? '📦' : listing.listing_type === 'break' ? '🎴' : '🛍️'}</span>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-1.5 mb-1">
-                        <span className="text-[10px] bg-secondary px-2 py-0.5 rounded-full text-secondary-foreground font-medium">{listing.category}</span>
-                        <span className="text-[10px] bg-primary/10 px-2 py-0.5 rounded-full text-primary font-medium">{listing.listing_type.replace('_', ' ')}</span>
-                      </div>
-                      <h3 className="font-semibold text-foreground text-sm truncate">{listing.title}</h3>
-                      <p className="text-xs text-muted-foreground">{listing.condition}</p>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <p className="text-sm font-bold text-foreground">${price?.toLocaleString()}</p>
-                      {auction && (
-                        <p className="text-xs text-muted-foreground flex items-center gap-1 justify-end">
-                          <Gavel className="w-3 h-3" /> {auction.bid_count} bids
-                        </p>
-                      )}
-                      {timeLeft > 0 && (
-                        <Countdown seconds={timeLeft} urgentThreshold={300} className="text-xs" />
-                      )}
+          {/* ─── Filter Panel ─── */}
+          <AnimatePresence>
+            {showFilters && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="overflow-hidden space-y-3"
+              >
+                {/* Categories */}
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mb-1.5">Category</p>
+                  <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
+                    {categories.map((c) => (
+                      <button
+                        key={c}
+                        onClick={() => setCategory(c)}
+                        className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+                          category === c
+                            ? "text-primary-foreground shadow-md"
+                            : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                        }`}
+                        style={category === c ? { background: "linear-gradient(135deg, hsl(var(--nab-cyan)), hsl(var(--nab-blue)))" } : {}}
+                      >
+                        {c}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Listing Types */}
+                <div>
+                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mb-1.5">Type</p>
+                  <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
+                    {listingTypes.map((t) => (
+                      <button
+                        key={t}
+                        onClick={() => setType(t)}
+                        className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+                          type === t
+                            ? "bg-accent text-accent-foreground shadow-md"
+                            : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                        }`}
+                      >
+                        {t}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Price Range & Sort */}
+                <div className="flex gap-2 items-end">
+                  <div className="flex-1 space-y-1">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Price Range</p>
+                    <div className="flex items-center gap-1.5">
+                      <Input
+                        type="number"
+                        placeholder="Min $"
+                        value={minPrice}
+                        onChange={(e) => setMinPrice(e.target.value)}
+                        className="h-9 rounded-lg bg-secondary/50 border-border/50 text-xs"
+                      />
+                      <span className="text-muted-foreground text-xs">—</span>
+                      <Input
+                        type="number"
+                        placeholder="Max $"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(e.target.value)}
+                        className="h-9 rounded-lg bg-secondary/50 border-border/50 text-xs"
+                      />
                     </div>
                   </div>
-                </motion.div>
-              );
-            })}
+                  <div className="flex-1 space-y-1">
+                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Sort By</p>
+                    <select
+                      value={sort}
+                      onChange={(e) => setSort(e.target.value)}
+                      className="w-full h-9 rounded-lg bg-secondary/50 border border-border/50 text-xs text-foreground px-2"
+                    >
+                      {sortOptions.map((o) => (
+                        <option key={o.value} value={o.value}>{o.label}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {activeFilterCount > 0 && (
+                  <button onClick={clearFilters} className="text-xs text-primary hover:underline font-medium">
+                    ✕ Clear all filters
+                  </button>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
+
+      {/* ─── Results ─── */}
+      <div className="max-w-5xl mx-auto px-4 py-5">
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            <div className="w-12 h-12 rounded-full flex items-center justify-center"
+              style={{ background: "linear-gradient(135deg, hsl(var(--nab-cyan) / 0.2), hsl(var(--nab-purple) / 0.2))" }}>
+              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+            </div>
+            <span className="text-sm text-muted-foreground">Searching listings...</span>
           </div>
+        ) : listings.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-20"
+          >
+            <div className="w-16 h-16 rounded-full bg-secondary/50 flex items-center justify-center mx-auto mb-4">
+              <Search className="w-7 h-7 text-muted-foreground" />
+            </div>
+            <h3 className="font-heading font-bold text-foreground text-lg">No listings found</h3>
+            <p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">
+              {debouncedSearch ? `No results for "${debouncedSearch}"` : "Try adjusting your filters or check back later for new drops"}
+            </p>
+            {activeFilterCount > 0 && (
+              <Button variant="outline" size="sm" className="mt-4 rounded-full" onClick={clearFilters}>Clear Filters</Button>
+            )}
+          </motion.div>
+        ) : (
+          <>
+            {/* Results header */}
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-sm text-muted-foreground">
+                <span className="font-bold text-foreground">{totalCount}</span> {totalCount === 1 ? "item" : "items"}
+                {debouncedSearch && <> matching "<span className="text-primary font-medium">{debouncedSearch}</span>"</>}
+              </p>
+              {!showFilters && (
+                <button onClick={() => setShowFilters(true)} className="text-xs text-primary font-medium flex items-center gap-1">
+                  <SlidersHorizontal className="w-3 h-3" /> Filters
+                </button>
+              )}
+            </div>
+
+            {/* Grid of listings */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {listings.map((listing, i) => {
+                const auction = listing.auctions?.[0];
+                const timeLeft = listing.ends_at ? getTimeLeft(listing.ends_at) : 0;
+                const price = auction?.current_price ?? listing.starting_price;
+                const hasImage = listing.images && listing.images.length > 0 && listing.images[0];
+                const displayImage = hasImage ? listing.images[0] : getPlaceholderImage(listing.category, i);
+
+                return (
+                  <motion.div
+                    key={listing.id}
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: Math.min(i * 0.03, 0.3) }}
+                    onClick={() => navigate(`/listing/${listing.id}`)}
+                    className="group rounded-2xl bg-card border border-border/50 overflow-hidden cursor-pointer hover:border-primary/30 transition-all hover:shadow-lg"
+                    style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}
+                  >
+                    {/* Image */}
+                    <div className="relative aspect-square overflow-hidden bg-secondary">
+                      <img
+                        src={displayImage}
+                        alt={listing.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+
+                      {/* Top badges */}
+                      <div className="absolute top-2.5 left-2.5 flex gap-1.5">
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/90 text-primary-foreground backdrop-blur-sm">
+                          {listing.listing_type.replace("_", " ")}
+                        </span>
+                      </div>
+                      <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-black/50 text-white/90 backdrop-blur-sm">
+                        {listing.category}
+                      </span>
+
+                      {/* Urgency */}
+                      {listing.quantity <= 3 && (
+                        <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1 px-2 py-0.5 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold">
+                          <Flame className="w-3 h-3" /> {listing.quantity} left
+                        </div>
+                      )}
+
+                      {/* Auction timer */}
+                      {timeLeft > 0 && listing.listing_type === "auction" && (
+                        <div className="absolute bottom-2.5 left-2.5">
+                          <Countdown seconds={timeLeft} urgentThreshold={300} className="text-[10px] bg-black/60 text-white px-2 py-0.5 rounded-full backdrop-blur-sm" />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Details */}
+                    <div className="p-3.5">
+                      <h3 className="font-heading font-bold text-foreground text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors">
+                        {listing.title}
+                      </h3>
+                      <p className="text-xs text-muted-foreground mt-1">{listing.condition}</p>
+
+                      <div className="flex items-center justify-between mt-3">
+                        <div>
+                          <span className="text-lg font-black text-foreground">${price?.toLocaleString()}</span>
+                          {listing.buy_now_price && listing.buy_now_price > price && (
+                            <span className="text-xs text-muted-foreground line-through ml-1.5">${listing.buy_now_price.toLocaleString()}</span>
+                          )}
+                        </div>
+                        {auction && (
+                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                            <Gavel className="w-3.5 h-3.5" />
+                            <span className="font-medium">{auction.bid_count} bids</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Watchers */}
+                      {auction && auction.watchers > 0 && (
+                        <div className="flex items-center gap-1 mt-2 text-[11px] text-muted-foreground">
+                          <Eye className="w-3 h-3" /> {auction.watchers} watching
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </>
         )}
       </div>
 
