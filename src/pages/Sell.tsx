@@ -15,6 +15,7 @@ const Sell = () => {
   usePageMeta({ title: "Sell — nabbit.ai", description: "List items, manage auctions, and track your seller dashboard.", path: "/sell" });
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [searchParams] = useState(() => new URLSearchParams(window.location.search));
   const [tab, setTab] = useState<"listings" | "orders" | "stats" | "create">("listings");
   const [listings, setListings] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
