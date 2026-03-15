@@ -25,6 +25,7 @@ import Browse from "@/pages/Browse";
 import Orders from "@/pages/Orders";
 import ListingDetail from "@/pages/ListingDetail";
 import CrewDetail from "@/pages/CrewDetail";
+import Analytics from "@/pages/Analytics";
 
 const AnimatedRoutes = () => {
   const location = useLocation();
