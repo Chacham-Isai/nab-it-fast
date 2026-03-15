@@ -143,7 +143,7 @@ const HeroSection = () => {
           initial={{ opacity: 0, scale: 0.9 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 60 }}
-          className="relative flex justify-center lg:justify-end"
+          className="relative mt-2 lg:mt-0 flex justify-center lg:justify-end"
         >
           <div className="relative">
             <div className="absolute inset-0 scale-110 blur-[80px] rounded-full pointer-events-none" style={{ background: "hsl(var(--nab-cyan) / 0.1)" }} />
