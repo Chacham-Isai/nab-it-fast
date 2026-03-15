@@ -287,24 +287,9 @@ const Community = () => {
           </div>
         )}
 
-        {/* Tribes Tab */}
+        {/* Crews Tab */}
         {tab === "tribes" && (
-          <div className="grid grid-cols-2 gap-3">
-            {tribes.map((tribe, i) => {
-              const joined = joinedTribes.includes(tribe.name);
-              return (
-                <motion.div key={tribe.name} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }} className="p-4 rounded-2xl bg-card border border-border text-center space-y-2">
-                  <span className="text-3xl">{tribe.emoji}</span>
-                  <h3 className="font-semibold text-foreground text-sm">{tribe.name}</h3>
-                  <div className="flex items-center justify-center gap-1.5">
-                    {tribe.active && <span className="w-2 h-2 rounded-full bg-success" />}
-                    <span className="text-xs text-muted-foreground">{tribe.members.toLocaleString()} members</span>
-                  </div>
-                  <Button size="sm" variant={joined ? "secondary" : "default"} className="w-full rounded-xl text-xs" onClick={() => toggleTribe(tribe.name, tribe.emoji)}>{joined ? "Joined" : "Join"}</Button>
-                </motion.div>
-              );
-            })}
-          </div>
+          <CrewDiscovery joinedCrews={joinedTribes} onToggleCrew={toggleTribe} />
         )}
 
         {/* Leaderboard Tab */}
