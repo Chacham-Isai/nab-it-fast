@@ -184,7 +184,7 @@ const Community = () => {
         const notifications = tribeMembers.map((m: any) => ({
           user_id: m.user_id,
           type: "deal_shared",
-          title: `${deal.emoji} Deal shared in ${deal.tribe_name}!`,
+           title: `${deal.emoji} Deal shared in ${deal.tribe_name}!`,
           body: `${deal.title} — $${deal.deal_price} (${deal.discount_pct}% off). Join before it fills up!`,
           action_label: "View Deal",
         }));
