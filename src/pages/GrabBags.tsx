@@ -9,12 +9,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import usePageMeta from "@/hooks/usePageMeta";
 import { awardXP } from "@/lib/xp";
+import { getCategoryImage, modeImages } from "@/lib/images";
 
 const rarityLabels = [
   { key: "common", label: "Hit", color: "bg-secondary text-secondary-foreground" },
   { key: "rare", label: "Rare Hit", color: "bg-nab-blue/20 text-nab-blue" },
   { key: "ultra", label: "Ultra Hit", color: "bg-primary/20 text-primary" },
-  { key: "legendary", label: "🏆 LEGENDARY", color: "bg-[hsl(40_90%_55%)]/20 text-[hsl(40_90%_45%)]" },
+  { key: "legendary", label: "LEGENDARY", color: "bg-[hsl(40_90%_55%)]/20 text-[hsl(40_90%_45%)]" },
 ];
 
 const tierBorders: Record<string, string> = {
@@ -22,18 +23,6 @@ const tierBorders: Record<string, string> = {
   Premium: "border-nab-blue/30",
   Ultra: "border-primary/30",
   Legendary: "border-[hsl(40_90%_55%)]/30",
-};
-
-const getCategoryEmoji = (cat: string) => {
-  const map: Record<string, string> = { Cards: "🃏", Sneakers: "👟", Watches: "⌚", Electronics: "🥽", Collectibles: "🏆", Fashion: "🧥" };
-  return map[cat] || "📦";
-};
-
-const defaultReveals: Record<string, string[]> = {
-  Cards: ["🃏", "⭐", "🏆", "💎"],
-  Sneakers: ["👟", "🧢", "🏆", "💎"],
-  Watches: ["⌚", "💎", "🏆", "👑"],
-  default: ["📦", "⭐", "🏆", "💎"],
 };
 
 type RevealPhase = "idle" | "shake" | "reveal" | "result";
@@ -91,13 +80,13 @@ const GrabBags = () => {
           category: l.category,
           price: l.starting_price,
           quantity: l.quantity,
-          emoji: getCategoryEmoji(l.category),
+          emoji: getCategoryImage(l.category),
           tier: meta.tier || "Standard",
           guarantee: meta.guarantee || `$${Math.round(l.starting_price * 1.5)}+ guaranteed`,
           items_desc: meta.items_desc || `${l.quantity} items`,
           sold: meta.sold || 0,
           odds: meta.odds || { common: 55, rare: 28, ultra: 13, legendary: 4 },
-          reveals: defaultReveals[l.category] || defaultReveals.default,
+          reveals: [],
         };
       });
       setBags(items);
@@ -155,11 +144,9 @@ const GrabBags = () => {
         </div>
         <AnimatePresence mode="wait">
           {revealPhase === "shake" && (
-            <motion.div key="shake" initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="text-center relative z-10">
-              <motion.span className="text-7xl block" animate={{ y: [0, -10, 0, 10, 0], rotate: [-5, 5, -5, 5, 0] }} transition={{ repeat: Infinity, duration: 0.3 }}>
-                📦
-              </motion.span>
-              <p className="text-lg font-heading font-semibold text-foreground mt-6 animate-pulse">Opening your bag...</p>
+             <motion.div key="shake" initial={{ scale: 0.8 }} animate={{ scale: 1 }} className="text-center relative z-10">
+               <motion.img src={modeImages.grabBags} alt="" className="w-28 h-28 rounded-2xl object-cover mx-auto" animate={{ y: [0, -10, 0, 10, 0], rotate: [-5, 5, -5, 5, 0] }} transition={{ repeat: Infinity, duration: 0.3 }} />
+               <p className="text-lg font-heading font-semibold text-foreground mt-6 animate-pulse">Opening your bag...</p>
             </motion.div>
           )}
           {revealPhase === "reveal" && (
@@ -217,18 +204,18 @@ const GrabBags = () => {
             <Loader2 className="w-6 h-6 animate-spin text-primary" />
           </div>
         ) : filteredBags.length === 0 ? (
-          <div className="text-center py-16">
-            <span className="text-5xl block mb-4">📦</span>
-            <p className="text-muted-foreground">No grab bags available</p>
-            <p className="text-xs text-muted-foreground mt-1">Check back soon for new mystery drops</p>
-          </div>
+           <div className="text-center py-16">
+             <img src={modeImages.emptyState} alt="" className="w-24 h-24 rounded-2xl object-cover mx-auto mb-4 opacity-80" />
+             <p className="text-muted-foreground">No grab bags available</p>
+             <p className="text-xs text-muted-foreground mt-1">Check back soon for new mystery drops</p>
+           </div>
         ) : (
           filteredBags.map((bag, i) => {
             const qty = quantities[bag.id] || 1;
             return (
               <motion.div key={bag.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className={`rounded-2xl bg-card border ${tierBorders[bag.tier] || "border-border"} p-4 space-y-4`}>
-                <div className="flex items-start gap-3">
-                  <motion.span className="text-4xl" animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>{bag.emoji}</motion.span>
+                 <div className="flex items-start gap-3">
+                   <motion.img src={bag.emoji} alt="" className="w-14 h-14 rounded-xl object-cover shrink-0" animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }} />
                   <div className="flex-1">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">{bag.tier}</span>

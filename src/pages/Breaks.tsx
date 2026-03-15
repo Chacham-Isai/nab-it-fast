@@ -9,11 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import usePageMeta from "@/hooks/usePageMeta";
-
-const getCategoryEmoji = (cat: string) => {
-  const map: Record<string, string> = { Cards: "🃏", Sneakers: "👟", Watches: "⌚", Electronics: "🥽", Collectibles: "🏆", Fashion: "🧥" };
-  return map[cat] || "📦";
-};
+import { getCategoryImage, modeImages } from "@/lib/images";
 
 const Breaks = () => {
   usePageMeta({ title: "Breaks — nabbit.ai", description: "Join live card breaks and claim your slots", path: "/breaks" });
@@ -152,9 +148,9 @@ const Breaks = () => {
         ) : (
           <>
             {tab === "live" && (liveListings.length === 0 ? (
-              <div className="text-center py-16">
-                <span className="text-5xl block mb-4">🎴</span>
-                <p className="text-muted-foreground">No live breaks right now</p>
+               <div className="text-center py-16">
+                 <img src={modeImages.emptyState} alt="" className="w-20 h-20 rounded-2xl object-cover mx-auto mb-4 opacity-80" />
+                 <p className="text-muted-foreground">No live breaks right now</p>
                 <p className="text-xs text-muted-foreground mt-1">Check upcoming or come back later</p>
               </div>
             ) : liveListings.map((listing, i) => {
@@ -166,7 +162,7 @@ const Breaks = () => {
                 <motion.div key={listing.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="rounded-2xl bg-card border border-border overflow-hidden">
                   <div className="p-4 space-y-3">
                     <div className="flex items-start gap-3">
-                      <span className="text-3xl">{getCategoryEmoji(listing.category)}</span>
+                       <img src={getCategoryImage(listing.category)} alt="" className="w-10 h-10 rounded-xl object-cover" />
                       <div className="flex-1">
                         <h3 className="font-heading font-bold text-foreground">{listing.title}</h3>
                         <p className="text-xs text-muted-foreground">Host: {listing.seller_profiles?.shop_name || "Seller"}</p>
@@ -243,9 +239,9 @@ const Breaks = () => {
             }))}
 
             {tab === "upcoming" && (upcomingListings.length === 0 ? (
-              <div className="text-center py-16">
-                <span className="text-5xl block mb-4">📅</span>
-                <p className="text-muted-foreground">No upcoming breaks scheduled</p>
+               <div className="text-center py-16">
+                 <img src={modeImages.emptyState} alt="" className="w-20 h-20 rounded-2xl object-cover mx-auto mb-4 opacity-80" />
+                 <p className="text-muted-foreground">No upcoming breaks scheduled</p>
               </div>
             ) : (
               <div className="space-y-3">
@@ -258,7 +254,7 @@ const Breaks = () => {
 
                   return (
                     <motion.div key={listing.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} className="flex items-center gap-3 p-4 rounded-2xl bg-card border border-border">
-                      <span className="text-3xl">{getCategoryEmoji(listing.category)}</span>
+                       <img src={getCategoryImage(listing.category)} alt="" className="w-10 h-10 rounded-xl object-cover" />
                       <div className="flex-1">
                         <h3 className="font-semibold text-foreground text-sm">{listing.title}</h3>
                         <p className="text-xs text-muted-foreground">${avgPrice}/slot · {slotsLeft}/{listingSlots.length} slots left</p>
@@ -273,8 +269,9 @@ const Breaks = () => {
 
             {tab === "my-breaks" && (myBreaks.length === 0 ? (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
-                <span className="text-4xl mb-4 block">🎴</span>
-                <p className="text-muted-foreground">No breaks joined yet</p>
+                 <span className="text-4xl mb-4 block">
+                   <img src={modeImages.emptyState} alt="" className="w-16 h-16 rounded-2xl object-cover mx-auto opacity-80" />
+                 </span>
                 <Button className="mt-4 rounded-xl shimmer-btn" onClick={() => setTab("live")}>Browse Live Breaks</Button>
               </motion.div>
             ) : (
@@ -285,7 +282,7 @@ const Breaks = () => {
                   return (
                     <motion.div key={listing.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} className="p-4 rounded-2xl bg-card border border-border">
                       <div className="flex items-center gap-3">
-                        <span className="text-3xl">{getCategoryEmoji(listing.category)}</span>
+                        <img src={getCategoryImage(listing.category)} alt="" className="w-10 h-10 rounded-xl object-cover" />
                         <div className="flex-1">
                           <h3 className="font-semibold text-foreground text-sm">{listing.title}</h3>
                           <p className="text-xs text-muted-foreground">{mySlots.length} slot{mySlots.length !== 1 ? "s" : ""} claimed</p>
