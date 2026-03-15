@@ -269,8 +269,9 @@ const Breaks = () => {
 
             {tab === "my-breaks" && (myBreaks.length === 0 ? (
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
-                <span className="text-4xl mb-4 block">🎴</span>
-                <p className="text-muted-foreground">No breaks joined yet</p>
+                 <span className="text-4xl mb-4 block">
+                   <img src={modeImages.emptyState} alt="" className="w-16 h-16 rounded-2xl object-cover mx-auto opacity-80" />
+                 </span>
                 <Button className="mt-4 rounded-xl shimmer-btn" onClick={() => setTab("live")}>Browse Live Breaks</Button>
               </motion.div>
             ) : (
