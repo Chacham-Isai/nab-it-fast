@@ -127,6 +127,24 @@ const Play = () => {
           </div>
         </motion.div>
 
+        {/* Quick Actions */}
+        <div className="grid grid-cols-3 gap-2">
+          {tools.map((tool, i) => (
+            <motion.button
+              key={tool.title}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 + i * 0.06 }}
+              onClick={() => navigate(tool.path)}
+              className="p-3 rounded-2xl bg-card border border-border text-center hover:border-primary/30 transition-all"
+            >
+              <span className="text-2xl block mb-1">{tool.emoji}</span>
+              <p className="text-xs font-semibold text-foreground">{tool.title}</p>
+              <p className="text-[10px] text-muted-foreground">{tool.desc}</p>
+            </motion.button>
+          ))}
+        </div>
+
         {/* Trust */}
         <div className="flex items-center gap-2 p-3 rounded-xl bg-primary/5 border border-primary/10 text-center justify-center">
           <Shield className="w-4 h-4 text-primary" />
