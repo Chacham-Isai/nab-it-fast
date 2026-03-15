@@ -246,7 +246,7 @@ const Community = () => {
                 <span className="text-2xl">{a.user}</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-foreground"><span className="font-semibold">{a.name}</span> {a.action} <span className="font-semibold text-primary">{a.item}</span>{a.price && <span className="text-muted-foreground"> · ${a.price.toLocaleString()}</span>}</p>
-                  <p className="text-[10px] text-muted-foreground">{a.tribe} · {a.time}</p>
+                  <p className="text-[10px] text-muted-foreground">{a.crew} · {a.time}</p>
                 </div>
                 {a.hot && <Flame className="w-4 h-4 text-destructive shrink-0" />}
               </motion.div>
