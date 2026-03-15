@@ -96,6 +96,7 @@ const Feed = () => {
   usePageMeta({ title: "Feed — nabbit.ai", description: "Your personalized deal feed. Swipe to nab deals from 200+ retailers.", path: "/feed" });
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { track } = useAnalytics();
   const [items, setItems] = useState<FeedItem[]>([]);
   const [saved, setSaved] = useState<FeedItem[]>([]);
   const [activeCategory, setActiveCategory] = useState("All");
