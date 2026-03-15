@@ -40,8 +40,8 @@ const SwipeCard = ({ item, isTop, onSwipe, onBookmark }: { item: FeedItem; isTop
   return (
     <motion.div style={{ x, rotate, zIndex: isTop ? 10 : 1 }} drag={isTop ? "x" : false} dragConstraints={{ left: 0, right: 0 }} dragElastic={0.7} onDragEnd={(_, info) => { if (info.offset.x > 80) onSwipe("right"); else if (info.offset.x < -80) onSwipe("left"); }} className="absolute inset-0 touch-none">
       <div className="w-full h-full rounded-3xl border border-border bg-card overflow-hidden shadow-lg">
-        <motion.div style={{ opacity: nabOpacity }} className="absolute inset-0 bg-green-500/20 z-20 flex items-center justify-center pointer-events-none rounded-3xl">
-          <span className="text-4xl font-heading font-black text-green-500 rotate-[-15deg] border-4 border-green-500 px-6 py-2 rounded-xl">NAB IT ✓</span>
+       <motion.div style={{ opacity: nabOpacity }} className="absolute inset-0 bg-success/20 z-20 flex items-center justify-center pointer-events-none rounded-3xl">
+          <span className="text-4xl font-heading font-black text-success rotate-[-15deg] border-4 border-success px-6 py-2 rounded-xl">NAB IT ✓</span>
         </motion.div>
         <motion.div style={{ opacity: passOpacity }} className="absolute inset-0 bg-destructive/20 z-20 flex items-center justify-center pointer-events-none rounded-3xl">
           <span className="text-4xl font-heading font-black text-destructive rotate-[15deg] border-4 border-destructive px-6 py-2 rounded-xl">PASS ✗</span>
