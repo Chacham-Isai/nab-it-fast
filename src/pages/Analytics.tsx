@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, AreaChart, Area, CartesianGrid,
+  FunnelChart, Funnel, LabelList,
 } from "recharts";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
