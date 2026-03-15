@@ -17,7 +17,7 @@ const testimonials = [
     handle: "@marcusnabs",
   },
   {
-    quote: "The grab bags are dangerously addictive. Pulled a $800 pair of Yeezys from a $50 bag.",
+    quote: "The grab bags are unreal. Pulled a $800 pair of Yeezys from a $50 bag.",
     name: "Priya D.",
     handle: "@priyadeals",
   },

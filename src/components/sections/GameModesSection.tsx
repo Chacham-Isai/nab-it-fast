@@ -58,7 +58,7 @@ const GameModesSection = () => {
           <span className="gradient-text">This isn't shopping.</span>
         </h2>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          Four addictive ways to score deals — each one powered by the Nabbit Engine and tuned to your vibe.
+          Four powerful ways to score deals — each one powered by the Nabbit Engine and tuned to your vibe.
         </p>
       </div>
 

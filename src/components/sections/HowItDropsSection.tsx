@@ -43,7 +43,7 @@ const HowItDropsSection = () => {
           style={{ fontSize: "clamp(2rem, 4.5vw, 3.5rem)" }}
         >
           Four steps to{" "}
-          <span className="gradient-text">pure dopamine.</span>
+          <span className="gradient-text">your next win.</span>
         </h2>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
           From discovery to doorstep — the entire loop is engineered to feel like winning.
