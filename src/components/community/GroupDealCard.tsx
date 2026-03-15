@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Clock, Users, Trophy, Share2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import Countdown from "@/components/Countdown";
+import ConfettiCelebration from "@/components/community/ConfettiCelebration";
 import { cn } from "@/lib/utils";
 
 interface GroupDealCardProps {
