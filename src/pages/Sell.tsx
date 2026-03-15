@@ -25,6 +25,9 @@ const Sell = () => {
 
   useEffect(() => {
     if (!user) return;
+    if (searchParams.get("stripe_connected") === "true") {
+      toast({ title: "✅ Stripe connected!", description: "Your payout account is set up." });
+    }
     loadData();
   }, [user]);
 
