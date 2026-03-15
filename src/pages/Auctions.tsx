@@ -124,7 +124,7 @@ const Auctions = () => {
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
           <h1 className="font-heading font-bold text-foreground text-lg flex-1">Live Auctions</h1>
-          <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold">3 Active</span>
+          <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-success/10 text-success text-[10px] font-bold">3 Active</span>
         </div>
       </div>
 
