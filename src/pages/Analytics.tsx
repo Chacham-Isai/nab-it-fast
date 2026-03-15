@@ -6,6 +6,7 @@ import { Card } from "@/components/ui/card";
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, AreaChart, Area, CartesianGrid,
+  FunnelChart, Funnel, LabelList,
 } from "recharts";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,6 +39,7 @@ const Analytics = () => {
   const [categoryData, setCategoryData] = useState<any[]>([]);
   const [crewGrowth, setCrewGrowth] = useState<any[]>([]);
   const [dealConversion, setDealConversion] = useState<any[]>([]);
+  const [funnelData, setFunnelData] = useState<any[]>([]);
 
   useEffect(() => {
     if (user) loadAnalytics();
@@ -51,11 +53,13 @@ const Analytics = () => {
       { data: crews },
       { data: deals },
       { data: memberships },
+      { data: orders },
     ] = await Promise.all([
       supabase.from("analytics_events" as any).select("*").eq("user_id", user!.id).order("created_at", { ascending: false }).limit(500),
       supabase.from("crews" as any).select("name, member_count, created_at").eq("is_active", true).order("member_count", { ascending: false }).limit(10),
       supabase.from("group_deals").select("id, title, status, current_participants, target_participants").in("status", ["active", "funded", "completed"]),
       supabase.from("tribe_memberships").select("tribe_name, joined_at").eq("user_id", user!.id),
+      supabase.from("orders").select("id, status").eq("buyer_id", user!.id),
     ]);
 
     const evts = (events as any[]) || [];
@@ -120,6 +124,19 @@ const Analytics = () => {
       { name: "Active", value: active || 0 },
       { name: "Funded", value: funded || 0 },
       { name: "Completed", value: completed || 0 },
+    ]);
+
+    // --- Conversion funnel ---
+    const listingsViewed = evts.filter(e => e.event_name === "listing_viewed").length;
+    const bidsPlaced = evts.filter(e => e.event_name === "bid_placed").length;
+    const ordersCompleted = ((orders as any[]) || []).filter(o => ["completed", "delivered", "shipped"].includes(o.status)).length;
+    const totalOrders = ((orders as any[]) || []).length;
+
+    setFunnelData([
+      { name: "Viewed", value: listingsViewed || 0, fill: CHART_COLORS[0] },
+      { name: "Bid", value: bidsPlaced || 0, fill: CHART_COLORS[1] },
+      { name: "Ordered", value: totalOrders || 0, fill: CHART_COLORS[3] },
+      { name: "Completed", value: ordersCompleted || 0, fill: CHART_COLORS[4] },
     ]);
 
     setLoading(false);
@@ -224,6 +241,43 @@ const Analytics = () => {
               </ResponsiveContainer>
             </Card>
           </div>
+
+          {/* Conversion Funnel */}
+          <Card className="p-4 bg-card border-border">
+            <h3 className="font-heading font-bold text-foreground text-sm mb-1">Conversion Funnel</h3>
+            <p className="text-xs text-muted-foreground mb-4">Listing viewed → Bid placed → Order → Completed</p>
+            <div className="space-y-3">
+              {funnelData.map((step, i) => {
+                const maxVal = Math.max(...funnelData.map(d => d.value), 1);
+                const pct = Math.max((step.value / maxVal) * 100, 8);
+                const convRate = i > 0 && funnelData[i - 1].value > 0
+                  ? Math.round((step.value / funnelData[i - 1].value) * 100)
+                  : null;
+                return (
+                  <div key={step.name}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-medium text-foreground">{step.name}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold text-foreground">{step.value}</span>
+                        {convRate !== null && (
+                          <span className="text-[10px] font-medium text-muted-foreground">({convRate}%)</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="h-7 bg-secondary/50 rounded-lg overflow-hidden relative">
+                      <div
+                        className="h-full rounded-lg transition-all duration-500"
+                        style={{ width: `${pct}%`, background: step.fill, opacity: 0.85 }}
+                      />
+                      {i < funnelData.length - 1 && (
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">→</div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
 
           {/* Crew Growth */}
           <Card className="p-4 bg-card border-border">
