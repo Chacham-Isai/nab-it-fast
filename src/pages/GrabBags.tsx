@@ -204,11 +204,11 @@ const GrabBags = () => {
             <Loader2 className="w-6 h-6 animate-spin text-primary" />
           </div>
         ) : filteredBags.length === 0 ? (
-          <div className="text-center py-16">
-            <span className="text-5xl block mb-4">📦</span>
-            <p className="text-muted-foreground">No grab bags available</p>
-            <p className="text-xs text-muted-foreground mt-1">Check back soon for new mystery drops</p>
-          </div>
+           <div className="text-center py-16">
+             <img src={modeImages.emptyState} alt="" className="w-24 h-24 rounded-2xl object-cover mx-auto mb-4 opacity-80" />
+             <p className="text-muted-foreground">No grab bags available</p>
+             <p className="text-xs text-muted-foreground mt-1">Check back soon for new mystery drops</p>
+           </div>
         ) : (
           filteredBags.map((bag, i) => {
             const qty = quantities[bag.id] || 1;
