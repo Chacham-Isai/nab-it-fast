@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ArrowLeft, Gavel, Eye, Shield, AlertTriangle, Loader2 } from "lucide-react";
+import nabbitLogo from "@/assets/nabbit-logo.png";
+import { getCategoryImage } from "@/lib/images";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
