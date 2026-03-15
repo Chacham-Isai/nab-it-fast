@@ -203,16 +203,25 @@ const Auctions = () => {
 
       <div className="max-w-lg mx-auto px-4 space-y-6">
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}>
+              <Loader2 className="w-7 h-7 text-primary" />
+            </motion.div>
+            <span className="text-xs text-muted-foreground font-medium">Loading auctions...</span>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16">
-            <Gavel className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground">No active auctions</p>
-            <p className="text-xs text-muted-foreground mt-1">Check back soon or list your own item</p>
-            <Button className="mt-4 rounded-xl shimmer-btn" onClick={() => navigate("/sell")}>Sell an Item</Button>
-          </div>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+            <motion.div
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 flex items-center justify-center mx-auto mb-4"
+            >
+              <Gavel className="w-8 h-8 text-primary" />
+            </motion.div>
+            <p className="font-heading font-black text-foreground text-lg">No active auctions</p>
+            <p className="text-xs text-muted-foreground mt-1.5">Check back soon or list your own item</p>
+            <Button className="mt-5 rounded-xl shimmer-btn font-black text-xs uppercase tracking-wider gap-1" onClick={() => navigate("/sell")}>Sell an Item</Button>
+          </motion.div>
         ) : filtered.map((auction, i) => {
           const listing = auction.listings;
           if (!listing) return null;
@@ -276,42 +285,42 @@ const Auctions = () => {
                 {!isEnded && (
                   <>
                     <div className="flex gap-2">
-                      <button onClick={() => setBidTab((t) => ({ ...t, [auction.id]: "bid" }))} className={`px-3 py-1 rounded-full text-xs font-medium ${tab === "bid" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>Place Bid</button>
-                      <button onClick={() => setBidTab((t) => ({ ...t, [auction.id]: "history" }))} className={`px-3 py-1 rounded-full text-xs font-medium ${tab === "history" ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>Bid History</button>
+                      <button onClick={() => setBidTab((t) => ({ ...t, [auction.id]: "bid" }))} className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all ${tab === "bid" ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-[0_0_16px_-4px_hsl(var(--primary)/0.4)]" : "bg-secondary/30 text-muted-foreground border border-border/50"}`}>Place Bid</button>
+                      <button onClick={() => setBidTab((t) => ({ ...t, [auction.id]: "history" }))} className={`px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider transition-all ${tab === "history" ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-[0_0_16px_-4px_hsl(var(--primary)/0.4)]" : "bg-secondary/30 text-muted-foreground border border-border/50"}`}>Bid History</button>
                     </div>
 
                     {tab === "bid" && (
                       <div className="space-y-3">
                         <div className="flex gap-2">
                           {[minBid, minBid + inc, minBid + inc * 2].map((amt) => (
-                            <Button key={amt} variant="outline" size="sm" className="flex-1 rounded-xl text-xs" disabled={bidding === auction.id} onClick={() => placeBid(auction.id, amt)}>
+                            <Button key={amt} variant="outline" size="sm" className="flex-1 rounded-xl text-xs font-bold border-border/50 hover:border-primary/40 hover:bg-primary/5" disabled={bidding === auction.id} onClick={() => placeBid(auction.id, amt)}>
                               ${amt.toLocaleString()}
                             </Button>
                           ))}
                         </div>
                         <div className="flex gap-2">
                           <div className="relative flex-1">
-                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
-                            <Input type="number" value={customBid[auction.id] || ""} onChange={(e) => setCustomBid((c) => ({ ...c, [auction.id]: e.target.value }))} className="pl-7 bg-secondary/50 border-border rounded-xl" placeholder={minBid.toLocaleString()} />
+                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 text-sm font-bold">$</span>
+                            <Input type="number" value={customBid[auction.id] || ""} onChange={(e) => setCustomBid((c) => ({ ...c, [auction.id]: e.target.value }))} className="pl-7 bg-secondary/30 border-border/50 rounded-xl font-medium" placeholder={minBid.toLocaleString()} />
                           </div>
-                          <Button disabled={bidding === auction.id} onClick={() => placeBid(auction.id, parseInt(customBid[auction.id] || "0"))} className="rounded-xl shimmer-btn">
+                          <Button disabled={bidding === auction.id} onClick={() => placeBid(auction.id, parseInt(customBid[auction.id] || "0"))} className="rounded-xl shimmer-btn font-black text-xs uppercase tracking-wider">
                             {bidding === auction.id ? "Bidding..." : "Bid"}
                           </Button>
                         </div>
                         {bidError[auction.id] && (
-                          <p className="text-xs text-destructive flex items-center gap-1">
+                          <p className="text-xs text-destructive flex items-center gap-1 font-medium">
                             <AlertTriangle className="w-3 h-3" /> {bidError[auction.id]}
                           </p>
                         )}
-                        <div className="p-3 rounded-xl bg-secondary/50 space-y-2">
-                          <p className="text-xs font-semibold text-foreground">Max / Proxy Bid</p>
+                        <div className="p-3.5 rounded-xl glass-card border border-border/50 space-y-2">
+                          <p className="text-xs font-black text-foreground uppercase tracking-wider">Max / Proxy Bid</p>
                           <p className="text-[10px] text-muted-foreground">We'll auto-bid for you up to your limit</p>
                           <div className="flex gap-2">
                             <div className="relative flex-1">
-                              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">$</span>
-                              <Input type="number" value={proxyBid[auction.id] || ""} onChange={(e) => setProxyBid((p) => ({ ...p, [auction.id]: e.target.value }))} className="pl-7 bg-background border-border rounded-xl" />
+                              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 text-sm font-bold">$</span>
+                              <Input type="number" value={proxyBid[auction.id] || ""} onChange={(e) => setProxyBid((p) => ({ ...p, [auction.id]: e.target.value }))} className="pl-7 bg-secondary/30 border-border/50 rounded-xl font-medium" />
                             </div>
-                            <Button variant="outline" className="rounded-xl text-xs" onClick={() => setProxyBidFn(auction.id)}>Set</Button>
+                            <Button variant="outline" className="rounded-xl text-xs font-bold border-border/50 hover:border-primary/30" onClick={() => setProxyBidFn(auction.id)}>Set</Button>
                           </div>
                         </div>
                         {listing.buy_now_price && (
@@ -332,19 +341,19 @@ const Auctions = () => {
                 )}
 
                 {(tab === "history" || isEnded) && (
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     {history.length === 0 ? (
-                      <p className="text-xs text-muted-foreground text-center py-4">No bids yet — be the first!</p>
+                      <p className="text-xs text-muted-foreground text-center py-4 font-medium">No bids yet — be the first!</p>
                     ) : history.map((h: any, i: number) => (
-                      <div key={h.id} className={`flex items-center gap-3 p-2.5 rounded-xl ${h.bidder_id === user?.id ? "bg-primary/10 border border-primary/20" : "bg-secondary"}`}>
+                      <div key={h.id} className={`flex items-center gap-3 p-3 rounded-xl transition-all ${h.bidder_id === user?.id ? "bg-primary/10 border border-primary/20" : "bg-secondary/30 border border-border/30"}`}>
                         <div className="flex-1">
-                          <span className={`text-sm font-medium ${h.bidder_id === user?.id ? "text-primary" : "text-foreground"}`}>
+                          <span className={`text-sm font-bold ${h.bidder_id === user?.id ? "text-primary" : "text-foreground"}`}>
                             {h.bidder_id === user?.id ? "You" : (h.profiles?.display_name || "Anonymous")}
                           </span>
-                          {i === 0 && <span className="ml-1.5 text-[10px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded-full font-bold">TOP</span>}
+                          {i === 0 && <span className="ml-1.5 text-[9px] bg-gradient-to-r from-primary to-accent text-primary-foreground px-2 py-0.5 rounded-full font-black uppercase tracking-wider">Top</span>}
                         </div>
-                        <span className="font-bold text-foreground text-sm">${h.amount?.toLocaleString()}</span>
-                        <span className="text-[10px] text-muted-foreground">{formatTime(h.created_at)}</span>
+                        <span className="font-heading font-black text-foreground text-sm">${h.amount?.toLocaleString()}</span>
+                        <span className="text-[10px] text-muted-foreground font-medium">{formatTime(h.created_at)}</span>
                       </div>
                     ))}
                   </div>

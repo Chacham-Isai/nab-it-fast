@@ -176,9 +176,9 @@ const Browse = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20">
+    <div className="min-h-screen bg-background pb-24">
       {/* ─── Sticky Header ─── */}
-      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border/50">
+      <div className="sticky top-0 z-40 bg-background/60 backdrop-blur-2xl border-b border-border/50">
         <div className="max-w-5xl mx-auto px-4 py-3 space-y-3">
           {/* Search Bar */}
           <div className="flex items-center gap-3">
@@ -191,7 +191,7 @@ const Browse = () => {
                 placeholder="Search cards, sneakers, watches..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pl-9 pr-9 bg-secondary/50 border-border/50 h-11 rounded-xl text-sm"
+                className="pl-9 pr-9 bg-secondary/30 border-border/50 h-11 rounded-xl text-sm font-medium placeholder:text-muted-foreground/50"
               />
               {search && (
                 <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
@@ -201,12 +201,11 @@ const Browse = () => {
             </div>
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className={`p-2.5 rounded-xl relative transition-all ${showFilters ? "bg-primary text-primary-foreground" : "bg-secondary/50 text-muted-foreground hover:text-foreground hover:bg-secondary"}`}
+              className={`p-2.5 rounded-xl relative transition-all ${showFilters ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-[0_0_16px_-4px_hsl(var(--primary)/0.4)]" : "bg-secondary/30 border border-border/50 text-muted-foreground hover:text-foreground hover:border-primary/30"}`}
             >
               <SlidersHorizontal className="w-4 h-4" />
               {activeFilterCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center"
-                  style={{ background: "linear-gradient(135deg, hsl(var(--nab-cyan)), hsl(var(--nab-purple)))", color: "white" }}>
+                <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full text-[9px] font-black flex items-center justify-center bg-primary text-primary-foreground">
                   {activeFilterCount}
                 </span>
               )}
@@ -223,20 +222,18 @@ const Browse = () => {
                 transition={{ duration: 0.2 }}
                 className="overflow-hidden space-y-3"
               >
-                {/* Categories */}
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mb-1.5">Category</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-black mb-1.5">Category</p>
                   <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
                     {categories.map((c) => (
                       <button
                         key={c}
                         onClick={() => setCategory(c)}
-                        className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+                        className={`px-3.5 py-1.5 rounded-full text-xs font-black whitespace-nowrap transition-all uppercase tracking-wider ${
                           category === c
-                            ? "text-primary-foreground shadow-md"
-                            : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                            ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-[0_0_16px_-4px_hsl(var(--primary)/0.4)]"
+                            : "bg-secondary/30 text-muted-foreground border border-border/50 hover:border-primary/30"
                         }`}
-                        style={category === c ? { background: "linear-gradient(135deg, hsl(var(--nab-cyan)), hsl(var(--nab-blue)))" } : {}}
                       >
                         {c}
                       </button>
@@ -244,18 +241,17 @@ const Browse = () => {
                   </div>
                 </div>
 
-                {/* Listing Types */}
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold mb-1.5">Type</p>
+                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-black mb-1.5">Type</p>
                   <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-hide">
                     {listingTypes.map((t) => (
                       <button
                         key={t}
                         onClick={() => setType(t)}
-                        className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all ${
+                        className={`px-3.5 py-1.5 rounded-full text-xs font-black whitespace-nowrap transition-all uppercase tracking-wider ${
                           type === t
-                            ? "bg-accent text-accent-foreground shadow-md"
-                            : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                            ? "bg-gradient-to-r from-accent to-nab-purple text-primary-foreground shadow-[0_0_16px_-4px_hsl(var(--accent)/0.4)]"
+                            : "bg-secondary/30 text-muted-foreground border border-border/50 hover:border-primary/30"
                         }`}
                       >
                         {t}
@@ -264,34 +260,33 @@ const Browse = () => {
                   </div>
                 </div>
 
-                {/* Price Range & Sort */}
                 <div className="flex gap-2 items-end">
                   <div className="flex-1 space-y-1">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Price Range</p>
+                    <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-black">Price Range</p>
                     <div className="flex items-center gap-1.5">
                       <Input
                         type="number"
                         placeholder="Min $"
                         value={minPrice}
                         onChange={(e) => setMinPrice(e.target.value)}
-                        className="h-9 rounded-lg bg-secondary/50 border-border/50 text-xs"
+                        className="h-9 rounded-xl bg-secondary/30 border-border/50 text-xs font-medium"
                       />
-                      <span className="text-muted-foreground text-xs">—</span>
+                      <span className="text-muted-foreground/40 text-xs">—</span>
                       <Input
                         type="number"
                         placeholder="Max $"
                         value={maxPrice}
                         onChange={(e) => setMaxPrice(e.target.value)}
-                        className="h-9 rounded-lg bg-secondary/50 border-border/50 text-xs"
+                        className="h-9 rounded-xl bg-secondary/30 border-border/50 text-xs font-medium"
                       />
                     </div>
                   </div>
                   <div className="flex-1 space-y-1">
-                    <p className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">Sort By</p>
+                    <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-black">Sort By</p>
                     <select
                       value={sort}
                       onChange={(e) => setSort(e.target.value)}
-                      className="w-full h-9 rounded-lg bg-secondary/50 border border-border/50 text-xs text-foreground px-2"
+                      className="w-full h-9 rounded-xl bg-secondary/30 border border-border/50 text-xs text-foreground px-2 font-medium"
                     >
                       {sortOptions.map((o) => (
                         <option key={o.value} value={o.value}>{o.label}</option>
@@ -301,7 +296,7 @@ const Browse = () => {
                 </div>
 
                 {activeFilterCount > 0 && (
-                  <button onClick={clearFilters} className="text-xs text-primary hover:underline font-medium">
+                  <button onClick={clearFilters} className="text-xs text-primary hover:underline font-bold">
                     ✕ Clear all filters
                   </button>
                 )}
@@ -315,11 +310,10 @@ const Browse = () => {
       <div className="max-w-5xl mx-auto px-4 py-5">
         {loading ? (
           <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <div className="w-12 h-12 rounded-full flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, hsl(var(--nab-cyan) / 0.2), hsl(var(--nab-purple) / 0.2))" }}>
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
-            </div>
-            <span className="text-sm text-muted-foreground">Searching listings...</span>
+            <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}>
+              <Loader2 className="w-7 h-7 text-primary" />
+            </motion.div>
+            <span className="text-xs text-muted-foreground font-medium">Searching listings...</span>
           </div>
         ) : listings.length === 0 ? (
           <motion.div
@@ -327,27 +321,31 @@ const Browse = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-center py-20"
           >
-            <div className="w-16 h-16 rounded-full bg-secondary/50 flex items-center justify-center mx-auto mb-4">
-              <Search className="w-7 h-7 text-muted-foreground" />
-            </div>
-            <h3 className="font-heading font-bold text-foreground text-lg">No listings found</h3>
-            <p className="text-sm text-muted-foreground mt-1 max-w-sm mx-auto">
+            <motion.div
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 flex items-center justify-center mx-auto mb-4"
+            >
+              <Search className="w-7 h-7 text-primary" />
+            </motion.div>
+            <h3 className="font-heading font-black text-foreground text-lg">No listings found</h3>
+            <p className="text-xs text-muted-foreground mt-1.5 max-w-sm mx-auto leading-relaxed">
               {debouncedSearch ? `No results for "${debouncedSearch}"` : "Try adjusting your filters or check back later for new drops"}
             </p>
             {activeFilterCount > 0 && (
-              <Button variant="outline" size="sm" className="mt-4 rounded-full" onClick={clearFilters}>Clear Filters</Button>
+              <Button variant="outline" size="sm" className="mt-5 rounded-full border-primary/30 text-primary font-bold" onClick={clearFilters}>Clear Filters</Button>
             )}
           </motion.div>
         ) : (
           <>
             {/* Results header */}
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-sm text-muted-foreground">
-                <span className="font-bold text-foreground">{totalCount}</span> {totalCount === 1 ? "item" : "items"}
-                {debouncedSearch && <> matching "<span className="text-primary font-medium">{debouncedSearch}</span>"</>}
+            <div className="flex items-center justify-between mb-5">
+              <p className="text-sm text-muted-foreground font-medium">
+                <span className="font-black text-foreground">{totalCount}</span> {totalCount === 1 ? "item" : "items"}
+                {debouncedSearch && <> matching "<span className="text-primary font-bold">{debouncedSearch}</span>"</>}
               </p>
               {!showFilters && (
-                <button onClick={() => setShowFilters(true)} className="text-xs text-primary font-medium flex items-center gap-1">
+                <button onClick={() => setShowFilters(true)} className="text-xs text-primary font-bold flex items-center gap-1 hover:underline">
                   <SlidersHorizontal className="w-3 h-3" /> Filters
                 </button>
               )}
@@ -369,32 +367,31 @@ const Browse = () => {
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: Math.min(i * 0.03, 0.3) }}
                     onClick={() => navigate(`/listing/${listing.id}`)}
-                    className="group rounded-2xl bg-card border border-border/50 overflow-hidden cursor-pointer hover:border-primary/30 transition-all hover:shadow-lg"
-                    style={{ boxShadow: "0 2px 12px rgba(0,0,0,0.06)" }}
+                    className="group rounded-2xl glass-card gradient-border overflow-hidden cursor-pointer hover:shadow-[0_0_30px_-6px_hsl(var(--primary)/0.2)] transition-all"
                   >
                     {/* Image */}
-                    <div className="relative aspect-square overflow-hidden bg-secondary">
+                    <div className="relative aspect-square overflow-hidden bg-secondary/30">
                       <img
                         src={displayImage}
                         alt={listing.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                         loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
 
                       {/* Top badges */}
                       <div className="absolute top-2.5 left-2.5 flex gap-1.5">
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/90 text-primary-foreground backdrop-blur-sm">
+                        <span className="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-wider bg-primary/90 text-primary-foreground backdrop-blur-sm shadow-lg">
                           {listing.listing_type.replace("_", " ")}
                         </span>
                       </div>
-                      <span className="absolute top-2.5 right-2.5 px-2 py-0.5 rounded-full text-[10px] font-medium bg-black/50 text-white/90 backdrop-blur-sm">
+                      <span className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-full text-[10px] font-bold bg-background/70 text-foreground backdrop-blur-sm border border-border/30">
                         {listing.category}
                       </span>
 
                       {/* Urgency */}
                       {listing.quantity <= 3 && (
-                        <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1 px-2 py-0.5 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold">
+                        <div className="absolute bottom-2.5 right-2.5 flex items-center gap-1 px-2.5 py-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-black uppercase tracking-wider">
                           <Flame className="w-3 h-3" /> {listing.quantity} left
                         </div>
                       )}
@@ -402,36 +399,35 @@ const Browse = () => {
                       {/* Auction timer */}
                       {timeLeft > 0 && listing.listing_type === "auction" && (
                         <div className="absolute bottom-2.5 left-2.5">
-                          <Countdown seconds={timeLeft} urgentThreshold={300} className="text-[10px] bg-black/60 text-white px-2 py-0.5 rounded-full backdrop-blur-sm" />
+                          <Countdown seconds={timeLeft} urgentThreshold={300} className="text-[10px] bg-background/70 text-foreground px-2.5 py-1 rounded-full backdrop-blur-sm border border-border/30 font-bold" />
                         </div>
                       )}
                     </div>
 
                     {/* Details */}
-                    <div className="p-3.5">
+                    <div className="p-4">
                       <h3 className="font-heading font-bold text-foreground text-sm leading-tight line-clamp-2 group-hover:text-primary transition-colors">
                         {listing.title}
                       </h3>
-                      <p className="text-xs text-muted-foreground mt-1">{listing.condition}</p>
+                      <p className="text-[10px] text-muted-foreground mt-1 font-medium">{listing.condition}</p>
 
                       <div className="flex items-center justify-between mt-3">
                         <div>
-                          <span className="text-lg font-black text-foreground">${price?.toLocaleString()}</span>
+                          <span className="text-lg font-heading font-black text-foreground">${price?.toLocaleString()}</span>
                           {listing.buy_now_price && listing.buy_now_price > price && (
-                            <span className="text-xs text-muted-foreground line-through ml-1.5">${listing.buy_now_price.toLocaleString()}</span>
+                            <span className="text-[10px] text-muted-foreground line-through ml-1.5">${listing.buy_now_price.toLocaleString()}</span>
                           )}
                         </div>
                         {auction && (
-                          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                            <Gavel className="w-3.5 h-3.5" />
-                            <span className="font-medium">{auction.bid_count} bids</span>
+                          <div className="flex items-center gap-1 text-[10px] text-muted-foreground bg-secondary/30 px-2 py-1 rounded-full border border-border/30">
+                            <Gavel className="w-3 h-3" />
+                            <span className="font-bold">{auction.bid_count} bids</span>
                           </div>
                         )}
                       </div>
 
-                      {/* Watchers */}
                       {auction && auction.watchers > 0 && (
-                        <div className="flex items-center gap-1 mt-2 text-[11px] text-muted-foreground">
+                        <div className="flex items-center gap-1 mt-2.5 text-[10px] text-muted-foreground">
                           <Eye className="w-3 h-3" /> {auction.watchers} watching
                         </div>
                       )}
