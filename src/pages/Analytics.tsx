@@ -242,6 +242,43 @@ const Analytics = () => {
             </Card>
           </div>
 
+          {/* Conversion Funnel */}
+          <Card className="p-4 bg-card border-border">
+            <h3 className="font-heading font-bold text-foreground text-sm mb-1">Conversion Funnel</h3>
+            <p className="text-xs text-muted-foreground mb-4">Listing viewed → Bid placed → Order → Completed</p>
+            <div className="space-y-3">
+              {funnelData.map((step, i) => {
+                const maxVal = Math.max(...funnelData.map(d => d.value), 1);
+                const pct = Math.max((step.value / maxVal) * 100, 8);
+                const convRate = i > 0 && funnelData[i - 1].value > 0
+                  ? Math.round((step.value / funnelData[i - 1].value) * 100)
+                  : null;
+                return (
+                  <div key={step.name}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-xs font-medium text-foreground">{step.name}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold text-foreground">{step.value}</span>
+                        {convRate !== null && (
+                          <span className="text-[10px] font-medium text-muted-foreground">({convRate}%)</span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="h-7 bg-secondary/50 rounded-lg overflow-hidden relative">
+                      <div
+                        className="h-full rounded-lg transition-all duration-500"
+                        style={{ width: `${pct}%`, background: step.fill, opacity: 0.85 }}
+                      />
+                      {i < funnelData.length - 1 && (
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 text-[10px] text-muted-foreground">→</div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+
           {/* Crew Growth */}
           <Card className="p-4 bg-card border-border">
             <h3 className="font-heading font-bold text-foreground text-sm mb-4">Top Crews by Members</h3>
