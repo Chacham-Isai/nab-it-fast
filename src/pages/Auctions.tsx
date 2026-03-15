@@ -122,6 +122,7 @@ const Auctions = () => {
       if (data?.error) throw new Error(data.error);
 
       toast({ title: "Bid placed! 🎉", description: `Your bid of $${amount.toLocaleString()} is now the highest.` });
+      track("bid_placed", { auction_id: auctionId, amount, bid_type: "manual" });
       setCustomBid((c) => ({ ...c, [auctionId]: "" }));
       await loadAuctions();
     } catch (err: any) {
