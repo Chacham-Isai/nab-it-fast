@@ -28,14 +28,27 @@ serve(async (req) => {
     const { listing_id, type, quantity = 1, slot_id } = await req.json();
     if (!listing_id || !type) throw new Error('Missing listing_id or type');
 
-    const { data: listing, error: listingError } = await supabase
-      .from('listings')
-      .select('*, auctions(*)')
-      .eq('id', listing_id)
-      .single();
+    // Fetch listing and seller profile in parallel
+    const [{ data: listing, error: listingError }, ] = await Promise.all([
+      supabase
+        .from('listings')
+        .select('*, auctions(*)')
+        .eq('id', listing_id)
+        .single(),
+    ]);
 
     if (listingError || !listing) throw new Error('Listing not found');
     if (listing.seller_id === user.id) throw new Error('Cannot buy your own listing');
+
+    // Get seller's Stripe Connect account
+    const { data: sellerProfile } = await supabase
+      .from('seller_profiles')
+      .select('stripe_account_id, stripe_onboarding_complete')
+      .eq('id', listing.seller_id)
+      .single();
+
+    const sellerStripeAccountId = sellerProfile?.stripe_account_id;
+    const sellerOnboarded = sellerProfile?.stripe_onboarding_complete;
 
     const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: '2025-08-27.basil' });
 
@@ -80,10 +93,11 @@ serve(async (req) => {
         throw new Error('Invalid checkout type');
     }
 
-    const platformFee = Math.round(amount * 0.10);
+    const platformFee = Math.round(amount * 0.10); // 10% platform fee
     const origin = req.headers.get('origin') || 'https://nab-it-fast.lovable.app';
 
-    const session = await stripe.checkout.sessions.create({
+    // Build checkout session config
+    const sessionConfig: Stripe.Checkout.SessionCreateParams = {
       customer: customerId,
       line_items: [{
         price_data: {
@@ -109,7 +123,20 @@ serve(async (req) => {
         platform_fee: platformFee.toString(),
         ...(slot_id ? { slot_id } : {}),
       },
-    });
+    };
+
+    // If seller has completed Stripe Connect onboarding, split the payment
+    // Platform keeps the fee, seller gets the rest automatically
+    if (sellerStripeAccountId && sellerOnboarded) {
+      sessionConfig.payment_intent_data = {
+        application_fee_amount: platformFee,
+        transfer_data: {
+          destination: sellerStripeAccountId,
+        },
+      };
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionConfig);
 
     // Create pending order
     await supabase.from('orders').insert({
