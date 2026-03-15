@@ -396,8 +396,8 @@ const Feed = () => {
     <div className="min-h-screen bg-background pb-24">
       {/* Background glow orbs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-20 -left-32 w-64 h-64 rounded-full blur-[120px] opacity-[0.06]" style={{ background: "hsl(var(--nab-cyan))" }} />
-        <div className="absolute top-[50%] -right-32 w-64 h-64 rounded-full blur-[120px] opacity-[0.06]" style={{ background: "hsl(var(--nab-purple))" }} />
+        <motion.div animate={{ scale: [1, 1.3, 1], opacity: [0.04, 0.08, 0.04] }} transition={{ duration: 8, repeat: Infinity }} className="absolute top-20 -left-32 w-64 h-64 rounded-full blur-[120px]" style={{ background: "hsl(var(--nab-cyan))" }} />
+        <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.03, 0.06, 0.03] }} transition={{ duration: 10, repeat: Infinity, delay: 2 }} className="absolute top-[50%] -right-32 w-64 h-64 rounded-full blur-[120px]" style={{ background: "hsl(var(--nab-purple))" }} />
       </div>
 
       {/* ─── Premium Header ─── */}
@@ -405,7 +405,9 @@ const Feed = () => {
         <div className="flex items-center justify-between max-w-lg mx-auto px-4 h-14">
           <Link to="/" className="flex items-center gap-2">
             <img src={nabbitLogo} alt="nabbit" className="h-6" />
-            <span className="font-heading font-bold text-foreground text-base">nabbit<span className="text-primary">.ai</span></span>
+            <div>
+              <span className="font-heading font-black text-foreground text-base tracking-tight">NABBIT<span className="gradient-text">.AI</span></span>
+            </div>
           </Link>
           <div className="flex items-center gap-0.5">
             <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl" onClick={() => navigate("/dream-buys")}>
