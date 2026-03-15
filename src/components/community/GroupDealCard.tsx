@@ -46,7 +46,16 @@ const tierEmoji: Record<string, string> = {
 
 const GroupDealCard = ({ deal, participantAvatars, isJoined, onJoin, onLeave, onShare }: GroupDealCardProps) => {
   const [loading, setLoading] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const prevStatusRef = useRef(deal.status);
+
+  // Detect realtime status change to 'funded' while viewing
+  useEffect(() => {
+    if (prevStatusRef.current !== "funded" && deal.status === "funded" && isJoined) {
+      setShowCelebration(true);
+    }
+    prevStatusRef.current = deal.status;
+  }, [deal.status, isJoined]);
 
   const progress = Math.min((deal.current_participants / deal.target_participants) * 100, 100);
   const almostThere = progress > 80 && deal.status === "active";
@@ -61,8 +70,7 @@ const GroupDealCard = ({ deal, participantAvatars, isJoined, onJoin, onLeave, on
       } else {
         await onJoin(deal.id);
         if (deal.current_participants + 1 >= deal.target_participants) {
-          setShowConfetti(true);
-          setTimeout(() => setShowConfetti(false), 3000);
+          setShowCelebration(true);
         }
       }
     } finally {
