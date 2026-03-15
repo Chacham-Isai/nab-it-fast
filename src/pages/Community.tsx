@@ -16,11 +16,11 @@ import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
 
 const activityFeed = [
-  { id: 1, user: "🧑‍🎤", name: "Alex K.", action: "just nabbed", item: "Jordan 1 Chicago", price: 289, tribe: "Sneakerheads", time: "2m ago", hot: true },
-  { id: 2, user: "👩‍💼", name: "Sarah M.", action: "just nabbed", item: "1986 Fleer Jordan RC", price: 4200, tribe: "Card Collectors", time: "5m ago", hot: true },
-  { id: 3, user: "🧔", name: "Mike D.", action: "just nabbed", item: "Rolex Sub", price: 12800, tribe: "Watch Collectors", time: "12m ago", hot: false },
-  { id: 4, user: "👩‍🎨", name: "Luna R.", action: "just nabbed", item: "Supreme Box Logo", price: 425, tribe: "Streetwear", time: "18m ago", hot: false },
-  { id: 5, user: "🧑‍💻", name: "Dev P.", action: "just nabbed", item: "Vision Pro", price: 3299, tribe: "Tech Heads", time: "25m ago", hot: false },
+  { id: 1, user: "🧑‍🎤", name: "Alex K.", action: "just nabbed", item: "Jordan 1 Chicago", price: 289, crew: "Sneakerheads", time: "2m ago", hot: true },
+  { id: 2, user: "👩‍💼", name: "Sarah M.", action: "just nabbed", item: "1986 Fleer Jordan RC", price: 4200, crew: "Card Collectors", time: "5m ago", hot: true },
+  { id: 3, user: "🧔", name: "Mike D.", action: "just nabbed", item: "Rolex Sub", price: 12800, crew: "Watch Collectors", time: "12m ago", hot: false },
+  { id: 4, user: "👩‍🎨", name: "Luna R.", action: "just nabbed", item: "Supreme Box Logo", price: 425, crew: "Streetwear", time: "18m ago", hot: false },
+  { id: 5, user: "🧑‍💻", name: "Dev P.", action: "just nabbed", item: "Vision Pro", price: 3299, crew: "Tech Heads", time: "25m ago", hot: false },
 ];
 
 const tribes = [
@@ -35,7 +35,7 @@ const tribes = [
 type TabType = "feed" | "deals" | "tribes" | "leaderboard";
 
 const Community = () => {
-  usePageMeta({ title: "Community — nabbit.ai", description: "Join tribes, group deals, and connect with fellow deal hunters.", path: "/community" });
+  usePageMeta({ title: "Community — nabbit.ai", description: "Join crews, group deals, and connect with fellow deal hunters.", path: "/community" });
   const navigate = useNavigate();
   const { user } = useAuth();
   const [tab, setTab] = useState<TabType>("feed");
@@ -162,7 +162,7 @@ const Community = () => {
     if (error) {
       toast({ title: "Failed to create deal", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Deal created! 🚀", description: "Share it with your tribe." });
+      toast({ title: "Deal created! 🚀", description: "Share it with your crew." });
     }
   };
 
@@ -184,7 +184,7 @@ const Community = () => {
         const notifications = tribeMembers.map((m: any) => ({
           user_id: m.user_id,
           type: "deal_shared",
-          title: `${deal.emoji} Deal shared in ${deal.tribe_name}!`,
+           title: `${deal.emoji} Deal shared in ${deal.tribe_name}!`,
           body: `${deal.title} — $${deal.deal_price} (${deal.discount_pct}% off). Join before it fills up!`,
           action_label: "View Deal",
         }));
@@ -192,7 +192,7 @@ const Community = () => {
       }
     }
 
-    toast({ title: "Link copied!", description: "Your tribe has been notified too! 🔔" });
+    toast({ title: "Link copied!", description: "Your crew has been notified too! 🔔" });
   };
 
   if (loading) {
@@ -206,7 +206,7 @@ const Community = () => {
   const tabs: { key: TabType; label: string }[] = [
     { key: "feed", label: "Feed" },
     { key: "deals", label: "Group Deals" },
-    { key: "tribes", label: "Tribes" },
+    { key: "tribes", label: "Crews" },
     { key: "leaderboard", label: "🏆" },
   ];
 
@@ -246,7 +246,7 @@ const Community = () => {
                 <span className="text-2xl">{a.user}</span>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-foreground"><span className="font-semibold">{a.name}</span> {a.action} <span className="font-semibold text-primary">{a.item}</span>{a.price && <span className="text-muted-foreground"> · ${a.price.toLocaleString()}</span>}</p>
-                  <p className="text-[10px] text-muted-foreground">{a.tribe} · {a.time}</p>
+                  <p className="text-[10px] text-muted-foreground">{a.crew} · {a.time}</p>
                 </div>
                 {a.hot && <Flame className="w-4 h-4 text-destructive shrink-0" />}
               </motion.div>

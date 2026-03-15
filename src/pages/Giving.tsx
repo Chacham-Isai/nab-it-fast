@@ -9,10 +9,10 @@ import { useAuth } from "@/hooks/useAuth";
 import usePageMeta from "@/hooks/usePageMeta";
 
 const causes = [
-  { id: 1, name: "Youth Education Fund", category: "Education", emoji: "📚", raised: 12400, goal: 25000, pct: 49.6, tribe: "Card Collectors", desc: "Supporting STEM education for underserved communities" },
-  { id: 2, name: "Clean Water Initiative", category: "Environment", emoji: "💧", raised: 8900, goal: 15000, pct: 59.3, tribe: "Sneakerheads", desc: "Providing clean water access in developing regions" },
-  { id: 3, name: "Mental Health Support", category: "Health", emoji: "🧠", raised: 6200, goal: 20000, pct: 31, tribe: "Tech Heads", desc: "Free counseling for at-risk youth" },
-  { id: 4, name: "Animal Rescue Network", category: "Animals", emoji: "🐾", raised: 15600, goal: 18000, pct: 86.7, tribe: "Vintage Hunters", desc: "Rescue and rehome abandoned animals" },
+  { id: 1, name: "Youth Education Fund", category: "Education", emoji: "📚", raised: 12400, goal: 25000, pct: 49.6, crew: "Card Collectors", desc: "Supporting STEM education for underserved communities" },
+  { id: 2, name: "Clean Water Initiative", category: "Environment", emoji: "💧", raised: 8900, goal: 15000, pct: 59.3, crew: "Sneakerheads", desc: "Providing clean water access in developing regions" },
+  { id: 3, name: "Mental Health Support", category: "Health", emoji: "🧠", raised: 6200, goal: 20000, pct: 31, crew: "Tech Heads", desc: "Free counseling for at-risk youth" },
+  { id: 4, name: "Animal Rescue Network", category: "Animals", emoji: "🐾", raised: 15600, goal: 18000, pct: 86.7, crew: "Vintage Hunters", desc: "Rescue and rehome abandoned animals" },
 ];
 
 const givingHistory = [
@@ -138,7 +138,7 @@ const Giving = () => {
                         <h3 className="font-semibold text-foreground text-sm">{cause.name}</h3>
                         {selected && <Check className="w-4 h-4 text-primary" />}
                       </div>
-                      <span className="text-[10px] text-muted-foreground">{cause.tribe}</span>
+                      <span className="text-[10px] text-muted-foreground">{cause.crew}</span>
                       <p className="text-xs text-muted-foreground mt-1">{cause.desc}</p>
                       <div className="mt-2">
                         <div className="flex justify-between text-xs mb-1">
@@ -190,7 +190,7 @@ const Giving = () => {
                   <div className="flex items-center gap-2 mb-2">
                     <span>{c.emoji}</span>
                     <span className="text-sm font-semibold text-foreground flex-1">{c.name}</span>
-                    <span className="text-[10px] text-muted-foreground">{c.tribe}</span>
+                    <span className="text-[10px] text-muted-foreground">{c.crew}</span>
                   </div>
                   <Progress value={c.pct} className="h-2 mb-1" />
                   <p className="text-xs text-muted-foreground">${c.raised.toLocaleString()} of ${c.goal.toLocaleString()}</p>

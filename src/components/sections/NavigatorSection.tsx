@@ -23,7 +23,7 @@ const features = [
   {
     icon: Users,
     title: "Group Deals",
-    desc: "Tribes that shop together save together. Unlock bulk pricing when your group hits the target.",
+    desc: "Crews that shop together save together. Unlock bulk pricing when your group hits the target.",
   },
 ];
 

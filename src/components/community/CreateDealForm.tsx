@@ -61,7 +61,7 @@ const CreateDealForm = ({ open, onClose, onCreated }: CreateDealFormProps) => {
     if (error) {
       toast({ title: "Failed to create deal", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Deal created! 🚀", description: "Share it with your tribe." });
+      toast({ title: "Deal created! 🚀", description: "Share it with your crew." });
       setTitle(""); setDescription(""); setDealPrice(""); setRetailPrice("");
       onCreated();
       onClose();
@@ -119,7 +119,7 @@ const CreateDealForm = ({ open, onClose, onCreated }: CreateDealFormProps) => {
               </div>
 
               <div>
-                <label className="text-xs font-medium text-muted-foreground">Tribe (optional)</label>
+                <label className="text-xs font-medium text-muted-foreground">Crew (optional)</label>
                 <Input value={tribeName} onChange={(e) => setTribeName(e.target.value)} placeholder="e.g. Sneakerheads" className="mt-1" />
               </div>
 

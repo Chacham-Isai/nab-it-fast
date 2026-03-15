@@ -53,7 +53,7 @@ const AIPicksBanner = ({ onCreateDeal }: AIPicksBannerProps) => {
             <Sparkles className="w-5 h-5 text-primary" />
             <div>
               <h4 className="font-heading font-bold text-foreground text-sm">AI Picks for You</h4>
-              <p className="text-[10px] text-muted-foreground">Personalized deals based on your tribes & taste</p>
+              <p className="text-[10px] text-muted-foreground">Personalized deals based on your crews & taste</p>
             </div>
           </div>
           <Button size="sm" className="rounded-xl text-xs" onClick={fetchRecommendations} disabled={loading}>
