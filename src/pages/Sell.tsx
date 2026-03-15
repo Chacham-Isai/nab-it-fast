@@ -128,7 +128,7 @@ const Sell = () => {
 
   const statusColors: Record<string, string> = {
     draft: "bg-secondary text-secondary-foreground",
-    active: "bg-green-500/10 text-green-500",
+    active: "bg-success/10 text-success",
     sold: "bg-primary/10 text-primary",
     ended: "bg-muted text-muted-foreground",
     cancelled: "bg-destructive/10 text-destructive",
