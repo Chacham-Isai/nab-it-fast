@@ -159,7 +159,7 @@ const HeroSection = () => {
             <motion.div
               animate={{ y: [-6, 6, -6] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -left-4 sm:-left-12 top-12 px-4 py-2 rounded-full border border-nab-cyan/40 bg-card/95 backdrop-blur-sm text-sm font-bold shadow-xl"
+              className="hidden xl:flex absolute left-4 top-6 items-center px-4 py-2 rounded-full border border-nab-cyan/40 bg-card/95 backdrop-blur-sm text-sm font-bold shadow-xl"
             >
               <Flame className="w-3.5 h-3.5 inline mr-1 text-nab-cyan" /> 3 left at this price
             </motion.div>
