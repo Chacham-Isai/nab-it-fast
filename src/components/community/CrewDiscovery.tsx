@@ -150,9 +150,10 @@ const CrewDiscovery = ({ joinedCrews, onToggleCrew }: CrewDiscoveryProps) => {
                   exit={{ opacity: 0, scale: 0.95 }}
                   transition={{ delay: i * 0.03, duration: 0.25 }}
                   className={cn(
-                    "p-4 rounded-2xl bg-card border transition-all space-y-3",
-                    joined ? "border-primary/40 shadow-[0_0_15px_-5px_hsl(var(--primary)/0.2)]" : "border-border"
+                    "p-4 rounded-2xl bg-card border transition-all space-y-3 cursor-pointer",
+                    joined ? "border-primary/40 shadow-[0_0_15px_-5px_hsl(var(--primary)/0.2)]" : "border-border hover:border-border/80"
                   )}
+                  onClick={() => navigate(`/crew/${encodeURIComponent(crew.name)}`)}
                 >
                   <div className="flex items-start gap-3">
                     <motion.span
