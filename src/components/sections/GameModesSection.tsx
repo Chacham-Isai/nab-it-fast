@@ -18,7 +18,7 @@ const modes = [
     icon: Radio,
     title: "Live Breaks",
     tagline: "Real-time pack rips. Lock your slot.",
-    desc: "Watch hosts break products live. Claim your team or slot. What you pull is what you keep. Pure adrenaline.",
+    desc: "Watch hosts break products live. Claim your team or slot. What you pull is what you keep. Real-time action.",
     tag: "⚡ LIVE NOW",
     tagColor: "bg-success/[0.1] text-success border-success/30",
     link: "/breaks",
