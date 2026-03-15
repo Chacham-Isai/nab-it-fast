@@ -35,7 +35,7 @@ const tribes = [
 type TabType = "feed" | "deals" | "tribes" | "leaderboard";
 
 const Community = () => {
-  usePageMeta({ title: "Community — nabbit.ai", description: "Join tribes, group deals, and connect with fellow deal hunters.", path: "/community" });
+  usePageMeta({ title: "Community — nabbit.ai", description: "Join crews, group deals, and connect with fellow deal hunters.", path: "/community" });
   const navigate = useNavigate();
   const { user } = useAuth();
   const [tab, setTab] = useState<TabType>("feed");
