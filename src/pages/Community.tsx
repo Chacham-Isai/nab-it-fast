@@ -86,12 +86,6 @@ const Community = () => {
       const dealsRes = await dealsPromise;
       setDeals(dealsRes.data || []);
     }
-    setDeals(results[0].data || []);
-
-    if (user) {
-      setJoinedTribes(results[1].data?.map((d: any) => d.tribe_name) || []);
-      setJoinedDeals(results[2].data?.map((d: any) => d.deal_id) || []);
-    }
 
     await loadDealAvatars();
     setLoading(false);
