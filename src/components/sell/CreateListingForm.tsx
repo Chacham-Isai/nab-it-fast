@@ -65,14 +65,66 @@ export default function CreateListingForm({ user, onComplete }: Props) {
     starting_price: "", buy_now_price: "", listing_type: "auction", ends_in_hours: "24",
   });
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+  const MAX_DIMENSION = 1920;
+  const COMPRESS_QUALITY = 0.8;
+
+  const compressImage = (file: File): Promise<File> => {
+    return new Promise((resolve) => {
+      // Skip non-image or already small files
+      if (!file.type.startsWith('image/') || file.size < 200 * 1024) {
+        resolve(file);
+        return;
+      }
+      const img = new Image();
+      const url = URL.createObjectURL(file);
+      img.onload = () => {
+        URL.revokeObjectURL(url);
+        let { width, height } = img;
+        // Scale down if exceeds max dimension
+        if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+          const ratio = Math.min(MAX_DIMENSION / width, MAX_DIMENSION / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0, width, height);
+        canvas.toBlob(
+          (blob) => {
+            if (blob && blob.size < file.size) {
+              resolve(new File([blob], file.name.replace(/\.[^.]+$/, '.webp'), { type: 'image/webp' }));
+            } else {
+              resolve(file); // Keep original if compression didn't help
+            }
+          },
+          'image/webp',
+          COMPRESS_QUALITY
+        );
+      };
+      img.onerror = () => { URL.revokeObjectURL(url); resolve(file); };
+      img.src = url;
+    });
+  };
+
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     if (imageFiles.length + files.length > 5) {
       toast({ title: "Max 5 images", variant: "destructive" });
       return;
     }
-    setImageFiles(prev => [...prev, ...files]);
-    files.forEach(f => {
+    // Validate file sizes
+    const oversized = files.filter(f => f.size > MAX_FILE_SIZE);
+    if (oversized.length) {
+      toast({ title: `${oversized.length} file(s) exceed 10MB limit`, variant: "destructive" });
+      return;
+    }
+    // Compress all images
+    const compressed = await Promise.all(files.map(compressImage));
+    setImageFiles(prev => [...prev, ...compressed]);
+    compressed.forEach(f => {
       const reader = new FileReader();
       reader.onload = (ev) => setImagePreviews(prev => [...prev, ev.target?.result as string]);
       reader.readAsDataURL(f);
@@ -90,7 +142,10 @@ export default function CreateListingForm({ user, onComplete }: Props) {
     for (const file of imageFiles) {
       const ext = file.name.split('.').pop();
       const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-      const { error } = await supabase.storage.from('listing-images').upload(path, file);
+      const { error } = await supabase.storage.from('listing-images').upload(path, file, {
+        contentType: file.type,
+        cacheControl: '31536000',
+      });
       if (!error) {
         const { data: urlData } = supabase.storage.from('listing-images').getPublicUrl(path);
         urls.push(urlData.publicUrl);
