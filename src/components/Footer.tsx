@@ -159,8 +159,8 @@ const Footer = () => {
               <p className="text-xs text-muted-foreground">© 2026 Nabbit Inc.</p>
             </div>
             <div className="flex gap-6">
-              <span className="text-xs text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Privacy</span>
-              <span className="text-xs text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Terms</span>
+              <Link to="/privacy" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Privacy</Link>
+              <Link to="/terms" className="text-xs text-muted-foreground hover:text-foreground transition-colors">Terms</Link>
               <span className="text-xs text-muted-foreground hover:text-foreground cursor-pointer transition-colors">Cookies</span>
             </div>
           </div>
