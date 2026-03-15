@@ -205,6 +205,39 @@ export type Database = {
           },
         ]
       }
+      crews: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          emoji: string
+          id: string
+          is_active: boolean
+          member_count: number
+          name: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          emoji?: string
+          id?: string
+          is_active?: boolean
+          member_count?: number
+          name: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          emoji?: string
+          id?: string
+          is_active?: boolean
+          member_count?: number
+          name?: string
+        }
+        Relationships: []
+      }
       dream_buys: {
         Row: {
           created_at: string | null
