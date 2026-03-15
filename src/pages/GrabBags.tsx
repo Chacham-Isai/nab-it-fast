@@ -28,7 +28,7 @@ const bags: GrabBag[] = [
 
 const rarityLabels = [
   { key: "common", label: "Hit", color: "bg-secondary text-secondary-foreground" },
-  { key: "rare", label: "Rare Hit", color: "bg-blue-500/20 text-blue-500" },
+  { key: "rare", label: "Rare Hit", color: "bg-nab-blue/20 text-nab-blue" },
   { key: "ultra", label: "Ultra Hit", color: "bg-primary/20 text-primary" },
   { key: "legendary", label: "🏆 LEGENDARY", color: "bg-amber-500/20 text-amber-600" },
 ];
