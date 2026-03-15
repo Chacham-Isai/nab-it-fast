@@ -28,7 +28,7 @@ const Browse = () => {
     setLoading(true);
     let query = supabase
       .from('listings')
-      .select('*, auctions(*), seller_profiles!listings_seller_id_fkey(shop_name, rating)')
+      .select('*, auctions(*)')
       .eq('status', 'active')
       .order('created_at', { ascending: false })
       .limit(50);
