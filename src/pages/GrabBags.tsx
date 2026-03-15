@@ -86,7 +86,7 @@ const GrabBags = () => {
           items_desc: meta.items_desc || `${l.quantity} items`,
           sold: meta.sold || 0,
           odds: meta.odds || { common: 55, rare: 28, ultra: 13, legendary: 4 },
-          reveals: defaultReveals[l.category] || defaultReveals.default,
+          reveals: [],
         };
       });
       setBags(items);
