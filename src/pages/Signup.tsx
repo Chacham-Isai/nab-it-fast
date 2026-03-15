@@ -1,15 +1,17 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { ArrowRight, Zap, CheckCircle, Shield } from "lucide-react";
 import nabbitLogo from "@/assets/nabbit-logo.png";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import usePageMeta from "@/hooks/usePageMeta";
 
 const Signup = () => {
   usePageMeta({ title: "Sign Up — nabbit.ai", description: "Create your free nabbit.ai account. Start hunting deals with AI in seconds.", path: "/signup" });
+  const { session, loading: authLoading } = useAuth();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,6 +42,11 @@ const Signup = () => {
     "Personalized taste-matched feed",
     "Dream Buy tracking & alerts",
   ];
+
+  // Redirect if already authenticated
+  if (!authLoading && session) {
+    return <Navigate to="/feed" replace />;
+  }
 
   if (success) {
     return (

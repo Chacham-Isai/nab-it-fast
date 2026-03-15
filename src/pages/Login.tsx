@@ -1,15 +1,17 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { ArrowRight, Zap } from "lucide-react";
 import nabbitLogo from "@/assets/nabbit-logo.png";
 import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 import usePageMeta from "@/hooks/usePageMeta";
 
 const Login = () => {
   usePageMeta({ title: "Log In — nabbit.ai", description: "Sign in to your nabbit.ai account to track deals and auto-purchase.", path: "/login" });
+  const { session, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,6 +30,11 @@ const Login = () => {
       navigate("/feed");
     }
   };
+
+  // Redirect if already authenticated
+  if (!authLoading && session) {
+    return <Navigate to="/feed" replace />;
+  }
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden flex items-center justify-center px-4">
