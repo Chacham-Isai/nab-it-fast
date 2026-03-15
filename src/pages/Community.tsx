@@ -166,10 +166,33 @@ const Community = () => {
     }
   };
 
-  const shareDeal = (dealId: string) => {
+  const shareDeal = async (dealId: string) => {
     const url = `${window.location.origin}/community?deal=${dealId}`;
     navigator.clipboard.writeText(url);
-    toast({ title: "Link copied!", description: "Share it with your tribe." });
+
+    // Notify tribe members about this deal
+    const deal = deals.find((d) => d.id === dealId);
+    if (user && deal?.tribe_name) {
+      const { data: tribeMembers } = await supabase
+        .from("tribe_memberships")
+        .select("user_id")
+        .eq("tribe_name", deal.tribe_name)
+        .neq("user_id", user.id)
+        .limit(50);
+
+      if (tribeMembers && tribeMembers.length > 0) {
+        const notifications = tribeMembers.map((m: any) => ({
+          user_id: m.user_id,
+          type: "deal_shared",
+          title: `${deal.emoji} Deal shared in ${deal.tribe_name}!`,
+          body: `${deal.title} — $${deal.deal_price} (${deal.discount_pct}% off). Join before it fills up!`,
+          action_label: "View Deal",
+        }));
+        await supabase.from("notifications_log").insert(notifications);
+      }
+    }
+
+    toast({ title: "Link copied!", description: "Your tribe has been notified too! 🔔" });
   };
 
   if (loading) {
