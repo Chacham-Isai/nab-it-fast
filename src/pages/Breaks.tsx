@@ -148,9 +148,9 @@ const Breaks = () => {
         ) : (
           <>
             {tab === "live" && (liveListings.length === 0 ? (
-              <div className="text-center py-16">
-                <span className="text-5xl block mb-4">🎴</span>
-                <p className="text-muted-foreground">No live breaks right now</p>
+               <div className="text-center py-16">
+                 <img src={modeImages.emptyState} alt="" className="w-20 h-20 rounded-2xl object-cover mx-auto mb-4 opacity-80" />
+                 <p className="text-muted-foreground">No live breaks right now</p>
                 <p className="text-xs text-muted-foreground mt-1">Check upcoming or come back later</p>
               </div>
             ) : liveListings.map((listing, i) => {
