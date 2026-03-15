@@ -150,7 +150,7 @@ const HeroSection = () => {
             <motion.img
               src={isometricHero}
               alt="nabbit.ai — AI-powered deal hunting"
-              className="w-[400px] sm:w-[480px] relative z-10 drop-shadow-2xl"
+              className="w-[320px] sm:w-[400px] lg:w-[460px] relative z-10 drop-shadow-2xl"
               animate={{ y: [-8, 8, -8] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             />
