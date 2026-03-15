@@ -44,7 +44,7 @@ const Login = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md relative z-10"
       >
-        <form onSubmit={handleSubmit} className="glass-card p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="glass-card gradient-border p-8 space-y-6">
           <div className="text-center space-y-4">
             <Link to="/" className="inline-block">
               <img src={nabbitLogo} alt="nabbit.ai" className="h-8 mx-auto" style={{ mixBlendMode: "lighten" }} />
