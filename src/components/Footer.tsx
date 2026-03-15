@@ -129,7 +129,7 @@ const Footer = () => {
               <Link to="/about" className={linkClass}>About</Link>
               <Link to="/blog" className={linkClass}>Blog</Link>
               <Link to="/contact" className={linkClass}>Contact</Link>
-              <Link to="/community" className={linkClass}>Community</Link>
+              <Link to="/community" className={linkClass}>Crew Hub</Link>
               <Link to="/giving" className={linkClass}>Giving</Link>
             </div>
           </div>

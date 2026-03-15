@@ -41,7 +41,7 @@ const typeIcons: Record<string, { icon: typeof Zap; color: string }> = {
 const filters = ["All", "Unread", "🎯 Dream Buys", "⚡ Group Deals", "📉 Price Drops"] as const;
 
 const Notifications = () => {
-  usePageMeta({ title: "Notifications — nabbit.ai", description: "Price drops, dream buy matches, and community updates.", path: "/notifications" });
+  usePageMeta({ title: "Notifications — nabbit.ai", description: "Price drops, dream buy matches, and crew updates.", path: "/notifications" });
   const navigate = useNavigate();
   const { user } = useAuth();
   const [notifs, setNotifs] = useState<NotifItem[]>([]);
