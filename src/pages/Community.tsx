@@ -112,6 +112,7 @@ const Community = () => {
       return;
     }
     setJoinedDeals((prev) => [...prev, dealId]);
+    track("group_deal_joined", { deal_id: dealId });
 
     // Award XP
     const xpGain = await awardXP(user.id, "join_deal");
