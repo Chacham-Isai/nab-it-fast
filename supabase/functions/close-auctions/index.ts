@@ -60,10 +60,24 @@ serve(async (req) => {
           status: 'pending',
         });
 
+        // Award XP to winner
+        const { data: winnerProfile } = await supabase
+          .from('profiles')
+          .select('total_xp')
+          .eq('id', auction.highest_bidder_id)
+          .single();
+        
+        if (winnerProfile) {
+          await supabase
+            .from('profiles')
+            .update({ total_xp: (winnerProfile.total_xp || 0) + 100 })
+            .eq('id', auction.highest_bidder_id);
+        }
+
         // Notify winner
         await supabase.from('notifications_log').insert({
           user_id: auction.highest_bidder_id,
-          title: '🎉 You won the auction!',
+          title: '🎉 You won the auction! +100 XP',
           body: `You won "${auction.listings.title}" for $${amount.toLocaleString()}. Complete payment to claim your item.`,
           type: 'auction',
           action_label: 'Pay Now',

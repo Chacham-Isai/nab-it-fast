@@ -8,6 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import usePageMeta from "@/hooks/usePageMeta";
+import { awardXP } from "@/lib/xp";
 
 const rarityLabels = [
   { key: "common", label: "Hit", color: "bg-secondary text-secondary-foreground" },
