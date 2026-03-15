@@ -16,11 +16,11 @@ import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
 
 const activityFeed = [
-  { id: 1, user: "🧑‍🎤", name: "Alex K.", action: "just nabbed", item: "Jordan 1 Chicago", price: 289, tribe: "Sneakerheads", time: "2m ago", hot: true },
-  { id: 2, user: "👩‍💼", name: "Sarah M.", action: "just nabbed", item: "1986 Fleer Jordan RC", price: 4200, tribe: "Card Collectors", time: "5m ago", hot: true },
-  { id: 3, user: "🧔", name: "Mike D.", action: "just nabbed", item: "Rolex Sub", price: 12800, tribe: "Watch Collectors", time: "12m ago", hot: false },
-  { id: 4, user: "👩‍🎨", name: "Luna R.", action: "just nabbed", item: "Supreme Box Logo", price: 425, tribe: "Streetwear", time: "18m ago", hot: false },
-  { id: 5, user: "🧑‍💻", name: "Dev P.", action: "just nabbed", item: "Vision Pro", price: 3299, tribe: "Tech Heads", time: "25m ago", hot: false },
+  { id: 1, user: "🧑‍🎤", name: "Alex K.", action: "just nabbed", item: "Jordan 1 Chicago", price: 289, crew: "Sneakerheads", time: "2m ago", hot: true },
+  { id: 2, user: "👩‍💼", name: "Sarah M.", action: "just nabbed", item: "1986 Fleer Jordan RC", price: 4200, crew: "Card Collectors", time: "5m ago", hot: true },
+  { id: 3, user: "🧔", name: "Mike D.", action: "just nabbed", item: "Rolex Sub", price: 12800, crew: "Watch Collectors", time: "12m ago", hot: false },
+  { id: 4, user: "👩‍🎨", name: "Luna R.", action: "just nabbed", item: "Supreme Box Logo", price: 425, crew: "Streetwear", time: "18m ago", hot: false },
+  { id: 5, user: "🧑‍💻", name: "Dev P.", action: "just nabbed", item: "Vision Pro", price: 3299, crew: "Tech Heads", time: "25m ago", hot: false },
 ];
 
 const tribes = [
