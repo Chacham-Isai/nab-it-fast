@@ -198,6 +198,24 @@ const Analytics = () => {
         </div>
       ) : (
         <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+          {/* Date Range Filter */}
+          <div className="flex items-center gap-2">
+            <Calendar className="w-4 h-4 text-muted-foreground" />
+            {(["today", "7d", "30d", "all"] as const).map((r) => (
+              <button
+                key={r}
+                onClick={() => setRange(r)}
+                className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
+                  range === r
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {r === "today" ? "Today" : r === "7d" ? "7 Days" : r === "30d" ? "30 Days" : "All Time"}
+              </button>
+            ))}
+          </div>
+
           {/* Stat Cards */}
           <div className="grid grid-cols-2 gap-3">
             {stats.map((s, i) => (
