@@ -24,14 +24,6 @@ const activityFeed = [
   { id: 5, user: "🧑‍💻", name: "Dev P.", action: "just nabbed", item: "Vision Pro", price: 3299, crew: "Tech Heads", time: "25m ago", hot: false },
 ];
 
-const tribes = [
-  { name: "Card Collectors", emoji: "🃏", members: 2840, active: true },
-  { name: "Sneakerheads", emoji: "👟", members: 3120, active: true },
-  { name: "Watch Collectors", emoji: "⌚", members: 1560, active: false },
-  { name: "Tech Heads", emoji: "🖥️", members: 2200, active: true },
-  { name: "Vintage Hunters", emoji: "🪑", members: 890, active: false },
-  { name: "Streetwear", emoji: "🧥", members: 1980, active: true },
-];
 
 type TabType = "feed" | "deals" | "tribes" | "leaderboard";
 
