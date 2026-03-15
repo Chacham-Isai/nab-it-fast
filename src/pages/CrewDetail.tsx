@@ -11,6 +11,7 @@ import GroupDealCard from "@/components/community/GroupDealCard";
 import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface Crew {
   id: string;
