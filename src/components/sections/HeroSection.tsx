@@ -152,13 +152,13 @@ const HeroSection = () => {
           {/* Trust pills */}
           <div className="flex flex-wrap items-center gap-3 text-xs font-semibold">
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-nab-cyan/[0.1] border border-nab-cyan/30 text-nab-cyan">
-              <Flame className="w-3.5 h-3.5" /> AI Deal Engine
+              <Flame className="w-3.5 h-3.5" /> Smart Price Hunting
             </span>
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-success/[0.1] border border-success/30 text-success">
-              <Zap className="w-3.5 h-3.5" /> Sub-3s Auto-Nab
+              <Zap className="w-3.5 h-3.5" /> Instant Auto-Checkout
             </span>
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-nab-purple/[0.1] border border-nab-purple/30 text-nab-purple">
-              <Swords className="w-3.5 h-3.5" /> Nab It
+              <Swords className="w-3.5 h-3.5" /> Live Drops & Breaks
             </span>
           </div>
 
