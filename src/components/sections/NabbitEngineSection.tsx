@@ -45,7 +45,15 @@ const metrics = [
 const NabbitEngineSection = () => {
   return (
     <SectionWrapper id="nabbit-engine">
-      <div className="text-center mb-16">
+      <div className="text-center mb-16 relative">
+        {/* Floating rabbit watermark */}
+        <motion.img
+          src={nabbitLogo}
+          alt=""
+          className="absolute left-1/2 -translate-x-1/2 -top-8 w-20 h-20 opacity-[0.08] pointer-events-none"
+          animate={{ y: [-4, 4, -4], rotate: [-2, 2, -2] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        />
         <p className="section-label mb-4">PROPRIETARY TECHNOLOGY</p>
         <h2
           className="font-heading font-black text-foreground mb-6"

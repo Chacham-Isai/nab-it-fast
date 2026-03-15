@@ -17,7 +17,14 @@ const categories = [
 const CategoriesSection = () => {
   return (
     <SectionWrapper id="categories">
-      <div className="text-center mb-16">
+      <div className="text-center mb-16 relative">
+        <motion.img
+          src={nabbitLogo}
+          alt=""
+          className="absolute left-1/2 -translate-x-1/2 -top-6 w-14 h-14 opacity-[0.06] pointer-events-none"
+          animate={{ rotate: [0, 5, -5, 0] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        />
         <p className="section-label mb-4">USE CASES</p>
         <h2 className="font-heading font-bold text-foreground mb-6" style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}>
           Nab <span className="gradient-text">anything.</span>
