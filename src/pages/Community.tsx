@@ -15,6 +15,7 @@ import CreateDealForm from "@/components/community/CreateDealForm";
 import CrewDiscovery from "@/components/community/CrewDiscovery";
 import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const activityFeed = [
   { id: 1, user: "🧑‍🎤", name: "Alex K.", action: "just nabbed", item: "Jordan 1 Chicago", price: 289, crew: "Sneakerheads", time: "2m ago", hot: true },
