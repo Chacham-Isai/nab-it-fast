@@ -150,7 +150,7 @@ const HeroSection = () => {
           </p>
 
           {/* Trust pills */}
-          <div className="flex flex-wrap items-center gap-3 text-xs font-semibold">
+          <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-2 sm:gap-3 text-xs font-semibold">
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-nab-cyan/[0.1] border border-nab-cyan/30 text-nab-cyan">
               <Flame className="w-3.5 h-3.5" /> Smart Price Hunting
             </span>
@@ -162,10 +162,10 @@ const HeroSection = () => {
             </span>
           </div>
 
-          <div className="flex flex-wrap gap-4 pt-1">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-1">
             <Button
               size="lg"
-              className="rounded-full px-10 font-black text-base gap-2 shimmer-btn text-lg"
+              className="rounded-full px-8 sm:px-10 font-black text-base gap-2 shimmer-btn w-full sm:w-auto"
               onClick={() => navigate("/signup")}
             >
               Start Nabbing <ArrowRight className="w-5 h-5" />
@@ -173,7 +173,7 @@ const HeroSection = () => {
             <Button
               size="lg"
               variant="outline"
-              className="rounded-full px-8 font-bold text-base border-border hover:bg-secondary group"
+              className="rounded-full px-6 sm:px-8 font-bold text-base border-border hover:bg-secondary group w-full sm:w-auto"
               onClick={() => document.getElementById("how-it-drops")?.scrollIntoView({ behavior: "smooth" })}
             >
               See How It Works <ArrowRight className="w-4 h-4 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
@@ -189,17 +189,17 @@ const HeroSection = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
-                className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-success/[0.08] border border-success/20 text-sm"
+                className="inline-flex items-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full bg-success/[0.08] border border-success/20 text-xs sm:text-sm max-w-full"
               >
-                <span className="relative flex h-2 w-2">
+                <span className="relative flex h-2 w-2 shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
                 </span>
-                <span className="text-muted-foreground">
+                <span className="text-muted-foreground truncate">
                   {currentNab.user} nabbed <strong className="text-foreground">{currentNab.item}</strong> — saved{" "}
                   <strong className="text-success">{currentNab.saved}</strong>
                 </span>
-                <span className="text-xs text-muted-foreground/50">{currentNab.time}</span>
+                <span className="text-xs text-muted-foreground/50 shrink-0 hidden sm:inline">{currentNab.time}</span>
               </motion.div>
             </AnimatePresence>
           </div>

@@ -197,9 +197,9 @@ const Analytics = () => {
           <Loader2 className="w-6 h-6 animate-spin text-primary" />
         </div>
       ) : (
-        <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
+        <div className="max-w-2xl mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
           {/* Date Range Filter */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto scrollbar-hide">
             <Calendar className="w-4 h-4 text-muted-foreground" />
             {(["today", "7d", "30d", "all"] as const).map((r) => (
               <button
@@ -217,15 +217,15 @@ const Analytics = () => {
           </div>
 
           {/* Stat Cards */}
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3">
             {stats.map((s, i) => (
-              <Card key={i} className="p-4 bg-card border-border">
-                <div className="flex items-center gap-2 mb-1">
+              <Card key={i} className="p-3 sm:p-4 bg-card border-border">
+                <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
                   {s.icon}
-                  <span className="text-xs text-muted-foreground font-medium">{s.label}</span>
+                  <span className="text-[10px] sm:text-xs text-muted-foreground font-medium truncate">{s.label}</span>
                 </div>
-                <p className="text-2xl font-heading font-bold text-foreground">{s.value}</p>
-                {s.change && <p className="text-xs text-primary font-medium mt-0.5">{s.change}</p>}
+                <p className="text-xl sm:text-2xl font-heading font-bold text-foreground">{s.value}</p>
+                {s.change && <p className="text-[10px] sm:text-xs text-primary font-medium mt-0.5">{s.change}</p>}
               </Card>
             ))}
           </div>

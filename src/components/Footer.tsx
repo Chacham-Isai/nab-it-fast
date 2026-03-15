@@ -77,7 +77,7 @@ const Footer = () => {
         </motion.div>
 
         {/* Main footer grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-14">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 mb-14">
           {/* Brand */}
           <div className="space-y-5">
             <div className="flex items-center gap-2.5">

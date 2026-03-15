@@ -60,7 +60,7 @@ const Login = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden flex items-center justify-center px-4">
+    <div className="min-h-screen bg-background relative overflow-hidden flex items-center justify-center px-4 py-8">
       {/* Background effects */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-20 blur-[120px]" style={{ background: "hsl(var(--nab-cyan))" }} />
@@ -73,7 +73,7 @@ const Login = () => {
         transition={{ duration: 0.5 }}
         className="w-full max-w-md relative z-10"
       >
-        <form onSubmit={handleSubmit} className="glass-card gradient-border p-8 space-y-6">
+        <form onSubmit={handleSubmit} className="glass-card gradient-border p-6 sm:p-8 space-y-5 sm:space-y-6">
           <div className="text-center space-y-4">
             <Link to="/" className="inline-block">
               <img src={nabbitLogo} alt="nabbit.ai" className="h-12 mx-auto" />
