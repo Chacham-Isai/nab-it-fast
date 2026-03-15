@@ -42,7 +42,8 @@ const BottomNav = () => {
                     active ? "ring-4 ring-primary/20" : ""
                   }`}
                   style={{
-                    boxShadow: "0 0 20px hsl(var(--coral) / 0.4), 0 4px 12px rgba(0,0,0,0.3)",
+                    boxShadow: "0 0 20px hsl(var(--nab-cyan) / 0.4), 0 4px 12px rgba(0,0,0,0.3)",
+                    background: "linear-gradient(135deg, hsl(var(--nab-cyan)), hsl(var(--nab-blue)), hsl(var(--nab-purple)))",
                   }}
                 >
                   <Icon className="w-6 h-6" />
