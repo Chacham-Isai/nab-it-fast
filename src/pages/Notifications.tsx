@@ -24,7 +24,7 @@ const mockNotifs: NotifItem[] = [
   { id: "m1", type: "dream_match", title: "Dream Buy Found!", body: "1952 Topps Mickey Mantle — PSA 4 listed at $4,200 (32% below market)", emoji: "🃏", time: "2m ago", read: false, urgent: true, actionLabel: "View Match" },
   { id: "m2", type: "price_drop", title: "Price Drop Alert", body: "Air Jordan 1 Chicago dropped from $380 to $289", emoji: "👟", time: "1h ago", read: false, actionLabel: "View" },
   { id: "m3", type: "group_deal", title: "Group Deal Almost Full!", body: "Nike Dunk Low Pack — 8/10 spots filled. Join now!", emoji: "👟", time: "2h ago", read: false, actionLabel: "Join" },
-  { id: "m4", type: "tribe", title: "New in Sneakerheads", body: "Alex K. nabbed Air Jordan 1 Chicago for $289", emoji: "🧑‍🎤", time: "3h ago", read: true },
+  { id: "m4", type: "crew", title: "New in Sneakerheads", body: "Alex K. nabbed Air Jordan 1 Chicago for $289", emoji: "🧑‍🎤", time: "3h ago", read: true },
   { id: "m5", type: "giving", title: "Community Impact", body: "Your round-ups helped raise $1,240 for education this month!", emoji: "❤️", time: "5h ago", read: true },
   { id: "m6", type: "feed", title: "New Drops Ready", body: "15 new items matched to your taste profile", emoji: "📦", time: "8h ago", read: true },
 ];
