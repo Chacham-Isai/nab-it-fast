@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Clock, Users, Trophy, Share2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import Countdown from "@/components/Countdown";
+import ConfettiCelebration from "@/components/community/ConfettiCelebration";
 import { cn } from "@/lib/utils";
 
 interface GroupDealCardProps {
@@ -45,7 +46,16 @@ const tierEmoji: Record<string, string> = {
 
 const GroupDealCard = ({ deal, participantAvatars, isJoined, onJoin, onLeave, onShare }: GroupDealCardProps) => {
   const [loading, setLoading] = useState(false);
-  const [showConfetti, setShowConfetti] = useState(false);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const prevStatusRef = useRef(deal.status);
+
+  // Detect realtime status change to 'funded' while viewing
+  useEffect(() => {
+    if (prevStatusRef.current !== "funded" && deal.status === "funded" && isJoined) {
+      setShowCelebration(true);
+    }
+    prevStatusRef.current = deal.status;
+  }, [deal.status, isJoined]);
 
   const progress = Math.min((deal.current_participants / deal.target_participants) * 100, 100);
   const almostThere = progress > 80 && deal.status === "active";
@@ -60,8 +70,7 @@ const GroupDealCard = ({ deal, participantAvatars, isJoined, onJoin, onLeave, on
       } else {
         await onJoin(deal.id);
         if (deal.current_participants + 1 >= deal.target_participants) {
-          setShowConfetti(true);
-          setTimeout(() => setShowConfetti(false), 3000);
+          setShowCelebration(true);
         }
       }
     } finally {
@@ -80,26 +89,13 @@ const GroupDealCard = ({ deal, participantAvatars, isJoined, onJoin, onLeave, on
         almostThere && "border-primary/30"
       )}
     >
-      {/* Confetti overlay */}
-      <AnimatePresence>
-        {showConfetti && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="absolute inset-0 z-20 flex items-center justify-center bg-background/60 backdrop-blur-sm rounded-2xl"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="text-center"
-            >
-              <span className="text-5xl">🎉</span>
-              <p className="font-heading font-bold text-primary text-lg mt-2">DEAL FUNDED!</p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Full-screen confetti + XP celebration */}
+      <ConfettiCelebration
+        show={showCelebration}
+        xpAmount={200}
+        dealTitle={deal.title}
+        onComplete={() => setShowCelebration(false)}
+      />
 
       {/* Header */}
       <div className="flex items-start gap-3">
