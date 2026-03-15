@@ -50,6 +50,16 @@ const Signup = () => {
     if (error) setError(error.message);
   };
 
+  const handleAppleSignIn = async () => {
+    setError("");
+    setAppleLoading(true);
+    const { error } = await lovable.auth.signInWithOAuth("apple", {
+      redirect_uri: window.location.origin,
+    });
+    setAppleLoading(false);
+    if (error) setError(error.message);
+  };
+
   const perks = [
     "AI-powered deal hunting across 200+ retailers",
     "Personalized taste-matched feed",
