@@ -1,6 +1,7 @@
 import SectionWrapper from "@/components/SectionWrapper";
 import { motion } from "framer-motion";
 import { Footprints, Smartphone, ShoppingBag, Layers, Sparkles, Sofa, Baby, Car } from "lucide-react";
+import nabbitLogo from "@/assets/nabbit-logo.png";
 
 const categories = [
   { icon: Footprints, name: "Sneakers", examples: "Jordans, Dunks, Yeezys" },
