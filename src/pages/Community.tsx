@@ -18,6 +18,7 @@ import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { cn } from "@/lib/utils";
+import nabbitLogo from "@/assets/nabbit-logo.png";
 
 import crewHeroImg from "@/assets/crew/crew-hero.jpg";
 import streakBgImg from "@/assets/crew/streak-bg.jpg";
@@ -257,29 +258,39 @@ const Community = () => {
     <div className="min-h-screen bg-background pb-24">
       {/* Background orbs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-20 -left-32 w-64 h-64 rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute top-60 -right-32 w-72 h-72 rounded-full bg-accent/5 blur-3xl" />
-        <div className="absolute bottom-40 left-1/2 w-96 h-96 rounded-full bg-primary/3 blur-3xl" />
+        <motion.div animate={{ scale: [1, 1.3, 1], opacity: [0.04, 0.08, 0.04] }} transition={{ duration: 8, repeat: Infinity }} className="absolute top-10 -left-32 w-80 h-80 rounded-full blur-[120px]" style={{ background: "hsl(var(--nab-cyan))" }} />
+        <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.03, 0.07, 0.03] }} transition={{ duration: 10, repeat: Infinity, delay: 2 }} className="absolute top-60 -right-32 w-72 h-72 rounded-full blur-[100px]" style={{ background: "hsl(var(--nab-purple))" }} />
       </div>
 
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/60 backdrop-blur-2xl border-b border-border">
-        <div className="flex items-center gap-3 max-w-lg mx-auto px-4 py-3">
-          <button onClick={() => navigate(-1)} className="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center hover:bg-secondary transition-colors">
-            <ArrowLeft className="w-4 h-4 text-foreground" />
-          </button>
-          <div className="flex-1">
-            <h1 className="font-heading font-bold text-foreground text-lg">Crew Hub</h1>
-            <p className="text-[10px] text-muted-foreground">Your squad. Your deals. Your wins.</p>
-          </div>
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
-            <Users className="w-3 h-3 text-primary" />
-            <span className="text-xs font-bold text-primary">12.6K</span>
+        {/* Hero banner strip */}
+        <div className="relative overflow-hidden">
+          <img src={crewHeroImg} alt="" className="w-full h-28 object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
+          <div className="absolute inset-0 flex items-center max-w-lg mx-auto px-4">
+            <div className="flex items-center gap-3 flex-1">
+              <button onClick={() => navigate(-1)} className="w-9 h-9 rounded-xl bg-background/40 backdrop-blur-xl flex items-center justify-center hover:bg-background/60 transition-colors border border-border/30">
+                <ArrowLeft className="w-4 h-4 text-foreground" />
+              </button>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <img src={nabbitLogo} alt="" className="h-5" />
+                  <h1 className="font-heading font-black text-foreground text-xl tracking-tight">CREW HUB</h1>
+                </div>
+                <p className="text-[11px] text-muted-foreground font-medium mt-0.5">Squad up. Nab together. Win bigger.</p>
+              </div>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/40 backdrop-blur-xl border border-primary/20">
+                <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }} className="w-2 h-2 rounded-full bg-success" />
+                <Users className="w-3 h-3 text-primary" />
+                <span className="text-xs font-bold text-primary">12.6K</span>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1.5 max-w-lg mx-auto px-4 pb-3">
+        <div className="flex gap-1.5 max-w-lg mx-auto px-4 py-2.5">
           {tabs.map((t) => {
             const Icon = t.icon;
             const active = tab === t.key;
@@ -288,14 +299,25 @@ const Community = () => {
                 key={t.key}
                 onClick={() => setTab(t.key)}
                 className={cn(
-                  "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all relative",
+                  "flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all relative overflow-hidden",
                   active
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                    ? "text-primary-foreground shadow-lg"
                     : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
                 )}
+                style={active ? {
+                  background: "linear-gradient(135deg, hsl(var(--nab-cyan)), hsl(var(--nab-blue)), hsl(var(--nab-purple)))",
+                  boxShadow: "0 4px 20px hsl(var(--nab-cyan) / 0.3)",
+                } : {}}
               >
                 <Icon className="w-3.5 h-3.5" />
                 {t.label}
+                {active && (
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                    animate={{ x: ["-100%", "200%"] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                  />
+                )}
               </button>
             );
           })}
@@ -338,17 +360,39 @@ const Community = () => {
         <AnimatePresence mode="wait">
           {tab === "feed" && (
             <motion.div key="feed" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-4">
-              {/* Hero banner */}
+              {/* Hot Now Banner */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative rounded-2xl overflow-hidden h-36"
+                className="relative rounded-2xl overflow-hidden glass-card gradient-border p-5"
               >
-                <img src={crewHeroImg} alt="Crew" className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
-                <div className="relative h-full flex flex-col justify-end p-4">
-                  <h2 className="font-heading font-bold text-foreground text-xl">What's Hot Right Now</h2>
-                  <p className="text-xs text-muted-foreground mt-0.5">Fresh from the crew's top sellers</p>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-destructive/10 border border-destructive/20">
+                    <motion.div animate={{ scale: [1, 1.3, 1] }} transition={{ duration: 1.5, repeat: Infinity }} className="w-2 h-2 rounded-full bg-destructive" />
+                    <span className="text-[10px] font-black text-destructive uppercase tracking-wider">Hot Now</span>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground">{feedListings.length} active listings</span>
+                </div>
+                <h2 className="font-heading font-black text-foreground text-xl tracking-tight">
+                  YOUR CREW'S <span className="gradient-text">LATEST DROPS</span>
+                </h2>
+                <p className="text-xs text-muted-foreground mt-1">Curated from sellers your crew trusts</p>
+                {/* Mini preview images */}
+                <div className="flex gap-2 mt-3">
+                  {[imgCardsBox, imgSneakers, imgWatch, imgFashion].map((img, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ delay: 0.1 * i }}
+                      className="w-14 h-14 rounded-xl overflow-hidden ring-2 ring-border"
+                    >
+                      <img src={img} alt="" className="w-full h-full object-cover" />
+                    </motion.div>
+                  ))}
+                  <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <span className="text-[10px] font-bold text-primary">+{Math.max(0, feedListings.length - 4)}</span>
+                  </div>
                 </div>
               </motion.div>
 
@@ -426,17 +470,32 @@ const Community = () => {
           {/* ===== CREW DEALS ===== */}
           {tab === "crew-deals" && (
             <motion.div key="crew-deals" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-5">
-              {/* Hero banner */}
+              {/* Crew Deals Header */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative rounded-2xl overflow-hidden h-32"
+                className="rounded-2xl glass-card gradient-border p-5 relative overflow-hidden"
               >
-                <img src={dealsHeroImg} alt="Deals" className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-                <div className="relative h-full flex flex-col justify-end p-4">
-                  <h2 className="font-heading font-bold text-foreground text-lg">Crew Deals</h2>
-                  <p className="text-xs text-muted-foreground">Team up. Unlock discounts. Win together.</p>
+                <motion.div animate={{ x: ["-100%", "200%"] }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }} className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-primary/[0.03] to-transparent pointer-events-none" />
+                <div className="relative">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Target className="w-4 h-4 text-primary" />
+                    <span className="text-[10px] font-black text-primary uppercase tracking-widest">Group Buying Power</span>
+                  </div>
+                  <h2 className="font-heading font-black text-foreground text-xl tracking-tight">
+                    CREW <span className="gradient-text">DEALS</span>
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-1">Team up → Unlock discounts → Win together</p>
+                  <div className="flex gap-3 mt-3">
+                    <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-success/10 border border-success/20">
+                      <TrendingUp className="w-3 h-3 text-success" />
+                      <span className="text-[10px] font-bold text-success">{deals.length} active</span>
+                    </div>
+                    <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/10 border border-primary/20">
+                      <Users className="w-3 h-3 text-primary" />
+                      <span className="text-[10px] font-bold text-primary">{deals.reduce((s, d) => s + d.current_participants, 0)} joined</span>
+                    </div>
+                  </div>
                 </div>
               </motion.div>
 
@@ -644,20 +703,21 @@ const Community = () => {
           {/* ===== LEADERBOARD ===== */}
           {tab === "leaderboard" && (
             <motion.div key="leaderboard" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-4">
-              {/* Hero banner */}
+              {/* Leaderboard Header */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative rounded-2xl overflow-hidden h-40"
+                className="rounded-2xl glass-card gradient-border p-5 text-center relative overflow-hidden"
               >
-                <img src={leaderboardHeroImg} alt="Leaderboard" className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-                <div className="relative h-full flex flex-col justify-end p-4">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Trophy className="w-5 h-5 text-yellow-400" />
-                    <h2 className="font-heading font-bold text-foreground text-xl">Top Nabbers</h2>
-                  </div>
-                  <p className="text-xs text-muted-foreground">Ranked by XP earned across the platform</p>
+                <motion.div animate={{ rotate: [0, 5, -5, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="text-5xl mb-2">🏆</motion.div>
+                <h2 className="font-heading font-black text-foreground text-xl tracking-tight">
+                  TOP <span className="gradient-text">NABBERS</span>
+                </h2>
+                <p className="text-xs text-muted-foreground mt-1">Ranked by XP earned across the platform</p>
+                <div className="flex justify-center gap-3 mt-3">
+                  <div className="px-3 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-[10px] font-bold text-yellow-400">🥇 Gold</div>
+                  <div className="px-3 py-1 rounded-full bg-slate-400/10 border border-slate-400/20 text-[10px] font-bold text-slate-400">🥈 Silver</div>
+                  <div className="px-3 py-1 rounded-full bg-amber-600/10 border border-amber-600/20 text-[10px] font-bold text-amber-600">🥉 Bronze</div>
                 </div>
               </motion.div>
 
