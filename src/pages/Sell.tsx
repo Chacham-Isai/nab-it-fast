@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import CreateListingForm from "@/components/sell/CreateListingForm";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const Sell = () => {
   const navigate = useNavigate();
