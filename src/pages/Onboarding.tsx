@@ -168,11 +168,11 @@ const Onboarding = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-background relative overflow-hidden flex flex-col items-center justify-center px-4">
-        <div className="absolute top-1/3 left-1/3 w-96 h-96 rounded-full opacity-20 blur-[120px]" style={{ background: "hsl(var(--coral))" }} />
+        <div className="absolute top-1/3 left-1/3 w-96 h-96 rounded-full opacity-20 blur-[120px]" style={{ background: "hsl(var(--nab-cyan))" }} />
         <motion.div initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center space-y-8 relative z-10">
           <div className="relative">
             <Loader2 className="w-14 h-14 text-primary animate-spin mx-auto" />
-            <div className="absolute inset-0 w-14 h-14 mx-auto rounded-full animate-ping opacity-20" style={{ background: "hsl(var(--coral))" }} />
+            <div className="absolute inset-0 w-14 h-14 mx-auto rounded-full animate-ping opacity-20" style={{ background: "hsl(var(--nab-cyan))" }} />
           </div>
           <AnimatePresence mode="wait">
             <motion.p key={loadingPhase} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="text-lg font-heading font-semibold text-foreground">
@@ -201,7 +201,7 @@ const Onboarding = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-72 h-72 rounded-full opacity-10 blur-[100px]" style={{ background: "hsl(var(--coral))" }} />
+      <div className="absolute top-0 right-0 w-72 h-72 rounded-full opacity-10 blur-[100px]" style={{ background: "hsl(var(--nab-cyan))" }} />
 
       <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
         <div className="flex items-center justify-between max-w-lg mx-auto">

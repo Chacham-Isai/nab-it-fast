@@ -128,7 +128,7 @@ const DemoSection = () => {
                   Your real feed has <strong className="text-foreground">thousands more</strong> deals waiting.
                 </p>
                 <Button
-                  className="rounded-full px-8 font-semibold gap-2 shimmer-btn shadow-[0_0_30px_-5px_hsl(var(--coral)/0.4)]"
+                  className="rounded-full px-8 font-semibold gap-2 shimmer-btn shadow-[0_0_30px_-5px_hsl(var(--nab-cyan)/0.4)]"
                   onClick={() => navigate("/signup")}
                 >
                   Create Free Account <ArrowRight className="w-4 h-4" />

@@ -38,7 +38,7 @@ const HowItWorksSection = () => {
       </div>
 
       <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mt-12">
-        <Button size="lg" className="rounded-full px-8 font-semibold text-base gap-2 shimmer-btn shadow-[0_0_30px_-5px_hsl(var(--coral)/0.4)]" onClick={() => navigate("/signup")}>
+        <Button size="lg" className="rounded-full px-8 font-semibold text-base gap-2 shimmer-btn shadow-[0_0_30px_-5px_hsl(var(--nab-cyan)/0.4)]" onClick={() => navigate("/signup")}>
           Try It Free — No Credit Card <ArrowRight className="w-4 h-4" />
         </Button>
       </motion.div>

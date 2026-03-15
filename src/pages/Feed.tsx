@@ -156,7 +156,7 @@ const Feed = () => {
         {visibleCards.length > 0 && (
           <div className="flex items-center justify-center gap-6 mt-4">
             <button onClick={() => handleSwipe("left")} className="w-14 h-14 rounded-full border-2 border-border bg-card flex items-center justify-center hover:border-destructive hover:text-destructive transition-all active:scale-95"><X className="w-6 h-6" /></button>
-            <button onClick={() => handleSwipe("right")} className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg active:scale-95 transition-transform" style={{ boxShadow: "0 0 20px hsl(var(--coral) / 0.4)" }}><ShoppingBag className="w-7 h-7" /></button>
+            <button onClick={() => handleSwipe("right")} className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg active:scale-95 transition-transform" style={{ boxShadow: "0 0 20px hsl(var(--nab-cyan) / 0.4)" }}><ShoppingBag className="w-7 h-7" /></button>
             <button onClick={handleBookmark} className="w-14 h-14 rounded-full border-2 border-border bg-card flex items-center justify-center hover:border-primary hover:text-primary transition-all active:scale-95"><Bookmark className="w-6 h-6" /></button>
           </div>
         )}
