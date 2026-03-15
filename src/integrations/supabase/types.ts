@@ -281,6 +281,107 @@ export type Database = {
           },
         ]
       }
+      group_deal_participants: {
+        Row: {
+          deal_id: string
+          id: string
+          joined_at: string | null
+          user_id: string
+        }
+        Insert: {
+          deal_id: string
+          id?: string
+          joined_at?: string | null
+          user_id: string
+        }
+        Update: {
+          deal_id?: string
+          id?: string
+          joined_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_deal_participants_deal_id_fkey"
+            columns: ["deal_id"]
+            isOneToOne: false
+            referencedRelation: "group_deals"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_deal_participants_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      group_deals: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          created_by: string | null
+          current_participants: number
+          deal_price: number
+          description: string | null
+          discount_pct: number
+          emoji: string | null
+          ends_at: string
+          id: string
+          retail_price: number
+          reward_tier: string | null
+          status: string
+          target_participants: number
+          title: string
+          tribe_name: string | null
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          current_participants?: number
+          deal_price: number
+          description?: string | null
+          discount_pct?: number
+          emoji?: string | null
+          ends_at: string
+          id?: string
+          retail_price: number
+          reward_tier?: string | null
+          status?: string
+          target_participants?: number
+          title: string
+          tribe_name?: string | null
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          current_participants?: number
+          deal_price?: number
+          description?: string | null
+          discount_pct?: number
+          emoji?: string | null
+          ends_at?: string
+          id?: string
+          retail_price?: number
+          reward_tier?: string | null
+          status?: string
+          target_participants?: number
+          title?: string
+          tribe_name?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "group_deals_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       listings: {
         Row: {
           buy_now_price: number | null
@@ -478,9 +579,12 @@ export type Database = {
           created_at: string | null
           display_name: string | null
           id: string
+          last_active_date: string | null
           onboarding_complete: boolean | null
           spending_style: string | null
+          streak_days: number
           taste_tags: string[] | null
+          total_xp: number
           travel_vibes: string[] | null
         }
         Insert: {
@@ -490,9 +594,12 @@ export type Database = {
           created_at?: string | null
           display_name?: string | null
           id: string
+          last_active_date?: string | null
           onboarding_complete?: boolean | null
           spending_style?: string | null
+          streak_days?: number
           taste_tags?: string[] | null
+          total_xp?: number
           travel_vibes?: string[] | null
         }
         Update: {
@@ -502,9 +609,12 @@ export type Database = {
           created_at?: string | null
           display_name?: string | null
           id?: string
+          last_active_date?: string | null
           onboarding_complete?: boolean | null
           spending_style?: string | null
+          streak_days?: number
           taste_tags?: string[] | null
+          total_xp?: number
           travel_vibes?: string[] | null
         }
         Relationships: []
