@@ -4,6 +4,7 @@ import { ArrowLeft, Radio, Sparkles, Gavel, Shield, ChevronRight, Flame, Search,
 import { motion } from "framer-motion";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const Play = () => {
   const navigate = useNavigate();
