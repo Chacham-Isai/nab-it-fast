@@ -126,6 +126,19 @@ const Analytics = () => {
       { name: "Completed", value: completed || 0 },
     ]);
 
+    // --- Conversion funnel ---
+    const listingsViewed = evts.filter(e => e.event_name === "listing_viewed").length;
+    const bidsPlaced = evts.filter(e => e.event_name === "bid_placed").length;
+    const ordersCompleted = ((orders as any[]) || []).filter(o => ["completed", "delivered", "shipped"].includes(o.status)).length;
+    const totalOrders = ((orders as any[]) || []).length;
+
+    setFunnelData([
+      { name: "Viewed", value: listingsViewed || 0, fill: CHART_COLORS[0] },
+      { name: "Bid", value: bidsPlaced || 0, fill: CHART_COLORS[1] },
+      { name: "Ordered", value: totalOrders || 0, fill: CHART_COLORS[3] },
+      { name: "Completed", value: ordersCompleted || 0, fill: CHART_COLORS[4] },
+    ]);
+
     setLoading(false);
   };
 
