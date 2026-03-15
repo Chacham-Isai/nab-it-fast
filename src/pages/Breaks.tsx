@@ -91,20 +91,17 @@ const Breaks = () => {
   const buySlot = async (listingId: string, slotId: string) => {
     if (!user) { navigate("/login"); return; }
     setBuyingSlot(slotId);
-    const { error } = await supabase
-      .from("break_slots")
-      .update({ taken: true, buyer_id: user.id })
-      .eq("id", slotId)
-      .eq("taken", false);
-
-    if (error) {
-      toast({ title: "Slot unavailable", description: "Someone grabbed it first!", variant: "destructive" });
-    } else {
-      toast({ title: "✅ Slot claimed!", description: "You're in the break!" });
-      if (!myBreakIds.includes(listingId)) setMyBreakIds((p) => [...p, listingId]);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { listing_id: listingId, type: "break_slot", slot_id: slotId },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      if (data?.url) window.open(data.url, "_blank");
+    } catch (err: any) {
+      toast({ title: "Checkout failed", description: err.message, variant: "destructive" });
     }
     setBuyingSlot(null);
-    loadBreaks();
   };
 
   const getTimeLeft = (endsAt: string | null) => {
