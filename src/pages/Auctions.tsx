@@ -341,19 +341,19 @@ const Auctions = () => {
                 )}
 
                 {(tab === "history" || isEnded) && (
-                  <div className="space-y-1.5">
+                  <div className="space-y-2">
                     {history.length === 0 ? (
-                      <p className="text-xs text-muted-foreground text-center py-4">No bids yet — be the first!</p>
+                      <p className="text-xs text-muted-foreground text-center py-4 font-medium">No bids yet — be the first!</p>
                     ) : history.map((h: any, i: number) => (
-                      <div key={h.id} className={`flex items-center gap-3 p-2.5 rounded-xl ${h.bidder_id === user?.id ? "bg-primary/10 border border-primary/20" : "bg-secondary"}`}>
+                      <div key={h.id} className={`flex items-center gap-3 p-3 rounded-xl transition-all ${h.bidder_id === user?.id ? "bg-primary/10 border border-primary/20" : "bg-secondary/30 border border-border/30"}`}>
                         <div className="flex-1">
-                          <span className={`text-sm font-medium ${h.bidder_id === user?.id ? "text-primary" : "text-foreground"}`}>
+                          <span className={`text-sm font-bold ${h.bidder_id === user?.id ? "text-primary" : "text-foreground"}`}>
                             {h.bidder_id === user?.id ? "You" : (h.profiles?.display_name || "Anonymous")}
                           </span>
-                          {i === 0 && <span className="ml-1.5 text-[10px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded-full font-bold">TOP</span>}
+                          {i === 0 && <span className="ml-1.5 text-[9px] bg-gradient-to-r from-primary to-accent text-primary-foreground px-2 py-0.5 rounded-full font-black uppercase tracking-wider">Top</span>}
                         </div>
-                        <span className="font-bold text-foreground text-sm">${h.amount?.toLocaleString()}</span>
-                        <span className="text-[10px] text-muted-foreground">{formatTime(h.created_at)}</span>
+                        <span className="font-heading font-black text-foreground text-sm">${h.amount?.toLocaleString()}</span>
+                        <span className="text-[10px] text-muted-foreground font-medium">{formatTime(h.created_at)}</span>
                       </div>
                     ))}
                   </div>
