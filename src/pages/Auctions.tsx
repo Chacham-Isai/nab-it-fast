@@ -203,16 +203,25 @@ const Auctions = () => {
 
       <div className="max-w-lg mx-auto px-4 space-y-6">
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
+          <div className="flex flex-col items-center justify-center py-20 gap-3">
+            <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}>
+              <Loader2 className="w-7 h-7 text-primary" />
+            </motion.div>
+            <span className="text-xs text-muted-foreground font-medium">Loading auctions...</span>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="text-center py-16">
-            <Gavel className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-            <p className="text-muted-foreground">No active auctions</p>
-            <p className="text-xs text-muted-foreground mt-1">Check back soon or list your own item</p>
-            <Button className="mt-4 rounded-xl shimmer-btn" onClick={() => navigate("/sell")}>Sell an Item</Button>
-          </div>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-16">
+            <motion.div
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 flex items-center justify-center mx-auto mb-4"
+            >
+              <Gavel className="w-8 h-8 text-primary" />
+            </motion.div>
+            <p className="font-heading font-black text-foreground text-lg">No active auctions</p>
+            <p className="text-xs text-muted-foreground mt-1.5">Check back soon or list your own item</p>
+            <Button className="mt-5 rounded-xl shimmer-btn font-black text-xs uppercase tracking-wider gap-1" onClick={() => navigate("/sell")}>Sell an Item</Button>
+          </motion.div>
         ) : filtered.map((auction, i) => {
           const listing = auction.listings;
           if (!listing) return null;
