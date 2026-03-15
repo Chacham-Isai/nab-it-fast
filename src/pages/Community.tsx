@@ -703,20 +703,21 @@ const Community = () => {
           {/* ===== LEADERBOARD ===== */}
           {tab === "leaderboard" && (
             <motion.div key="leaderboard" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-4">
-              {/* Hero banner */}
+              {/* Leaderboard Header */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="relative rounded-2xl overflow-hidden h-40"
+                className="rounded-2xl glass-card gradient-border p-5 text-center relative overflow-hidden"
               >
-                <img src={leaderboardHeroImg} alt="Leaderboard" className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent" />
-                <div className="relative h-full flex flex-col justify-end p-4">
-                  <div className="flex items-center gap-2 mb-1">
-                    <Trophy className="w-5 h-5 text-yellow-400" />
-                    <h2 className="font-heading font-bold text-foreground text-xl">Top Nabbers</h2>
-                  </div>
-                  <p className="text-xs text-muted-foreground">Ranked by XP earned across the platform</p>
+                <motion.div animate={{ rotate: [0, 5, -5, 0] }} transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }} className="text-5xl mb-2">🏆</motion.div>
+                <h2 className="font-heading font-black text-foreground text-xl tracking-tight">
+                  TOP <span className="gradient-text">NABBERS</span>
+                </h2>
+                <p className="text-xs text-muted-foreground mt-1">Ranked by XP earned across the platform</p>
+                <div className="flex justify-center gap-3 mt-3">
+                  <div className="px-3 py-1 rounded-full bg-yellow-400/10 border border-yellow-400/20 text-[10px] font-bold text-yellow-400">🥇 Gold</div>
+                  <div className="px-3 py-1 rounded-full bg-slate-400/10 border border-slate-400/20 text-[10px] font-bold text-slate-400">🥈 Silver</div>
+                  <div className="px-3 py-1 rounded-full bg-amber-600/10 border border-amber-600/20 text-[10px] font-bold text-amber-600">🥉 Bronze</div>
                 </div>
               </motion.div>
 
