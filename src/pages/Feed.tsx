@@ -63,7 +63,7 @@ const SwipeCard = ({ item, isTop, onSwipe, onBookmark }: { item: FeedItem; isTop
             <div className="flex items-baseline gap-2">
               <span className="text-xl font-bold text-foreground">${item.price.toLocaleString()}</span>
               <span className="text-sm text-muted-foreground line-through">${item.was.toLocaleString()}</span>
-              <span className="text-xs font-bold text-green-500">-{Math.round((1 - item.price / item.was) * 100)}%</span>
+              <span className="text-xs font-bold text-success">-{Math.round((1 - item.price / item.was) * 100)}%</span>
             </div>
             <div className="flex items-center gap-2 mt-2">
               <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden"><div className="h-full bg-primary rounded-full" style={{ width: `${item.score}%` }} /></div>

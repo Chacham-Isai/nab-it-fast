@@ -180,7 +180,7 @@ const Community = () => {
                   <span className="text-3xl">{tribe.emoji}</span>
                   <h3 className="font-semibold text-foreground text-sm">{tribe.name}</h3>
                   <div className="flex items-center justify-center gap-1.5">
-                    {tribe.active && <span className="w-2 h-2 rounded-full bg-green-500" />}
+                    {tribe.active && <span className="w-2 h-2 rounded-full bg-success" />}
                     <span className="text-xs text-muted-foreground">{tribe.members.toLocaleString()} members</span>
                   </div>
                   <Button size="sm" variant={joined ? "secondary" : "default"} className="w-full rounded-xl text-xs" onClick={() => toggleTribe(tribe.name, tribe.emoji)}>{joined ? "Joined" : "Join"}</Button>

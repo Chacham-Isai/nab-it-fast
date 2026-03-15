@@ -31,10 +31,10 @@ const mockNotifs: NotifItem[] = [
 
 const typeIcons: Record<string, { icon: typeof Zap; color: string }> = {
   dream_match: { icon: Zap, color: "text-primary" },
-  price_drop: { icon: TrendingDown, color: "text-green-500" },
-  group_deal: { icon: Users, color: "text-blue-500" },
-  tribe: { icon: Users, color: "text-purple-500" },
-  giving: { icon: Heart, color: "text-pink-500" },
+  price_drop: { icon: TrendingDown, color: "text-success" },
+  group_deal: { icon: Users, color: "text-nab-blue" },
+  tribe: { icon: Users, color: "text-nab-purple" },
+  giving: { icon: Heart, color: "text-accent" },
   feed: { icon: ShoppingBag, color: "text-muted-foreground" },
 };
 

@@ -179,9 +179,9 @@ const Giving = () => {
 
         {tab === "impact" && (
           <>
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-pink-500/20 to-pink-500/5 border border-pink-500/20 text-center">
-              <Globe className="w-8 h-8 text-pink-500 mx-auto mb-2" />
-              <p className="text-3xl font-bold text-foreground">${communityTotal.toLocaleString()}</p>
+             <div className="p-6 rounded-2xl bg-gradient-to-br from-accent/20 to-accent/5 border border-accent/20 text-center">
+               <Globe className="w-8 h-8 text-accent mx-auto mb-2" />
+               <p className="text-3xl font-bold text-foreground">${communityTotal.toLocaleString()}</p>
               <p className="text-sm text-muted-foreground">Community Total</p>
             </div>
             <div className="space-y-3">

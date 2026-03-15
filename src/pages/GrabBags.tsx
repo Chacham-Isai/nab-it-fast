@@ -35,9 +35,9 @@ const rarityLabels = [
 
 const tierBorders: Record<string, string> = {
   Standard: "border-border",
-  Premium: "border-blue-500/30",
+  Premium: "border-nab-blue/30",
   Ultra: "border-primary/30",
-  Legendary: "border-amber-500/30",
+  Legendary: "border-[hsl(40_90%_55%)]/30",
 };
 
 type RevealPhase = "idle" | "shake" | "reveal" | "result";

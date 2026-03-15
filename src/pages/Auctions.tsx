@@ -264,7 +264,7 @@ const Auctions = () => {
 
                     {/* Buy Now */}
                     {auction.buyNow && (
-                      <Button variant="outline" className="w-full rounded-xl border-green-500/30 text-green-500 hover:bg-green-500/10">
+                      <Button variant="outline" className="w-full rounded-xl border-success/30 text-success hover:bg-success/10">
                         Buy Now — ${auction.buyNow.toLocaleString()}
                       </Button>
                     )}

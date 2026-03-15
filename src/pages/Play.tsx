@@ -45,9 +45,9 @@ const Play = () => {
     },
     {
       title: "Auctions", path: "/auctions", desc: "Bid. Win. Own it.",
-      badge: "3 ACTIVE", badgeColor: "bg-green-500 text-primary-foreground",
+      badge: "3 ACTIVE", badgeColor: "bg-success text-primary-foreground",
       stat: "Auctions closing 14min", icon: Gavel,
-      gradient: "from-green-500/20 via-green-500/5 to-transparent",
+      gradient: "from-success/20 via-success/5 to-transparent",
       emoji: "🔨",
     },
   ];
