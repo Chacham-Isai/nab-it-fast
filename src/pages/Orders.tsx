@@ -119,6 +119,21 @@ const Orders = () => {
                 </Button>
               )}
 
+              {/* Review form for delivered orders */}
+              {order.status === 'delivered' && !reviewedOrderIds.has(order.id) && (
+                <ReviewForm
+                  orderId={order.id}
+                  sellerId={order.seller_id}
+                  reviewerId={user!.id}
+                  onSubmitted={loadOrders}
+                />
+              )}
+              {order.status === 'delivered' && reviewedOrderIds.has(order.id) && (
+                <p className="mt-3 text-xs text-muted-foreground flex items-center gap-1">
+                  <Star className="w-3 h-3 fill-primary text-primary" /> Review submitted
+                </p>
+              )}
+
               {/* View listing */}
               {listing && (
                 <button onClick={() => navigate(`/listing/${order.listing_id}`)} className="mt-2 text-xs text-muted-foreground hover:text-primary transition-colors">
