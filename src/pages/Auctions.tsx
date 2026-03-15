@@ -8,6 +8,7 @@ import Countdown from "@/components/Countdown";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { toast } from "@/hooks/use-toast";
 import usePageMeta from "@/hooks/usePageMeta";
 
@@ -22,6 +23,7 @@ const Auctions = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
+  const { track } = useAnalytics();
   const [auctions, setAuctions] = useState<any[]>([]);
   const [bidsMap, setBidsMap] = useState<Record<string, any[]>>({});
   const [loading, setLoading] = useState(true);
@@ -120,6 +122,7 @@ const Auctions = () => {
       if (data?.error) throw new Error(data.error);
 
       toast({ title: "Bid placed! 🎉", description: `Your bid of $${amount.toLocaleString()} is now the highest.` });
+      track("bid_placed", { auction_id: auctionId, amount, bid_type: "manual" });
       setCustomBid((c) => ({ ...c, [auctionId]: "" }));
       await loadAuctions();
     } catch (err: any) {
@@ -146,6 +149,7 @@ const Auctions = () => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       toast({ title: "Proxy bid set! 🤖", description: `Auto-bidding up to $${amount.toLocaleString()}` });
+      track("bid_placed", { auction_id: auctionId, amount, bid_type: "proxy", max_proxy: amount });
       setProxyBid((p) => ({ ...p, [auctionId]: "" }));
       await loadAuctions();
     } catch (err: any) {

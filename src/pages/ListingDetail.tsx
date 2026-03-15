@@ -5,6 +5,7 @@ import { ArrowLeft, Gavel, ShoppingBag, Share2, Bookmark, Star, Shield, Loader2,
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { toast } from "@/hooks/use-toast";
 import Countdown from "@/components/Countdown";
 import BottomNav from "@/components/BottomNav";
@@ -15,6 +16,7 @@ const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { track } = useAnalytics();
   const [listing, setListing] = useState<any>(null);
   const [seller, setSeller] = useState<any>(null);
   const [auction, setAuction] = useState<any>(null);
@@ -121,6 +123,7 @@ const ListingDetail = () => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       toast({ title: "🎉 Bid placed!", description: `You bid $${amount.toLocaleString()}` });
+      track("bid_placed", { auction_id: auction.id, amount, listing_id: listing?.id });
       loadListing();
     } catch (err: any) {
       toast({ title: "Bid failed", description: err.message, variant: "destructive" });
