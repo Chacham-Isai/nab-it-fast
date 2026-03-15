@@ -295,6 +295,11 @@ const Community = () => {
         {tab === "leaderboard" && <LeaderboardTab />}
       </div>
 
+      <CreateDealForm
+        open={showCreateDeal}
+        onClose={() => setShowCreateDeal(false)}
+        onCreated={loadData}
+      />
       <BottomNav />
     </div>
   );
