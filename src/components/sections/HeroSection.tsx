@@ -167,7 +167,7 @@ const HeroSection = () => {
             <motion.div
               animate={{ y: [6, -6, 6] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -right-4 sm:-right-10 bottom-20 px-4 py-2 rounded-full border border-success/40 bg-card/95 backdrop-blur-sm text-sm font-bold shadow-xl"
+              className="hidden xl:flex absolute right-4 bottom-8 items-center px-4 py-2 rounded-full border border-success/40 bg-card/95 backdrop-blur-sm text-sm font-bold shadow-xl"
             >
               <Trophy className="w-3.5 h-3.5 inline mr-1 text-success" /> You saved $2,847
             </motion.div>
