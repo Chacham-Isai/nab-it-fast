@@ -2,6 +2,8 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { motion } from "framer-motion";
+import { ArrowRight, Zap } from "lucide-react";
 import nabbitLogo from "@/assets/nabbit-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -29,31 +31,65 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4">
-      <form onSubmit={handleSubmit} className="w-full max-w-md card-surface p-8 space-y-6">
-        <div className="text-center mb-4">
-          <Link to="/">
-            <img src={nabbitLogo} alt="nabbit.ai" className="h-8 mx-auto" style={{ mixBlendMode: "lighten" }} />
-          </Link>
-        </div>
-        <h1 className="font-heading text-2xl font-bold text-foreground text-center">Log in</h1>
-        {error && (
-          <p className="text-sm text-destructive text-center bg-destructive/10 p-2 rounded-lg">{error}</p>
-        )}
-        <div className="space-y-4">
-          <Input placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="bg-secondary border-border" required />
-          <Input placeholder="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="bg-secondary border-border" required />
-        </div>
-        <Button type="submit" className="w-full rounded-full font-semibold" disabled={loading}>
-          {loading ? "Logging in..." : "Log In"}
-        </Button>
-        <div className="text-center text-sm space-y-2">
-          <a href="#" className="text-primary hover:underline block">Forgot password?</a>
-          <p className="text-muted-foreground">
-            Don't have an account? <Link to="/signup" className="text-primary hover:underline">Sign up</Link>
-          </p>
-        </div>
-      </form>
+    <div className="min-h-screen bg-background relative overflow-hidden flex items-center justify-center px-4">
+      {/* Background effects */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-20 blur-[120px]" style={{ background: "hsl(var(--coral))" }} />
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full opacity-10 blur-[100px]" style={{ background: "hsl(var(--coral))" }} />
+      </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-md relative z-10"
+      >
+        <form onSubmit={handleSubmit} className="glass-card p-8 space-y-6">
+          <div className="text-center space-y-4">
+            <Link to="/" className="inline-block">
+              <img src={nabbitLogo} alt="nabbit.ai" className="h-8 mx-auto" style={{ mixBlendMode: "lighten" }} />
+            </Link>
+            <div>
+              <h1 className="font-heading text-2xl font-bold text-foreground">Welcome back</h1>
+              <p className="text-sm text-muted-foreground mt-1">Sign in to continue hunting deals</p>
+            </div>
+          </div>
+
+          {error && (
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="p-3 rounded-xl bg-destructive/10 border border-destructive/20">
+              <p className="text-sm text-destructive text-center">{error}</p>
+            </motion.div>
+          )}
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Email</label>
+              <Input placeholder="you@email.com" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="bg-secondary/50 border-border h-12 rounded-xl" required />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wider">Password</label>
+              <Input placeholder="••••••••" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="bg-secondary/50 border-border h-12 rounded-xl" required />
+            </div>
+          </div>
+
+          <Button type="submit" className="w-full h-12 rounded-xl font-semibold text-base shimmer-btn gap-2" disabled={loading}>
+            {loading ? (
+              <><Zap className="w-4 h-4 animate-pulse" /> Signing in...</>
+            ) : (
+              <>Log In <ArrowRight className="w-4 h-4" /></>
+            )}
+          </Button>
+
+          <div className="text-center text-sm space-y-3 pt-2">
+            <a href="#" className="text-primary hover:underline block text-xs">Forgot password?</a>
+            <div className="gradient-divider" />
+            <p className="text-muted-foreground">
+              Don't have an account?{" "}
+              <Link to="/signup" className="text-primary font-semibold hover:underline">Sign up free</Link>
+            </p>
+          </div>
+        </form>
+      </motion.div>
     </div>
   );
 };

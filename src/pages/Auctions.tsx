@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Gavel, Eye, Shield, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { motion } from "framer-motion";
 import Countdown from "@/components/Countdown";
 import BottomNav from "@/components/BottomNav";
 
@@ -81,7 +82,6 @@ const Auctions = () => {
   const [bidding, setBidding] = useState<number | null>(null);
   const [bidError, setBidError] = useState<Record<number, string>>({});
   const [filter, setFilter] = useState("All");
-
   const filters = ["All", "Cards", "Sneakers", "Watches", "Ending Soon"];
 
   const filtered = auctions.filter((a) => {
@@ -120,17 +120,14 @@ const Auctions = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <div className="sticky top-0 z-40 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3">
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
           <h1 className="font-heading font-bold text-foreground text-lg flex-1">Live Auctions</h1>
-          <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-success text-primary-foreground text-[10px] font-bold">
-            3 Active
-          </span>
+          <span className="flex items-center gap-1 px-2 py-1 rounded-full bg-green-500/10 text-green-500 text-[10px] font-bold">3 Active</span>
         </div>
       </div>
 
-      {/* Filters */}
       <div className="px-4 py-3 overflow-x-auto">
         <div className="flex gap-2 max-w-lg mx-auto">
           {filters.map((f) => (
@@ -141,22 +138,21 @@ const Auctions = () => {
         </div>
       </div>
 
-      {/* Auth banner */}
       <div className="max-w-lg mx-auto px-4 mb-4">
-        <div className="flex items-center gap-2 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20">
-          <Shield className="w-4 h-4 text-amber-500 shrink-0" />
+        <div className="flex items-center gap-2 p-2.5 rounded-xl bg-primary/5 border border-primary/10">
+          <Shield className="w-4 h-4 text-primary shrink-0" />
           <span className="text-xs text-foreground">All items are verified authentic.</span>
         </div>
       </div>
 
       <div className="max-w-lg mx-auto px-4 space-y-6">
-        {filtered.map((auction) => {
+        {filtered.map((auction, i) => {
           const inc = getIncrement(auction.currentBid);
           const minBid = auction.currentBid + inc;
           const tab = bidTab[auction.id] || "bid";
 
           return (
-            <div key={auction.id} className="rounded-2xl bg-card border border-border overflow-hidden">
+            <motion.div key={auction.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="rounded-2xl bg-card border border-border overflow-hidden">
               <div className="p-4 space-y-4">
                 {/* Header */}
                 <div className="flex items-start gap-3">
@@ -194,7 +190,7 @@ const Auctions = () => {
                 <div className="flex items-center gap-4 text-xs text-muted-foreground">
                   <span className="flex items-center gap-1"><Eye className="w-3 h-3" /> {auction.watchers} watching</span>
                   <span>Min bid: ${minBid.toLocaleString()}</span>
-                  {auction.buyNow && <span className="text-success font-semibold">Buy Now: ${auction.buyNow.toLocaleString()}</span>}
+                  {auction.buyNow && <span className="text-green-500 font-semibold">Buy Now: ${auction.buyNow.toLocaleString()}</span>}
                 </div>
 
                 {/* Tabs */}
@@ -212,7 +208,7 @@ const Auctions = () => {
                           key={amt}
                           variant="outline"
                           size="sm"
-                          className="flex-1 rounded-full text-xs"
+                          className="flex-1 rounded-xl text-xs"
                           disabled={bidding === auction.id}
                           onClick={() => placeBid(auction.id, amt)}
                         >
@@ -229,14 +225,14 @@ const Auctions = () => {
                           type="number"
                           value={customBid[auction.id] || ""}
                           onChange={(e) => setCustomBid((c) => ({ ...c, [auction.id]: e.target.value }))}
-                          className="pl-7 bg-secondary border-border"
+                          className="pl-7 bg-secondary/50 border-border rounded-xl"
                           placeholder={minBid.toLocaleString()}
                         />
                       </div>
                       <Button
                         disabled={bidding === auction.id}
                         onClick={() => placeBid(auction.id, parseInt(customBid[auction.id] || "0"))}
-                        className="rounded-full"
+                        className="rounded-xl shimmer-btn"
                       >
                         {bidding === auction.id ? "Bidding..." : "Bid"}
                       </Button>
@@ -249,7 +245,7 @@ const Auctions = () => {
                     )}
 
                     {/* Proxy */}
-                    <div className="p-3 rounded-xl bg-secondary space-y-2">
+                    <div className="p-3 rounded-xl bg-secondary/50 space-y-2">
                       <p className="text-xs font-semibold text-foreground">Max / Proxy Bid</p>
                       <p className="text-[10px] text-muted-foreground">We'll auto-bid for you up to your limit</p>
                       <div className="flex gap-2">
@@ -259,16 +255,16 @@ const Auctions = () => {
                             type="number"
                             value={proxyBid[auction.id] || ""}
                             onChange={(e) => setProxyBid((p) => ({ ...p, [auction.id]: e.target.value }))}
-                            className="pl-7 bg-background border-border"
+                            className="pl-7 bg-background border-border rounded-xl"
                           />
                         </div>
-                        <Button variant="outline" className="rounded-full text-xs">Set</Button>
+                        <Button variant="outline" className="rounded-xl text-xs">Set</Button>
                       </div>
                     </div>
 
                     {/* Buy Now */}
                     {auction.buyNow && (
-                      <Button variant="outline" className="w-full rounded-full border-success text-success hover:bg-success/10">
+                      <Button variant="outline" className="w-full rounded-xl border-green-500/30 text-green-500 hover:bg-green-500/10">
                         Buy Now — ${auction.buyNow.toLocaleString()}
                       </Button>
                     )}
@@ -278,7 +274,7 @@ const Auctions = () => {
                 {tab === "history" && (
                   <div className="space-y-1.5">
                     {auction.history.map((h, i) => (
-                      <div key={i} className={`flex items-center gap-3 p-2.5 rounded-lg ${h.isYou ? "bg-primary/10" : "bg-secondary"}`}>
+                      <div key={i} className={`flex items-center gap-3 p-2.5 rounded-xl ${h.isYou ? "bg-primary/10 border border-primary/20" : "bg-secondary"}`}>
                         <div className="flex-1">
                           <span className={`text-sm font-medium ${h.isYou ? "text-primary" : "text-foreground"}`}>{h.user}</span>
                           {i === 0 && <span className="ml-1.5 text-[10px] bg-primary text-primary-foreground px-1.5 py-0.5 rounded-full font-bold">TOP</span>}
@@ -290,7 +286,7 @@ const Auctions = () => {
                   </div>
                 )}
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>

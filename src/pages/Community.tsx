@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Users, Flame, Clock, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
+import { motion } from "framer-motion";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -23,13 +24,45 @@ const groupDeals = [
 ];
 
 const tribes = [
-  { name: "Card Collectors", emoji: "🃏", members: 2840, active: true, gradient: "from-primary/20 to-primary/5" },
-  { name: "Sneakerheads", emoji: "👟", members: 3120, active: true, gradient: "from-blue-500/20 to-blue-500/5" },
-  { name: "Watch Collectors", emoji: "⌚", members: 1560, active: false, gradient: "from-amber-500/20 to-amber-500/5" },
-  { name: "Tech Heads", emoji: "🖥️", members: 2200, active: true, gradient: "from-green-500/20 to-green-500/5" },
-  { name: "Vintage Hunters", emoji: "🪑", members: 890, active: false, gradient: "from-purple-500/20 to-purple-500/5" },
-  { name: "Streetwear", emoji: "🧥", members: 1980, active: true, gradient: "from-pink-500/20 to-pink-500/5" },
+  { name: "Card Collectors", emoji: "🃏", members: 2840, active: true },
+  { name: "Sneakerheads", emoji: "👟", members: 3120, active: true },
+  { name: "Watch Collectors", emoji: "⌚", members: 1560, active: false },
+  { name: "Tech Heads", emoji: "🖥️", members: 2200, active: true },
+  { name: "Vintage Hunters", emoji: "🪑", members: 890, active: false },
+  { name: "Streetwear", emoji: "🧥", members: 1980, active: true },
 ];
+
+interface ActivityItem {
+  id: number;
+  user: string;
+  name: string;
+  action: string;
+  item: string;
+  price: number;
+  tribe: string;
+  time: string;
+  hot: boolean;
+}
+
+interface GroupDeal {
+  id: number;
+  emoji: string;
+  tribe: string;
+  item: string;
+  price: number;
+  retail: number;
+  pct: number;
+  current: number;
+  target: number;
+  endsIn: string;
+}
+
+interface Tribe {
+  name: string;
+  emoji: string;
+  members: number;
+  active: boolean;
+}
 
 const Community = () => {
   usePageMeta({ title: "Community — nabbit.ai", description: "Join tribes, group deals, and connect with fellow deal hunters.", path: "/community" });
@@ -40,17 +73,12 @@ const Community = () => {
   const [joinedDeals, setJoinedDeals] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (user) fetchMemberships();
-  }, [user]);
+  useEffect(() => { if (user) fetchMemberships(); }, [user]);
 
   const fetchMemberships = async () => {
     if (!user) return;
     setLoading(true);
-    const { data } = await supabase
-      .from("tribe_memberships")
-      .select("tribe_name")
-      .eq("user_id", user.id);
+    const { data } = await supabase.from("tribe_memberships").select("tribe_name").eq("user_id", user.id);
     setJoinedTribes(data?.map((d: any) => d.tribe_name) || []);
     setLoading(false);
   };
@@ -66,13 +94,19 @@ const Community = () => {
     }
   };
 
-  const toggleDeal = (id: number) => {
-    setJoinedDeals((prev) => prev.includes(id) ? prev.filter((d) => d !== id) : [...prev, id]);
-  };
+  const toggleDeal = (id: number) => setJoinedDeals((prev) => prev.includes(id) ? prev.filter((d) => d !== id) : [...prev, id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <div className="sticky top-0 z-40 bg-background/90 backdrop-blur-xl border-b border-border px-4 py-3">
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
           <h1 className="font-heading font-bold text-foreground text-lg flex-1">Community</h1>
@@ -80,9 +114,7 @@ const Community = () => {
         </div>
         <div className="flex gap-2 mt-3 max-w-lg mx-auto">
           {(["feed", "deals", "tribes"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)} className={`px-4 py-1.5 rounded-full text-xs font-medium capitalize transition-all ${tab === t ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
-              {t === "deals" ? "Group Deals" : t}
-            </button>
+            <button key={t} onClick={() => setTab(t)} className={`px-4 py-1.5 rounded-full text-xs font-medium capitalize transition-all ${tab === t ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>{t === "deals" ? "Group Deals" : t}</button>
           ))}
         </div>
       </div>
@@ -90,38 +122,35 @@ const Community = () => {
       <div className="max-w-lg mx-auto px-4 py-4">
         {tab === "feed" && (
           <div className="space-y-2">
-            {activityFeed.map((a) => (
-              <div key={a.id} className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border">
+            {activityFeed.map((a, i) => (
+              <motion.div key={a.id} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }} className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border">
                 <span className="text-2xl">{a.user}</span>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-foreground">
-                    <span className="font-semibold">{a.name}</span> {a.action} <span className="font-semibold text-primary">{a.item}</span>
-                    {a.price && <span className="text-muted-foreground"> · ${a.price.toLocaleString()}</span>}
-                  </p>
+                  <p className="text-sm text-foreground"><span className="font-semibold">{a.name}</span> {a.action} <span className="font-semibold text-primary">{a.item}</span>{a.price && <span className="text-muted-foreground"> · ${a.price.toLocaleString()}</span>}</p>
                   <p className="text-[10px] text-muted-foreground">{a.tribe} · {a.time}</p>
                 </div>
                 {a.hot && <Flame className="w-4 h-4 text-destructive shrink-0" />}
-              </div>
+              </motion.div>
             ))}
           </div>
         )}
 
         {tab === "deals" && (
           <div className="space-y-4">
-            {groupDeals.map((deal) => {
+            {groupDeals.map((deal, i) => {
               const joined = joinedDeals.includes(deal.id);
               const almostThere = deal.current / deal.target > 0.85;
               return (
-                <div key={deal.id} className="p-4 rounded-2xl bg-card border border-border space-y-3">
+                <motion.div key={deal.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} className="p-4 rounded-2xl bg-card border border-border space-y-3">
                   <div className="flex items-start gap-3">
                     <span className="text-3xl">{deal.emoji}</span>
                     <div className="flex-1">
-                      <span className="text-[10px] font-bold text-muted-foreground uppercase">{deal.tribe}</span>
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">{deal.tribe}</span>
                       <h3 className="font-semibold text-foreground text-sm">{deal.item}</h3>
                       <div className="flex items-baseline gap-2 mt-1">
                         <span className="text-lg font-bold text-foreground">${deal.price}</span>
                         <span className="text-sm text-muted-foreground line-through">${deal.retail}</span>
-                        <span className="text-xs font-bold text-success">-{deal.pct}%</span>
+                        <span className="text-xs font-bold text-green-500">-{deal.pct}%</span>
                       </div>
                     </div>
                   </div>
@@ -134,11 +163,9 @@ const Community = () => {
                   </div>
                   <div className="flex items-center justify-between">
                     <span className="text-xs text-muted-foreground flex items-center gap-1"><Clock className="w-3 h-3" /> {deal.endsIn}</span>
-                    <Button size="sm" variant={joined ? "secondary" : "default"} className="rounded-full text-xs" onClick={() => toggleDeal(deal.id)}>
-                      {joined ? "Joined! ✓" : "Join Deal"}
-                    </Button>
+                    <Button size="sm" variant={joined ? "secondary" : "default"} className="rounded-xl text-xs" onClick={() => toggleDeal(deal.id)}>{joined ? "Joined! ✓" : "Join Deal"}</Button>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -146,20 +173,18 @@ const Community = () => {
 
         {tab === "tribes" && (
           <div className="grid grid-cols-2 gap-3">
-            {tribes.map((tribe) => {
+            {tribes.map((tribe, i) => {
               const joined = joinedTribes.includes(tribe.name);
               return (
-                <div key={tribe.name} className={`p-4 rounded-2xl bg-gradient-to-br ${tribe.gradient} border border-border text-center space-y-2`}>
+                <motion.div key={tribe.name} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: i * 0.05 }} className="p-4 rounded-2xl bg-card border border-border text-center space-y-2">
                   <span className="text-3xl">{tribe.emoji}</span>
                   <h3 className="font-semibold text-foreground text-sm">{tribe.name}</h3>
                   <div className="flex items-center justify-center gap-1.5">
-                    {tribe.active && <span className="w-2 h-2 rounded-full bg-success" />}
+                    {tribe.active && <span className="w-2 h-2 rounded-full bg-green-500" />}
                     <span className="text-xs text-muted-foreground">{tribe.members.toLocaleString()} members</span>
                   </div>
-                  <Button size="sm" variant={joined ? "secondary" : "default"} className="w-full rounded-full text-xs" onClick={() => toggleTribe(tribe.name, tribe.emoji)}>
-                    {joined ? "Joined" : "Join"}
-                  </Button>
-                </div>
+                  <Button size="sm" variant={joined ? "secondary" : "default"} className="w-full rounded-xl text-xs" onClick={() => toggleTribe(tribe.name, tribe.emoji)}>{joined ? "Joined" : "Join"}</Button>
+                </motion.div>
               );
             })}
           </div>
