@@ -46,6 +46,7 @@ const Community = () => {
   const [deals, setDeals] = useState<any[]>([]);
   const [joinedDeals, setJoinedDeals] = useState<string[]>([]);
   const [dealAvatars, setDealAvatars] = useState<Record<string, string[]>>({});
+  const [showCreateDeal, setShowCreateDeal] = useState(false);
 
   useEffect(() => {
     loadData();
