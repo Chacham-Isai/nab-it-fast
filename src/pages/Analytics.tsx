@@ -53,11 +53,13 @@ const Analytics = () => {
       { data: crews },
       { data: deals },
       { data: memberships },
+      { data: orders },
     ] = await Promise.all([
       supabase.from("analytics_events" as any).select("*").eq("user_id", user!.id).order("created_at", { ascending: false }).limit(500),
       supabase.from("crews" as any).select("name, member_count, created_at").eq("is_active", true).order("member_count", { ascending: false }).limit(10),
       supabase.from("group_deals").select("id, title, status, current_participants, target_participants").in("status", ["active", "funded", "completed"]),
       supabase.from("tribe_memberships").select("tribe_name, joined_at").eq("user_id", user!.id),
+      supabase.from("orders").select("id, status").eq("buyer_id", user!.id),
     ]);
 
     const evts = (events as any[]) || [];
