@@ -12,6 +12,7 @@ import CreateListingForm from "@/components/sell/CreateListingForm";
 import usePageMeta from "@/hooks/usePageMeta";
 
 const Sell = () => {
+  usePageMeta({ title: "Sell — nabbit.ai", description: "List items, manage auctions, and track your seller dashboard.", path: "/sell" });
   const navigate = useNavigate();
   const { user } = useAuth();
   const [tab, setTab] = useState<"listings" | "orders" | "stats" | "create">("listings");

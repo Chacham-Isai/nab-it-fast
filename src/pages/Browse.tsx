@@ -20,6 +20,7 @@ const sortOptions = [
 ];
 
 const Browse = () => {
+  usePageMeta({ title: "Browse — nabbit.ai", description: "Browse auctions, buy-now deals, breaks, and grab bags. Find your next nab.", path: "/browse" });
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
   const [listings, setListings] = useState<any[]>([]);

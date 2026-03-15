@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import usePageMeta from "@/hooks/usePageMeta";
 
 const Play = () => {
+  usePageMeta({ title: "Play — nabbit.ai", description: "Explore breaks, grab bags, auctions, and mystery drops. Your deal playground.", path: "/play" });
   const navigate = useNavigate();
   const [tickerIndex, setTickerIndex] = useState(0);
   const [liveAuctionCount, setLiveAuctionCount] = useState(0);

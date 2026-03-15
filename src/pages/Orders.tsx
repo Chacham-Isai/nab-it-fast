@@ -18,6 +18,7 @@ const statusConfig: Record<string, { icon: any; color: string; label: string }> 
 };
 
 const Orders = () => {
+  usePageMeta({ title: "Orders — nabbit.ai", description: "Track your purchases and confirm deliveries.", path: "/orders" });
   const navigate = useNavigate();
   const { user } = useAuth();
   const [searchParams] = useSearchParams();

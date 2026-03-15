@@ -18,6 +18,7 @@ const getIncrement = (bid: number) => {
 };
 
 const Auctions = () => {
+  usePageMeta({ title: "Auctions — nabbit.ai", description: "Bid on exclusive items in live auctions. Real-time bidding with auto-extend.", path: "/auctions" });
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const { user } = useAuth();
