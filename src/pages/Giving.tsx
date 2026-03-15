@@ -190,7 +190,7 @@ const Giving = () => {
                   <div className="flex items-center gap-2 mb-2">
                     <span>{c.emoji}</span>
                     <span className="text-sm font-semibold text-foreground flex-1">{c.name}</span>
-                    <span className="text-[10px] text-muted-foreground">{c.tribe}</span>
+                    <span className="text-[10px] text-muted-foreground">{c.crew}</span>
                   </div>
                   <Progress value={c.pct} className="h-2 mb-1" />
                   <p className="text-xs text-muted-foreground">${c.raised.toLocaleString()} of ${c.goal.toLocaleString()}</p>

@@ -162,7 +162,7 @@ const Community = () => {
     if (error) {
       toast({ title: "Failed to create deal", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "Deal created! 🚀", description: "Share it with your tribe." });
+      toast({ title: "Deal created! 🚀", description: "Share it with your crew." });
     }
   };
 

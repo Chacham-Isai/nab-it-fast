@@ -52,7 +52,7 @@ serve(async (req) => {
           {
             role: "user",
             content: `Generate 4 group deal suggestions for a user with these preferences:
-- Tribes: ${tribeNames.join(", ") || "none yet"}
+- Crews: ${tribeNames.join(", ") || "none yet"}
 - Taste tags: ${tasteTags.join(", ") || "general"}
 - Favorite brands: ${brands.join(", ") || "various"}
 - Spending style: ${style}

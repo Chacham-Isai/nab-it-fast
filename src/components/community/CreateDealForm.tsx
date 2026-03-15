@@ -119,7 +119,7 @@ const CreateDealForm = ({ open, onClose, onCreated }: CreateDealFormProps) => {
               </div>
 
               <div>
-                <label className="text-xs font-medium text-muted-foreground">Tribe (optional)</label>
+                <label className="text-xs font-medium text-muted-foreground">Crew (optional)</label>
                 <Input value={tribeName} onChange={(e) => setTribeName(e.target.value)} placeholder="e.g. Sneakerheads" className="mt-1" />
               </div>
 
