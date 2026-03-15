@@ -150,7 +150,7 @@ const Community = () => {
                       <div className="flex items-baseline gap-2 mt-1">
                         <span className="text-lg font-bold text-foreground">${deal.price}</span>
                         <span className="text-sm text-muted-foreground line-through">${deal.retail}</span>
-                        <span className="text-xs font-bold text-green-500">-{deal.pct}%</span>
+                        <span className="text-xs font-bold text-success">-{deal.pct}%</span>
                       </div>
                     </div>
                   </div>
