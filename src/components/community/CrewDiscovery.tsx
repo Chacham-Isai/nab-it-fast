@@ -85,15 +85,26 @@ const CrewDiscovery = ({ joinedCrews, onToggleCrew }: CrewDiscoveryProps) => {
 
   return (
     <div className="space-y-4">
-      {/* Search */}
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-        <Input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search crews..."
-          className="pl-9 bg-card border-border rounded-xl h-10"
-        />
+      {/* Search + Create */}
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+          <Input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search crews..."
+            className="pl-9 bg-card border-border rounded-xl h-10"
+          />
+        </div>
+        {user && (
+          <Button
+            variant="outline"
+            className="rounded-xl h-10 shrink-0 gap-1.5"
+            onClick={() => setShowCreate(true)}
+          >
+            <Plus className="w-4 h-4" /> Start
+          </Button>
+        )}
       </div>
 
       {/* Category pills */}
