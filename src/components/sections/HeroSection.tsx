@@ -150,7 +150,7 @@ const HeroSection = () => {
           </p>
 
           {/* Trust pills */}
-          <div className="flex flex-wrap items-center gap-3 text-xs font-semibold">
+          <div className="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-2 sm:gap-3 text-xs font-semibold">
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-nab-cyan/[0.1] border border-nab-cyan/30 text-nab-cyan">
               <Flame className="w-3.5 h-3.5" /> Smart Price Hunting
             </span>
