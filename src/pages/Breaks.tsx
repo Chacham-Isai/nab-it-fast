@@ -239,9 +239,9 @@ const Breaks = () => {
             }))}
 
             {tab === "upcoming" && (upcomingListings.length === 0 ? (
-              <div className="text-center py-16">
-                <span className="text-5xl block mb-4">📅</span>
-                <p className="text-muted-foreground">No upcoming breaks scheduled</p>
+               <div className="text-center py-16">
+                 <img src={modeImages.emptyState} alt="" className="w-20 h-20 rounded-2xl object-cover mx-auto mb-4 opacity-80" />
+                 <p className="text-muted-foreground">No upcoming breaks scheduled</p>
               </div>
             ) : (
               <div className="space-y-3">
