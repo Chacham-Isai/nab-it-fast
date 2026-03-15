@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { ArrowRight, Zap } from "lucide-react";
 import nabbitLogo from "@/assets/nabbit-logo.png";
 import { supabase } from "@/integrations/supabase/client";
-import { toast } from "@/hooks/use-toast";
 import usePageMeta from "@/hooks/usePageMeta";
 
 const Login = () => {
@@ -34,8 +33,8 @@ const Login = () => {
     <div className="min-h-screen bg-background relative overflow-hidden flex items-center justify-center px-4">
       {/* Background effects */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-20 blur-[120px]" style={{ background: "hsl(var(--coral))" }} />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full opacity-10 blur-[100px]" style={{ background: "hsl(var(--coral))" }} />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 rounded-full opacity-20 blur-[120px]" style={{ background: "hsl(var(--nab-cyan))" }} />
+        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 rounded-full opacity-10 blur-[100px]" style={{ background: "hsl(var(--nab-purple))" }} />
       </div>
 
       <motion.div
@@ -47,11 +46,11 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="glass-card gradient-border p-8 space-y-6">
           <div className="text-center space-y-4">
             <Link to="/" className="inline-block">
-              <img src={nabbitLogo} alt="nabbit.ai" className="h-8 mx-auto" style={{ mixBlendMode: "lighten" }} />
+              <img src={nabbitLogo} alt="nabbit.ai" className="h-12 mx-auto" />
             </Link>
             <div>
               <h1 className="font-heading text-2xl font-bold text-foreground">Welcome back</h1>
-              <p className="text-sm text-muted-foreground mt-1">Sign in to continue hunting deals</p>
+              <p className="text-sm text-muted-foreground mt-1">Stop chasing. Start nabbing.</p>
             </div>
           </div>
 
@@ -81,11 +80,11 @@ const Login = () => {
           </Button>
 
           <div className="text-center text-sm space-y-3 pt-2">
-            <a href="#" className="text-primary hover:underline block text-xs">Forgot password?</a>
+            <a href="#" className="text-nab-cyan hover:underline block text-xs">Forgot password?</a>
             <div className="gradient-divider" />
             <p className="text-muted-foreground">
               Don't have an account?{" "}
-              <Link to="/signup" className="text-primary font-semibold hover:underline">Sign up free</Link>
+              <Link to="/signup" className="text-nab-cyan font-semibold hover:underline">Sign up free</Link>
             </p>
           </div>
         </form>

@@ -51,7 +51,9 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        coral: "hsl(var(--coral))",
+        "nab-cyan": "hsl(var(--nab-cyan))",
+        "nab-blue": "hsl(var(--nab-blue))",
+        "nab-purple": "hsl(var(--nab-purple))",
         success: "hsl(var(--success))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

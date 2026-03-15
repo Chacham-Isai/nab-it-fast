@@ -3,6 +3,7 @@ import { ArrowRight, Zap, Flame, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import isometricHero from "@/assets/isometric-hero.png";
 
 const recentNabs = [
   { user: "🔥 Jake R.", item: "PS5 Slim Bundle", saved: "$127", time: "just now" },
@@ -13,30 +14,9 @@ const recentNabs = [
   { user: "🏆 Ava T.", item: "Chanel Le Boy", saved: "$890", time: "3m ago" },
 ];
 
-const heroWords = [
-  "GRAB IT.",
-  "NAB IT.",
-  "SPIN IT.",
-  "WIN IT.",
-];
-
-const floatingDeals = [
-  { emoji: "👟", name: "Jordan 4 Retro", was: "$285", now: "$196", pct: "-31%" },
-  { emoji: "🎮", name: "PS5 Pro Bundle", was: "$699", now: "$499", pct: "-29%" },
-  { emoji: "💄", name: "Dyson Airwrap", was: "$599", now: "$434", pct: "-28%" },
-];
-
 const HeroSection = () => {
   const navigate = useNavigate();
-  const [wordIndex, setWordIndex] = useState(0);
   const [nabIndex, setNabIndex] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setWordIndex((prev) => (prev + 1) % heroWords.length);
-    }, 2000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -49,17 +29,19 @@ const HeroSection = () => {
 
   return (
     <section className="relative min-h-screen flex items-center pt-20 pb-12 px-4 sm:px-6 lg:px-8 overflow-hidden">
-      {/* Background chaos */}
+      {/* Background — cyan/purple gradient blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          animate={{ scale: [1, 1.4, 1], opacity: [0.1, 0.2, 0.1], rotate: [0, 15, 0] }}
+          animate={{ scale: [1, 1.4, 1], opacity: [0.12, 0.22, 0.12], rotate: [0, 15, 0] }}
           transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute -top-20 -right-40 w-[800px] h-[800px] rounded-full bg-primary blur-[200px]"
+          className="absolute -top-20 -right-40 w-[800px] h-[800px] rounded-full blur-[200px]"
+          style={{ background: "hsl(var(--nab-cyan))" }}
         />
         <motion.div
-          animate={{ scale: [1.2, 1, 1.2], opacity: [0.06, 0.12, 0.06] }}
+          animate={{ scale: [1.2, 1, 1.2], opacity: [0.08, 0.15, 0.08] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-          className="absolute -bottom-40 -left-40 w-[600px] h-[600px] rounded-full bg-[hsl(280,100%,60%)] blur-[180px]"
+          className="absolute -bottom-40 -left-40 w-[600px] h-[600px] rounded-full blur-[180px]"
+          style={{ background: "hsl(var(--nab-purple))" }}
         />
         <div className="absolute inset-0" style={{
           backgroundImage: `radial-gradient(circle at 1px 1px, var(--grid-dot-color) 1px, transparent 0)`,
@@ -81,32 +63,18 @@ const HeroSection = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-primary/40 bg-primary/[0.1] backdrop-blur-sm"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-nab-cyan/40 bg-nab-cyan/[0.08] backdrop-blur-sm"
           >
             <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary" />
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-nab-cyan opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-nab-cyan" />
             </span>
-            <span className="text-sm font-bold text-primary tracking-wide uppercase">Live Deals Dropping Now</span>
+            <span className="text-sm font-bold text-nab-cyan tracking-wide uppercase">Live Deals Dropping Now</span>
           </motion.div>
 
           <h1 className="font-heading font-black text-foreground leading-[0.95]" style={{ fontSize: "clamp(3rem, 7vw, 5.5rem)" }}>
-            AI finds the deal.<br />
-            You{" "}
-            <span className="gradient-text relative inline-block min-w-[200px]">
-              <AnimatePresence mode="wait">
-                <motion.span
-                  key={wordIndex}
-                  initial={{ opacity: 0, y: 30, rotateX: -40 }}
-                  animate={{ opacity: 1, y: 0, rotateX: 0 }}
-                  exit={{ opacity: 0, y: -30, rotateX: 40 }}
-                  transition={{ duration: 0.35 }}
-                  className="inline-block"
-                >
-                  {heroWords[wordIndex]}
-                </motion.span>
-              </AnimatePresence>
-            </span>
+            Stop Chasing.<br />
+            <span className="gradient-text">Start Nabbing.</span>
           </h1>
 
           <p className="text-lg sm:text-xl text-muted-foreground max-w-lg leading-relaxed">
@@ -116,13 +84,13 @@ const HeroSection = () => {
 
           {/* Trust pills */}
           <div className="flex flex-wrap items-center gap-3 text-xs font-semibold">
-            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/[0.1] border border-primary/30 text-primary">
+            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-nab-cyan/[0.1] border border-nab-cyan/30 text-nab-cyan">
               <Flame className="w-3.5 h-3.5" /> AI Deal Engine
             </span>
             <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-success/[0.1] border border-success/30 text-success">
               <Zap className="w-3.5 h-3.5" /> Sub-3s Auto-Nab
             </span>
-            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-[hsl(280,100%,70%)]/[0.1] border border-[hsl(280,100%,70%)]/30 text-[hsl(280,100%,70%)]">
+            <span className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-nab-purple/[0.1] border border-nab-purple/30 text-nab-purple">
               <Trophy className="w-3.5 h-3.5" /> Gamified Shopping
             </span>
           </div>
@@ -130,7 +98,7 @@ const HeroSection = () => {
           <div className="flex flex-wrap gap-4 pt-2">
             <Button
               size="lg"
-              className="rounded-full px-10 font-black text-base gap-2 shimmer-btn shadow-[0_0_40px_-5px_hsl(var(--coral)/0.5)] text-lg"
+              className="rounded-full px-10 font-black text-base gap-2 shimmer-btn text-lg"
               onClick={() => navigate("/signup")}
             >
               Start Nabbing <ArrowRight className="w-5 h-5" />
@@ -170,64 +138,38 @@ const HeroSection = () => {
           </div>
         </motion.div>
 
-        {/* Right — Deal cards cascade */}
+        {/* Right — Isometric hero illustration */}
         <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.15 }}
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.2, type: "spring", stiffness: 60 }}
           className="relative flex justify-center lg:justify-end"
         >
           <div className="relative">
-            <div className="absolute inset-0 scale-110 blur-[80px] bg-primary/[0.1] rounded-full pointer-events-none" />
-
-            <div className="space-y-4 w-[320px] sm:w-[360px]">
-              {floatingDeals.map((deal, i) => (
-                <motion.div
-                  key={deal.name}
-                  initial={{ opacity: 0, x: 40, rotateY: -15 }}
-                  animate={{ opacity: 1, x: 0, rotateY: 0 }}
-                  transition={{ delay: 0.4 + i * 0.2, duration: 0.6, type: "spring", stiffness: 80 }}
-                  className="glass-card gradient-border p-5 group cursor-pointer"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-2xl bg-primary/[0.08] border border-primary/20 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
-                      {deal.emoji}
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-heading font-bold text-foreground text-sm">{deal.name}</p>
-                      <div className="flex items-center gap-2 mt-1">
-                        <span className="text-xs text-muted-foreground line-through">{deal.was}</span>
-                        <span className="text-sm font-black text-primary">{deal.now}</span>
-                        <span className="text-[10px] font-bold text-success bg-success/[0.1] px-1.5 py-0.5 rounded-full">{deal.pct}</span>
-                      </div>
-                    </div>
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      className="w-10 h-10 rounded-full bg-primary flex items-center justify-center shadow-lg shadow-primary/30"
-                    >
-                      <Zap className="w-4 h-4 text-primary-foreground" />
-                    </motion.div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+            <div className="absolute inset-0 scale-110 blur-[80px] rounded-full pointer-events-none" style={{ background: "hsl(var(--nab-cyan) / 0.1)" }} />
+            <motion.img
+              src={isometricHero}
+              alt="nabbit.ai — AI-powered deal hunting"
+              className="w-[400px] sm:w-[480px] relative z-10 drop-shadow-2xl"
+              animate={{ y: [-8, 8, -8] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            />
 
             {/* Floating urgency tags */}
             <motion.div
               animate={{ y: [-6, 6, -6] }}
               transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -left-8 sm:-left-16 top-8 px-4 py-2 rounded-full border border-primary/40 bg-card/95 backdrop-blur-sm text-sm font-bold shadow-xl shadow-primary/10"
+              className="absolute -left-4 sm:-left-12 top-12 px-4 py-2 rounded-full border border-nab-cyan/40 bg-card/95 backdrop-blur-sm text-sm font-bold shadow-xl"
             >
-              <Flame className="w-3.5 h-3.5 inline mr-1 text-primary" /> 3 left at this price
+              <Flame className="w-3.5 h-3.5 inline mr-1 text-nab-cyan" /> 3 left at this price
             </motion.div>
 
             <motion.div
               animate={{ y: [6, -6, 6] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -right-6 sm:-right-14 bottom-16 px-4 py-2 rounded-full border border-success/40 bg-card/95 backdrop-blur-sm text-sm font-bold shadow-xl shadow-success/10"
+              className="absolute -right-4 sm:-right-10 bottom-20 px-4 py-2 rounded-full border border-success/40 bg-card/95 backdrop-blur-sm text-sm font-bold shadow-xl"
             >
-              <Trophy className="w-3.5 h-3.5 inline mr-1 text-success" /> You saved $2,847 this month
+              <Trophy className="w-3.5 h-3.5 inline mr-1 text-success" /> You saved $2,847
             </motion.div>
           </div>
         </motion.div>

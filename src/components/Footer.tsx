@@ -1,20 +1,18 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import nabbitLogo from "@/assets/nabbit-logo.png";
-import { useTheme } from "@/hooks/use-theme";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
 
 const Footer = () => {
-  const { theme } = useTheme();
   const [email, setEmail] = useState("");
 
   const handleNewsletter = (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) {
-      toast.success("You're on the list! 🔥");
+      toast.success("You're on the list! 🐇");
       setEmail("");
     }
   };
@@ -25,11 +23,12 @@ const Footer = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand + Newsletter */}
           <div className="space-y-4">
-            <div className="flex items-center">
-              <img src={nabbitLogo} alt="nabbit.ai" className="h-7" style={{ mixBlendMode: theme === "dark" ? "lighten" : "normal" }} />
+            <div className="flex items-center gap-2">
+              <img src={nabbitLogo} alt="nabbit.ai" className="h-8" />
+              <span className="font-heading font-bold text-foreground text-lg">nabbit.ai</span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
-              AI-powered deals you grab, spin, bid & auto-buy. The Nabbit Engine never sleeps.
+              Stop chasing. Start nabbing. The Nabbit Engine never sleeps.
             </p>
             <form onSubmit={handleNewsletter} className="flex gap-2">
               <Input
@@ -39,7 +38,7 @@ const Footer = () => {
                 onChange={(e) => setEmail(e.target.value)}
                 className="bg-secondary border-border text-sm h-9"
               />
-              <Button type="submit" size="sm" className="rounded-full px-3 h-9 shrink-0">
+              <Button type="submit" size="sm" className="rounded-full px-3 h-9 shrink-0 shimmer-btn">
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </form>
@@ -85,7 +84,7 @@ const Footer = () => {
         <div className="gradient-divider mt-12 mb-8" />
 
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-muted-foreground">© 2026 Nabbit Inc. · All rights reserved</p>
+          <p className="text-xs text-muted-foreground">© 2026 Nabbit Inc. · Stop chasing. Start nabbing.</p>
           <div className="flex gap-6">
             <span className="text-xs text-muted-foreground">Privacy</span>
             <span className="text-xs text-muted-foreground">Terms</span>
