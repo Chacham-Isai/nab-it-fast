@@ -117,10 +117,18 @@ const ListingDetail = () => {
     setBidding(false);
   };
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
     if (!user) { navigate("/login"); return; }
-    toast({ title: "🛒 Buy Now", description: "Proceeding to checkout..." });
-    // Would invoke create-checkout edge function
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { listing_id: listing.id, type: "buy_now" },
+      });
+      if (error) throw error;
+      if (data?.error) throw new Error(data.error);
+      if (data?.url) window.open(data.url, "_blank");
+    } catch (err: any) {
+      toast({ title: "Checkout failed", description: err.message, variant: "destructive" });
+    }
   };
 
   const handleSave = async () => {
