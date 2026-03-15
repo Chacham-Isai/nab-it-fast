@@ -8,6 +8,7 @@ import BottomNav from "@/components/BottomNav";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import usePageMeta from "@/hooks/usePageMeta";
+import nabbitLogo from "@/assets/nabbit-logo.png";
 
 const Profile = () => {
   usePageMeta({ title: "Profile — nabbit.ai", description: "View your nabbit profile, saved items, and settings.", path: "/profile" });
@@ -62,116 +63,257 @@ const Profile = () => {
     { label: "Danger Zone", items: [{ icon: Trash2, label: "Delete Account", value: "", danger: true }, { icon: LogOut, label: "Sign Out", value: "", danger: true, action: handleSignOut }] },
   ];
 
-  if (loading) return <div className="min-h-screen bg-background flex items-center justify-center"><Loader2 className="w-8 h-8 text-primary animate-spin" /></div>;
+  if (loading) return (
+    <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-3">
+      <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}>
+        <Loader2 className="w-7 h-7 text-primary" />
+      </motion.div>
+      <span className="text-xs text-muted-foreground font-medium">Loading profile...</span>
+    </div>
+  );
 
   const displayTags = tasteTags.length > 0 ? tasteTags : ["Sneakers", "Cards", "Tech", "Watches", "Streetwear"];
 
   return (
-    <div className="min-h-screen bg-background pb-20">
-      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
-        <div className="flex items-center gap-3 max-w-lg mx-auto">
-          <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
-          <h1 className="font-heading font-bold text-foreground text-lg flex-1">Profile</h1>
-          <button onClick={() => setEditing(!editing)}><Edit2 className="w-4 h-4 text-muted-foreground" /></button>
+    <div className="min-h-screen bg-background pb-24">
+      {/* ===== HEADER ===== */}
+      <div className="sticky top-0 z-40 bg-background/60 backdrop-blur-2xl border-b border-border/50">
+        <div className="flex items-center gap-3 max-w-lg mx-auto px-4 py-3">
+          <button onClick={() => navigate(-1)} className="p-1.5 rounded-xl hover:bg-secondary/50 transition-colors">
+            <ArrowLeft className="w-5 h-5 text-foreground" />
+          </button>
+          <div className="flex items-center gap-2 flex-1">
+            <img src={nabbitLogo} alt="" className="w-5 h-5" />
+            <h1 className="font-heading font-black text-foreground text-base tracking-tight">PROFILE</h1>
+          </div>
+          <button
+            onClick={() => setEditing(!editing)}
+            className="p-2 rounded-xl hover:bg-secondary/50 transition-colors"
+          >
+            <Edit2 className="w-4 h-4 text-muted-foreground" />
+          </button>
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto px-4 py-6 space-y-6">
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center text-center space-y-3">
+      <div className="max-w-lg mx-auto px-4 pt-6 space-y-6">
+        {/* ===== AVATAR & IDENTITY ===== */}
+        <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col items-center text-center space-y-3">
           <div className="relative">
-            <div className="w-20 h-20 rounded-full bg-primary/10 border-2 border-primary/20 flex items-center justify-center text-3xl">{avatarEmoji}</div>
-            <div className="absolute bottom-0 right-0 w-4 h-4 rounded-full bg-success border-2 border-background" />
+            <motion.div
+              animate={{ boxShadow: ["0 0 20px hsl(var(--primary)/0.2)", "0 0 40px hsl(var(--primary)/0.35)", "0 0 20px hsl(var(--primary)/0.2)"] }}
+              transition={{ duration: 3, repeat: Infinity }}
+              className="w-24 h-24 rounded-full bg-gradient-to-br from-primary/10 to-accent/10 border-2 border-primary/30 flex items-center justify-center text-4xl"
+            >
+              {avatarEmoji}
+            </motion.div>
+            <motion.div
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+              className="absolute -bottom-0.5 right-1 w-5 h-5 rounded-full bg-success border-[3px] border-background"
+            />
           </div>
+
           {editing ? (
-            <Input value={displayName} onChange={(e) => setDisplayName(e.target.value)} onBlur={handleNameSave} className="text-center max-w-[200px] bg-secondary/50 border-border rounded-xl" autoFocus />
+            <Input
+              value={displayName}
+              onChange={(e) => setDisplayName(e.target.value)}
+              onBlur={handleNameSave}
+              className="text-center max-w-[220px] bg-secondary/30 border-border/50 rounded-xl font-heading font-bold"
+              autoFocus
+            />
           ) : (
-            <h2 className="font-heading font-bold text-foreground text-xl">{displayName}</h2>
+            <h2 className="font-heading font-black text-foreground text-xl">{displayName}</h2>
           )}
-          {user?.email && <span className="text-xs text-muted-foreground">{user.email}</span>}
-          <span className="text-xs text-primary font-semibold">Early Access Member</span>
+
+          {user?.email && <span className="text-xs text-muted-foreground/70">{user.email}</span>}
+
+          <motion.span
+            animate={{ backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
+            transition={{ duration: 4, repeat: Infinity }}
+            className="text-xs font-black uppercase tracking-widest bg-clip-text text-transparent"
+            style={{
+              backgroundImage: "linear-gradient(90deg, hsl(var(--nab-cyan)), hsl(var(--primary)), hsl(var(--nab-blue)), hsl(var(--nab-cyan)))",
+              backgroundSize: "200% 100%",
+            }}
+          >
+            Early Access Member
+          </motion.span>
+
+          {/* Taste Tags */}
           <div className="flex flex-wrap gap-1.5 justify-center">
-            {displayTags.slice(0, 6).map((t) => <span key={t} className="px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">{t}</span>)}
-            <Button variant="ghost" size="sm" className="text-xs text-muted-foreground h-6 px-2">Edit Taste</Button>
+            {displayTags.slice(0, 6).map((t) => (
+              <span key={t} className="px-3 py-1.5 rounded-full bg-primary/5 border border-primary/20 text-primary text-[11px] font-bold">
+                {t}
+              </span>
+            ))}
           </div>
+          <button
+            onClick={() => navigate("/onboarding")}
+            className="text-[11px] text-muted-foreground/60 hover:text-primary transition-colors font-medium"
+          >
+            Edit Taste
+          </button>
         </motion.div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        {/* ===== STATS GRID ===== */}
+        <div className="grid grid-cols-4 gap-2">
           {[
-            { icon: ShoppingBag, label: "Orders", value: String(orderHistory.length) },
-            { icon: Star, label: "Saved", value: String(savedCount) },
-            { icon: Zap, label: "Dream Buys", value: String(dreamCount) },
-            { icon: Heart, label: "Gave Back", value: "$0" },
-          ].map((s) => (
-            <div key={s.label} className="p-3 rounded-xl bg-card border border-border text-center">
-              <s.icon className="w-4 h-4 mx-auto text-primary mb-1" />
-              <p className="text-lg font-bold text-foreground">{s.value}</p>
-              <p className="text-[10px] text-muted-foreground">{s.label}</p>
-            </div>
+            { icon: ShoppingBag, label: "Orders", value: String(orderHistory.length), color: "text-primary", bg: "from-primary/10 to-accent/10", border: "border-primary/20" },
+            { icon: Star, label: "Saved", value: String(savedCount), color: "text-nab-cyan", bg: "from-nab-cyan/10 to-primary/10", border: "border-nab-cyan/20" },
+            { icon: Zap, label: "Dream Buys", value: String(dreamCount), color: "text-nab-blue", bg: "from-nab-blue/10 to-primary/10", border: "border-nab-blue/20" },
+            { icon: Heart, label: "Gave Back", value: "$0", color: "text-nab-purple", bg: "from-nab-purple/10 to-accent/10", border: "border-nab-purple/20" },
+          ].map((s, i) => (
+            <motion.div
+              key={s.label}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + i * 0.06 }}
+              className={`relative overflow-hidden p-3 rounded-2xl glass-card border ${s.border} text-center`}
+            >
+              <div className={`absolute inset-0 bg-gradient-to-br ${s.bg} opacity-30`} />
+              <div className="relative z-10">
+                <s.icon className={`w-4 h-4 mx-auto ${s.color} mb-1.5`} />
+                <p className="text-lg font-heading font-black text-foreground">{s.value}</p>
+                <p className="text-[9px] text-muted-foreground font-bold uppercase tracking-wider mt-0.5">{s.label}</p>
+              </div>
+            </motion.div>
           ))}
         </div>
 
+        {/* ===== TABS ===== */}
         <div className="flex gap-2">
           {(["saved", "history", "settings"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)} className={`px-4 py-1.5 rounded-full text-xs font-medium capitalize transition-all ${tab === t ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>{t}</button>
+            <button
+              key={t}
+              onClick={() => setTab(t)}
+              className={`px-5 py-2 rounded-full text-xs font-black capitalize transition-all uppercase tracking-wider ${
+                tab === t
+                  ? "bg-gradient-to-r from-primary to-accent text-primary-foreground shadow-[0_0_20px_-4px_hsl(var(--primary)/0.4)]"
+                  : "bg-secondary/30 text-muted-foreground border border-border/50 hover:border-primary/30 hover:text-foreground"
+              }`}
+            >
+              {t}
+            </button>
           ))}
         </div>
 
+        {/* ===== TAB CONTENT ===== */}
         {tab === "saved" && (
-          <div className="space-y-2">
-            {savedItems.length > 0 ? savedItems.map((item: any) => (
-              <div key={item.id} className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border">
-                <span className="text-2xl">{item.image_emoji || "📦"}</span>
-                <div className="flex-1 min-w-0"><p className="text-sm font-medium text-foreground truncate">{item.item_name}</p><p className="text-xs text-muted-foreground">{item.category}</p></div>
-                <span className="font-bold text-foreground text-sm">${item.price?.toLocaleString() || "—"}</span>
-                <Button variant="ghost" size="sm" className="text-destructive text-xs" onClick={() => handleDeleteSaved(item.id)}>×</Button>
-              </div>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2.5">
+            {savedItems.length > 0 ? savedItems.map((item: any, i: number) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, x: -16 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.05, type: "spring", stiffness: 300, damping: 25 }}
+                className="flex items-center gap-3.5 p-3.5 rounded-2xl glass-card border border-border/50 group"
+              >
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-secondary/80 to-secondary/40 border border-border/50 flex items-center justify-center text-xl shrink-0">
+                  {item.image_emoji || "📦"}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-foreground truncate">{item.item_name}</p>
+                  <p className="text-[10px] text-muted-foreground font-medium">{item.category}</p>
+                </div>
+                <span className="font-heading font-black text-foreground text-sm">${item.price?.toLocaleString() || "—"}</span>
+                <button
+                  onClick={() => handleDeleteSaved(item.id)}
+                  className="p-1.5 rounded-lg text-muted-foreground/30 hover:text-destructive hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </motion.div>
             )) : (
-              <div className="text-center py-8">
-                <span className="text-4xl block mb-2">🛍️</span>
-                <p className="text-muted-foreground text-sm">No saved items yet. Nab some drops!</p>
-              </div>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
+                <motion.div
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 flex items-center justify-center mx-auto mb-4"
+                >
+                  <ShoppingBag className="w-8 h-8 text-primary" />
+                </motion.div>
+                <p className="text-foreground font-heading font-bold">No saved items yet</p>
+                <p className="text-xs text-muted-foreground mt-1">Nab some drops from the feed!</p>
+              </motion.div>
             )}
-          </div>
+          </motion.div>
         )}
 
         {tab === "history" && (
-          <div className="space-y-2">
-            {orderHistory.length > 0 ? orderHistory.map((order: any) => (
-              <div key={order.id} className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border">
-                <Package className="w-5 h-5 text-primary shrink-0" />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{order.listings?.title || "Item"}</p>
-                  <p className="text-xs text-muted-foreground">{new Date(order.created_at).toLocaleDateString()} · {order.status}</p>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-2.5">
+            {orderHistory.length > 0 ? orderHistory.map((order: any, i: number) => (
+              <motion.div
+                key={order.id}
+                initial={{ opacity: 0, x: -16 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.05, type: "spring", stiffness: 300, damping: 25 }}
+                className="flex items-center gap-3.5 p-3.5 rounded-2xl glass-card border border-border/50"
+              >
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-success/10 to-emerald-500/10 border border-success/20 flex items-center justify-center shrink-0">
+                  <Package className="w-5 h-5 text-success" />
                 </div>
-                <span className="font-bold text-foreground text-sm">${order.amount}</span>
-              </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-bold text-foreground truncate">{order.listings?.title || "Item"}</p>
+                  <div className="flex items-center gap-1.5 mt-0.5">
+                    <span className="text-[10px] text-muted-foreground font-medium">{new Date(order.created_at).toLocaleDateString()}</span>
+                    <span className="text-[10px] text-muted-foreground/40">·</span>
+                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                      order.status === "completed" ? "text-success bg-success/10" :
+                      order.status === "shipped" ? "text-nab-blue bg-nab-blue/10" :
+                      "text-muted-foreground bg-secondary/50"
+                    }`}>
+                      {order.status}
+                    </span>
+                  </div>
+                </div>
+                <span className="font-heading font-black text-foreground text-sm">${order.amount}</span>
+              </motion.div>
             )) : (
-              <div className="text-center py-8">
-                <span className="text-4xl block mb-2">📦</span>
-                <p className="text-muted-foreground text-sm">No purchases yet</p>
-              </div>
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-center py-12">
+                <motion.div
+                  animate={{ y: [0, -6, 0] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  className="w-16 h-16 rounded-2xl bg-gradient-to-br from-nab-blue/10 to-primary/10 border border-nab-blue/20 flex items-center justify-center mx-auto mb-4"
+                >
+                  <Package className="w-8 h-8 text-nab-blue" />
+                </motion.div>
+                <p className="text-foreground font-heading font-bold">No purchases yet</p>
+                <p className="text-xs text-muted-foreground mt-1">Your nabs will show up here</p>
+              </motion.div>
             )}
-          </div>
+          </motion.div>
         )}
 
         {tab === "settings" && (
-          <div className="space-y-6">
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-5">
             {settingsGroups.map((group) => (
               <div key={group.label}>
-                <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">{group.label}</h3>
-                <div className="bg-card rounded-xl border border-border divide-y divide-border">
+                <h3 className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-2 px-1">{group.label}</h3>
+                <div className="rounded-2xl glass-card border border-border/50 overflow-hidden divide-y divide-border/30">
                   {group.items.map((item) => (
-                    <button key={item.label} onClick={(item as any).action || undefined} className={`w-full flex items-center gap-3 px-4 py-3 text-left ${(item as any).danger ? "text-destructive" : "text-foreground"}`}>
-                      <item.icon className="w-4 h-4 shrink-0" />
-                      <span className="flex-1 text-sm">{item.label}</span>
-                      {item.value && <span className="text-xs text-muted-foreground">{item.value}</span>}
-                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                    <button
+                      key={item.label}
+                      onClick={(item as any).action || undefined}
+                      className={`w-full flex items-center gap-3 px-4 py-3.5 text-left transition-colors hover:bg-secondary/20 ${
+                        (item as any).danger ? "text-destructive" : "text-foreground"
+                      }`}
+                    >
+                      <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${
+                        (item as any).danger
+                          ? "bg-destructive/10 border border-destructive/20"
+                          : "bg-secondary/50 border border-border/50"
+                      }`}>
+                        <item.icon className="w-4 h-4" />
+                      </div>
+                      <span className="flex-1 text-sm font-medium">{item.label}</span>
+                      {item.value && <span className="text-[10px] text-muted-foreground font-medium bg-secondary/30 px-2 py-0.5 rounded-full">{item.value}</span>}
+                      <ChevronRight className="w-4 h-4 text-muted-foreground/40" />
                     </button>
                   ))}
                 </div>
               </div>
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
 
