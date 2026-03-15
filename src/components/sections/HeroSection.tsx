@@ -77,7 +77,7 @@ const HeroSection = () => {
             <span className="gradient-text">Start Nabbing.</span>
           </h1>
 
-          <p className="text-lg sm:text-xl text-muted-foreground max-w-lg leading-relaxed">
+          <p className="text-base sm:text-lg text-muted-foreground max-w-lg leading-relaxed">
             The <strong className="text-foreground">Nabbit Engine</strong> scans millions of listings, learns your taste, and drops personalized deals you can{" "}
             <strong className="text-foreground">bid, spin, grab,</strong> or <strong className="text-foreground">auto-buy</strong> — before anyone else.
           </p>
