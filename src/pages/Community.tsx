@@ -19,6 +19,7 @@ import { toast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { cn } from "@/lib/utils";
 import nabbitLogo from "@/assets/nabbit-logo.png";
+import CrewActivityFeed from "@/components/community/CrewActivityFeed";
 
 import crewHeroImg from "@/assets/crew/crew-hero.jpg";
 import streakBgImg from "@/assets/crew/streak-bg.jpg";
@@ -356,7 +357,10 @@ const Community = () => {
           </motion.div>
         )}
 
-        {/* ===== FOR YOU FEED ===== */}
+        {/* ===== LIVE CREW ACTIVITY ===== */}
+        <CrewActivityFeed />
+
+        {/* ===== TAB CONTENT ===== */}
         <AnimatePresence mode="wait">
           {tab === "feed" && (
             <motion.div key="feed" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-4">
