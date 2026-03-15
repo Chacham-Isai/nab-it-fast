@@ -33,6 +33,8 @@ const Index = () => {
         <div className="gradient-divider" />
         <NabbitEngineSection />
         <div className="gradient-divider" />
+        <CategoriesSection />
+        <div className="gradient-divider" />
         <SocialProofSection />
         <div className="gradient-divider" />
         <FinalCTASection />
