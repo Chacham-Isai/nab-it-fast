@@ -24,7 +24,7 @@ interface CrewDiscoveryProps {
   onToggleCrew: (name: string, emoji: string) => void;
 }
 
-const categoryFilters = ["All", "Fashion", "Collectibles", "Electronics", "Luxury", "Home", "Music", "Art", "Sports"];
+const categoryFilters = ["All", "Fashion", "Collectibles", "Electronics", "Luxury", "Home", "Music", "Art", "Sports", "General"];
 
 const CrewDiscovery = ({ joinedCrews, onToggleCrew }: CrewDiscoveryProps) => {
   const { user } = useAuth();
