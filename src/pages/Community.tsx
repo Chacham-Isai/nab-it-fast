@@ -15,6 +15,7 @@ import CreateDealForm from "@/components/community/CreateDealForm";
 import CrewDiscovery from "@/components/community/CrewDiscovery";
 import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const activityFeed = [
   { id: 1, user: "🧑‍🎤", name: "Alex K.", action: "just nabbed", item: "Jordan 1 Chicago", price: 289, crew: "Sneakerheads", time: "2m ago", hot: true },
@@ -31,6 +32,7 @@ const Community = () => {
   usePageMeta({ title: "Community — nabbit.ai", description: "Join crews, group deals, and connect with fellow deal hunters.", path: "/community" });
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { track } = useAnalytics();
   const [tab, setTab] = useState<TabType>("feed");
   const [joinedTribes, setJoinedTribes] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -110,6 +112,7 @@ const Community = () => {
       return;
     }
     setJoinedDeals((prev) => [...prev, dealId]);
+    track("group_deal_joined", { deal_id: dealId });
 
     // Award XP
     const xpGain = await awardXP(user.id, "join_deal");
@@ -126,9 +129,11 @@ const Community = () => {
     if (!user) { navigate("/login"); return; }
     if (joinedTribes.includes(tribeName)) {
       await supabase.from("tribe_memberships").delete().eq("user_id", user.id).eq("tribe_name", tribeName);
+      track("crew_left", { crew_name: tribeName });
       setJoinedTribes((prev) => prev.filter((t) => t !== tribeName));
     } else {
       await supabase.from("tribe_memberships").insert({ user_id: user.id, tribe_name: tribeName, tribe_emoji: tribeEmoji });
+      track("crew_joined", { crew_name: tribeName });
       setJoinedTribes((prev) => [...prev, tribeName]);
     }
   };

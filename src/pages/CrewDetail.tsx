@@ -11,6 +11,7 @@ import GroupDealCard from "@/components/community/GroupDealCard";
 import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface Crew {
   id: string;
@@ -35,6 +36,7 @@ const CrewDetail = () => {
   const crewName = decodeURIComponent(name || "");
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { track } = useAnalytics();
 
   usePageMeta({
     title: `${crewName} — nabbit.ai`,
@@ -140,6 +142,7 @@ const CrewDetail = () => {
     if (isJoined) {
       await supabase.from("tribe_memberships").delete().eq("user_id", user.id).eq("tribe_name", crewName);
       setIsJoined(false);
+      track("crew_left", { crew_name: crewName });
       setCrew((prev) => prev ? { ...prev, member_count: Math.max(prev.member_count - 1, 0) } : prev);
     } else {
       await supabase.from("tribe_memberships").insert({
@@ -148,6 +151,7 @@ const CrewDetail = () => {
         tribe_emoji: crew?.emoji || "🎯",
       });
       setIsJoined(true);
+      track("crew_joined", { crew_name: crewName });
       setCrew((prev) => prev ? { ...prev, member_count: prev.member_count + 1 } : prev);
     }
   };
@@ -160,6 +164,7 @@ const CrewDetail = () => {
       return;
     }
     setJoinedDeals((prev) => [...prev, dealId]);
+    track("group_deal_joined", { deal_id: dealId, crew_name: crewName });
     const xpGain = await awardXP(user.id, "join_deal");
     toast({ title: `+${xpGain} XP! 🎮`, description: "You joined a group deal!" });
   };

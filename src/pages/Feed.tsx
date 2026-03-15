@@ -9,6 +9,7 @@ import nabbitLogo from "@/assets/nabbit-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import usePageMeta from "@/hooks/usePageMeta";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 interface FeedItem {
   id: string;
@@ -95,6 +96,7 @@ const Feed = () => {
   usePageMeta({ title: "Feed — nabbit.ai", description: "Your personalized deal feed. Swipe to nab deals from 200+ retailers.", path: "/feed" });
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { track } = useAnalytics();
   const [items, setItems] = useState<FeedItem[]>([]);
   const [saved, setSaved] = useState<FeedItem[]>([]);
   const [activeCategory, setActiveCategory] = useState("All");
@@ -193,8 +195,10 @@ const Feed = () => {
     if (dir === "right") {
       setSaved((s) => [item, ...s]);
       saveToDb(item);
+      track("swipe_right", { item_id: item.id, category: item.category, price: item.price });
       toast({ title: "✅ Nabbed!", description: "Added to your saved items." });
     } else {
+      track("swipe_left", { item_id: item.id, category: item.category, price: item.price });
       toast({ title: "✗ Passed", description: item.name });
     }
     setItems((prev) => prev.filter((i) => i.id !== item.id));
@@ -205,6 +209,7 @@ const Feed = () => {
     if (!item) return;
     setSaved((s) => [item, ...s]);
     saveToDb(item);
+    track("bookmark", { item_id: item.id, category: item.category, price: item.price });
     setItems((prev) => prev.filter((i) => i.id !== item.id));
     toast({ title: "🔖 Saved!", description: item.name });
   };
