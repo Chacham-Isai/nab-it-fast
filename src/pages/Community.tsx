@@ -257,29 +257,39 @@ const Community = () => {
     <div className="min-h-screen bg-background pb-24">
       {/* Background orbs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute top-20 -left-32 w-64 h-64 rounded-full bg-primary/5 blur-3xl" />
-        <div className="absolute top-60 -right-32 w-72 h-72 rounded-full bg-accent/5 blur-3xl" />
-        <div className="absolute bottom-40 left-1/2 w-96 h-96 rounded-full bg-primary/3 blur-3xl" />
+        <motion.div animate={{ scale: [1, 1.3, 1], opacity: [0.04, 0.08, 0.04] }} transition={{ duration: 8, repeat: Infinity }} className="absolute top-10 -left-32 w-80 h-80 rounded-full blur-[120px]" style={{ background: "hsl(var(--nab-cyan))" }} />
+        <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.03, 0.07, 0.03] }} transition={{ duration: 10, repeat: Infinity, delay: 2 }} className="absolute top-60 -right-32 w-72 h-72 rounded-full blur-[100px]" style={{ background: "hsl(var(--nab-purple))" }} />
       </div>
 
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/60 backdrop-blur-2xl border-b border-border">
-        <div className="flex items-center gap-3 max-w-lg mx-auto px-4 py-3">
-          <button onClick={() => navigate(-1)} className="w-9 h-9 rounded-xl bg-secondary/50 flex items-center justify-center hover:bg-secondary transition-colors">
-            <ArrowLeft className="w-4 h-4 text-foreground" />
-          </button>
-          <div className="flex-1">
-            <h1 className="font-heading font-bold text-foreground text-lg">Crew Hub</h1>
-            <p className="text-[10px] text-muted-foreground">Your squad. Your deals. Your wins.</p>
-          </div>
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20">
-            <Users className="w-3 h-3 text-primary" />
-            <span className="text-xs font-bold text-primary">12.6K</span>
+        {/* Hero banner strip */}
+        <div className="relative overflow-hidden">
+          <img src={crewHeroImg} alt="" className="w-full h-28 object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/70 to-background/30" />
+          <div className="absolute inset-0 flex items-center max-w-lg mx-auto px-4">
+            <div className="flex items-center gap-3 flex-1">
+              <button onClick={() => navigate(-1)} className="w-9 h-9 rounded-xl bg-background/40 backdrop-blur-xl flex items-center justify-center hover:bg-background/60 transition-colors border border-border/30">
+                <ArrowLeft className="w-4 h-4 text-foreground" />
+              </button>
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <img src={nabbitLogo} alt="" className="h-5" />
+                  <h1 className="font-heading font-black text-foreground text-xl tracking-tight">CREW HUB</h1>
+                </div>
+                <p className="text-[11px] text-muted-foreground font-medium mt-0.5">Squad up. Nab together. Win bigger.</p>
+              </div>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-background/40 backdrop-blur-xl border border-primary/20">
+                <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ duration: 2, repeat: Infinity }} className="w-2 h-2 rounded-full bg-success" />
+                <Users className="w-3 h-3 text-primary" />
+                <span className="text-xs font-bold text-primary">12.6K</span>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="flex gap-1.5 max-w-lg mx-auto px-4 pb-3">
+        <div className="flex gap-1.5 max-w-lg mx-auto px-4 py-2.5">
           {tabs.map((t) => {
             const Icon = t.icon;
             const active = tab === t.key;
@@ -288,14 +298,25 @@ const Community = () => {
                 key={t.key}
                 onClick={() => setTab(t.key)}
                 className={cn(
-                  "flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all relative",
+                  "flex-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold transition-all relative overflow-hidden",
                   active
-                    ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
+                    ? "text-primary-foreground shadow-lg"
                     : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
                 )}
+                style={active ? {
+                  background: "linear-gradient(135deg, hsl(var(--nab-cyan)), hsl(var(--nab-blue)), hsl(var(--nab-purple)))",
+                  boxShadow: "0 4px 20px hsl(var(--nab-cyan) / 0.3)",
+                } : {}}
               >
                 <Icon className="w-3.5 h-3.5" />
                 {t.label}
+                {active && (
+                  <motion.div
+                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
+                    animate={{ x: ["-100%", "200%"] }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                  />
+                )}
               </button>
             );
           })}
