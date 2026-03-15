@@ -149,6 +149,7 @@ const Auctions = () => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       toast({ title: "Proxy bid set! 🤖", description: `Auto-bidding up to $${amount.toLocaleString()}` });
+      track("bid_placed", { auction_id: auctionId, amount, bid_type: "proxy", max_proxy: amount });
       setProxyBid((p) => ({ ...p, [auctionId]: "" }));
       await loadAuctions();
     } catch (err: any) {
