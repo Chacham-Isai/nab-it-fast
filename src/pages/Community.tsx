@@ -357,7 +357,10 @@ const Community = () => {
           </motion.div>
         )}
 
-        {/* ===== FOR YOU FEED ===== */}
+        {/* ===== LIVE CREW ACTIVITY ===== */}
+        <CrewActivityFeed />
+
+        {/* ===== TAB CONTENT ===== */}
         <AnimatePresence mode="wait">
           {tab === "feed" && (
             <motion.div key="feed" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-4">
