@@ -6,6 +6,8 @@ type EventName =
   | "swipe_right"
   | "swipe_left"
   | "bookmark"
+  | "nab_item"
+  | "like_item"
   | "bid_placed"
   | "group_deal_joined"
   | "group_deal_left"
