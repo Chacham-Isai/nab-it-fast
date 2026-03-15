@@ -9,6 +9,7 @@ import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
+import usePageMeta from "@/hooks/usePageMeta";
 
 const getIncrement = (bid: number) => {
   if (bid < 500) return 25;
