@@ -91,11 +91,11 @@ const GrabBagReveal = ({ orderId, category, title, odds, onRevealed }: GrabBagRe
           {phase === "shake" && (
             <motion.div
               key="shake"
-              initial={{ scale: 0.6, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 1.5, opacity: 0 }}
-              transition={{ exit: { duration: 0.3 } }}
-              className="text-center relative z-10"
+            initial={{ scale: 0.6, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 1.5, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="text-center relative z-10"
             >
               <motion.span
                 className="text-8xl block drop-shadow-2xl"
