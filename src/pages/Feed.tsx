@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, useMotionValue, useTransform, AnimatePresence } from "framer-motion";
-import { ShoppingBag, X, Bookmark, Zap, Bell, Star } from "lucide-react";
+import { ShoppingBag, X, Bookmark, Zap, Bell, Star, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import BottomNav from "@/components/BottomNav";
@@ -10,25 +10,35 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import usePageMeta from "@/hooks/usePageMeta";
 
-interface FeedItem { id: number; name: string; category: string; price: number; was: number; emoji: string; tag: string; hot: boolean; left: number; reason: string; score: number; }
+interface FeedItem {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  was: number;
+  emoji: string;
+  tag: string;
+  hot: boolean;
+  left: number;
+  reason: string;
+  score: number;
+  listing_id?: string;
+  listing_type?: string;
+}
 
-const mockFeed: FeedItem[] = [
-  { id: 1, name: "Air Jordan 1 Retro High OG 'Chicago'", category: "Sneakers", price: 289, was: 380, emoji: "👟", tag: "DREAM MATCH", hot: true, left: 3, reason: "Matches your sneaker vibe + Jordan affinity", score: 97 },
-  { id: 2, name: "1986 Fleer Michael Jordan RC #57", category: "Cards", price: 4200, was: 5500, emoji: "🃏", tag: "LIMITED DROP", hot: true, left: 1, reason: "Top pick for sports card collectors", score: 94 },
-  { id: 3, name: "Apple Vision Pro 256GB", category: "Tech", price: 3299, was: 3499, emoji: "🥽", tag: "PRICE DROP", hot: false, left: 12, reason: "Based on your tech setup vibe", score: 88 },
-  { id: 4, name: "Rolex Submariner Date 126610LN", category: "Watches", price: 12800, was: 14500, emoji: "⌚", tag: "FIND", hot: true, left: 1, reason: "Dream watch match — below market", score: 96 },
-  { id: 5, name: "Supreme Box Logo Hoodie FW23", category: "Streetwear", price: 425, was: 550, emoji: "🧥", tag: "VINTAGE FIND", hot: false, left: 8, reason: "Streetwear + Supreme brand match", score: 82 },
-  { id: 6, name: "LEGO Star Wars UCS Millennium Falcon", category: "Vintage", price: 699, was: 849, emoji: "🧱", tag: "PRICE DROP", hot: false, left: 5, reason: "LEGO collector match", score: 85 },
-];
-
-const categories = ["All", "Cards", "Sneakers", "Tech", "Watches", "Streetwear", "Vintage"];
+const categories = ["All", "Cards", "Sneakers", "Electronics", "Watches", "Collectibles", "Fashion"];
 
 const tagColors: Record<string, string> = {
   "DREAM MATCH": "bg-primary text-primary-foreground",
   "LIMITED DROP": "bg-destructive text-destructive-foreground",
   "PRICE DROP": "bg-success/20 text-success",
   "FIND": "bg-primary/20 text-primary",
-  "VINTAGE FIND": "bg-secondary text-secondary-foreground",
+  "NEW LISTING": "bg-secondary text-secondary-foreground",
+};
+
+const getCategoryEmoji = (cat: string) => {
+  const map: Record<string, string> = { Cards: "🃏", Sneakers: "👟", Watches: "⌚", Electronics: "🥽", Collectibles: "🏆", Fashion: "🧥" };
+  return map[cat] || "📦";
 };
 
 const SwipeCard = ({ item, isTop, onSwipe, onBookmark }: { item: FeedItem; isTop: boolean; onSwipe: (dir: "left" | "right") => void; onBookmark: () => void; }) => {
@@ -40,7 +50,7 @@ const SwipeCard = ({ item, isTop, onSwipe, onBookmark }: { item: FeedItem; isTop
   return (
     <motion.div style={{ x, rotate, zIndex: isTop ? 10 : 1 }} drag={isTop ? "x" : false} dragConstraints={{ left: 0, right: 0 }} dragElastic={0.7} onDragEnd={(_, info) => { if (info.offset.x > 80) onSwipe("right"); else if (info.offset.x < -80) onSwipe("left"); }} className="absolute inset-0 touch-none">
       <div className="w-full h-full rounded-3xl border border-border bg-card overflow-hidden shadow-lg">
-       <motion.div style={{ opacity: nabOpacity }} className="absolute inset-0 bg-success/20 z-20 flex items-center justify-center pointer-events-none rounded-3xl">
+        <motion.div style={{ opacity: nabOpacity }} className="absolute inset-0 bg-success/20 z-20 flex items-center justify-center pointer-events-none rounded-3xl">
           <span className="text-4xl font-heading font-black text-success rotate-[-15deg] border-4 border-success px-6 py-2 rounded-xl">NAB IT ✓</span>
         </motion.div>
         <motion.div style={{ opacity: passOpacity }} className="absolute inset-0 bg-destructive/20 z-20 flex items-center justify-center pointer-events-none rounded-3xl">
@@ -62,8 +72,12 @@ const SwipeCard = ({ item, isTop, onSwipe, onBookmark }: { item: FeedItem; isTop
           <div>
             <div className="flex items-baseline gap-2">
               <span className="text-xl font-bold text-foreground">${item.price.toLocaleString()}</span>
-              <span className="text-sm text-muted-foreground line-through">${item.was.toLocaleString()}</span>
-              <span className="text-xs font-bold text-success">-{Math.round((1 - item.price / item.was) * 100)}%</span>
+              {item.was > item.price && (
+                <>
+                  <span className="text-sm text-muted-foreground line-through">${item.was.toLocaleString()}</span>
+                  <span className="text-xs font-bold text-success">-{Math.round((1 - item.price / item.was) * 100)}%</span>
+                </>
+              )}
             </div>
             <div className="flex items-center gap-2 mt-2">
               <div className="flex-1 h-1.5 bg-secondary rounded-full overflow-hidden"><div className="h-full bg-primary rounded-full" style={{ width: `${item.score}%` }} /></div>
@@ -81,23 +95,77 @@ const Feed = () => {
   usePageMeta({ title: "Feed — nabbit.ai", description: "Your personalized deal feed. Swipe to nab deals from 200+ retailers.", path: "/feed" });
   const navigate = useNavigate();
   const { user } = useAuth();
-  const [items, setItems] = useState(mockFeed);
+  const [items, setItems] = useState<FeedItem[]>([]);
   const [saved, setSaved] = useState<FeedItem[]>([]);
   const [activeCategory, setActiveCategory] = useState("All");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadFeed();
+  }, []);
+
+  const loadFeed = async () => {
+    setLoading(true);
+    const { data: listings } = await supabase
+      .from('listings')
+      .select('*, auctions(*)')
+      .eq('status', 'active')
+      .order('created_at', { ascending: false })
+      .limit(30);
+
+    if (listings && listings.length > 0) {
+      const feedItems: FeedItem[] = listings.map((l: any) => {
+        const auction = l.auctions?.[0];
+        const currentPrice = auction ? auction.current_price : l.starting_price;
+        const marketPrice = l.buy_now_price || l.starting_price * 1.3;
+        const score = Math.min(99, Math.max(60, Math.round(100 - ((currentPrice / marketPrice) * 40))));
+        const tags = ["NEW LISTING", "FIND", "PRICE DROP", "LIMITED DROP"];
+        const tag = l.quantity <= 3 ? "LIMITED DROP" : (l.buy_now_price && l.buy_now_price < marketPrice * 0.8) ? "PRICE DROP" : tags[Math.floor(Math.random() * 2)];
+
+        return {
+          id: l.id,
+          name: l.title,
+          category: l.category,
+          price: currentPrice,
+          was: marketPrice,
+          emoji: getCategoryEmoji(l.category),
+          tag,
+          hot: l.quantity <= 3,
+          left: l.quantity,
+          reason: `${l.condition} · ${l.listing_type.replace('_', ' ')}`,
+          score,
+          listing_id: l.id,
+          listing_type: l.listing_type,
+        };
+      });
+      setItems(feedItems);
+    }
+    setLoading(false);
+  };
 
   const filtered = activeCategory === "All" ? items : items.filter((i) => i.category === activeCategory);
   const visibleCards = filtered.slice(0, 3);
 
   const saveToDb = async (item: FeedItem) => {
     if (!user) return;
-    try { await supabase.from("saved_items").insert({ user_id: user.id, item_name: item.name, category: item.category, price: item.price, was_price: item.was, image_emoji: item.emoji, tag: item.tag }); } catch (err) { console.error("Error saving item:", err); }
+    try {
+      await supabase.from("saved_items").insert({
+        user_id: user.id, item_name: item.name, category: item.category,
+        price: item.price, was_price: item.was, image_emoji: item.emoji, tag: item.tag,
+      });
+    } catch (err) { console.error("Error saving item:", err); }
   };
 
   const handleSwipe = (dir: "left" | "right") => {
     const item = filtered[0];
     if (!item) return;
-    if (dir === "right") { setSaved((s) => [item, ...s]); saveToDb(item); toast({ title: "✅ Nabbed!", description: "Added to your saved items." }); }
-    else toast({ title: "✗ Passed", description: item.name });
+    if (dir === "right") {
+      setSaved((s) => [item, ...s]);
+      saveToDb(item);
+      toast({ title: "✅ Nabbed!", description: "Added to your saved items." });
+    } else {
+      toast({ title: "✗ Passed", description: item.name });
+    }
     setItems((prev) => prev.filter((i) => i.id !== item.id));
   };
 
@@ -135,30 +203,38 @@ const Feed = () => {
       </div>
 
       <div className="max-w-lg mx-auto px-4">
-        <div className="relative h-[420px] w-full">
-          {visibleCards.length > 0 ? (
-            visibleCards.map((item, i) => (
-              <div key={item.id} className="absolute inset-0" style={{ transform: `scale(${1 - i * 0.04}) translateY(${i * 8}px)`, zIndex: 3 - i }}>
-                <SwipeCard item={item} isTop={i === 0} onSwipe={handleSwipe} onBookmark={handleBookmark} />
-              </div>
-            ))
-          ) : (
-            <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center h-full text-center">
-              <span className="text-5xl mb-4">🎉</span>
-              <h3 className="font-heading font-bold text-foreground text-xl">You nabbed it all!</h3>
-              <p className="text-muted-foreground text-sm mt-2">Check back tomorrow for new drops</p>
-              <Button className="mt-4 rounded-xl shimmer-btn" onClick={() => setItems(mockFeed)}>Refresh Feed</Button>
-              <Button variant="ghost" className="mt-2" onClick={() => navigate("/dream-buys")}>Set up Dream Buys →</Button>
-            </motion.div>
-          )}
-        </div>
-
-        {visibleCards.length > 0 && (
-          <div className="flex items-center justify-center gap-6 mt-4">
-            <button onClick={() => handleSwipe("left")} className="w-14 h-14 rounded-full border-2 border-border bg-card flex items-center justify-center hover:border-destructive hover:text-destructive transition-all active:scale-95"><X className="w-6 h-6" /></button>
-            <button onClick={() => handleSwipe("right")} className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg active:scale-95 transition-transform" style={{ boxShadow: "0 0 20px hsl(var(--nab-cyan) / 0.4)" }}><ShoppingBag className="w-7 h-7" /></button>
-            <button onClick={handleBookmark} className="w-14 h-14 rounded-full border-2 border-border bg-card flex items-center justify-center hover:border-primary hover:text-primary transition-all active:scale-95"><Bookmark className="w-6 h-6" /></button>
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <Loader2 className="w-6 h-6 animate-spin text-primary" />
           </div>
+        ) : (
+          <>
+            <div className="relative h-[420px] w-full">
+              {visibleCards.length > 0 ? (
+                visibleCards.map((item, i) => (
+                  <div key={item.id} className="absolute inset-0" style={{ transform: `scale(${1 - i * 0.04}) translateY(${i * 8}px)`, zIndex: 3 - i }}>
+                    <SwipeCard item={item} isTop={i === 0} onSwipe={handleSwipe} onBookmark={handleBookmark} />
+                  </div>
+                ))
+              ) : (
+                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center justify-center h-full text-center">
+                  <span className="text-5xl mb-4">🎉</span>
+                  <h3 className="font-heading font-bold text-foreground text-xl">You nabbed it all!</h3>
+                  <p className="text-muted-foreground text-sm mt-2">Check back tomorrow for new drops</p>
+                  <Button className="mt-4 rounded-xl shimmer-btn" onClick={loadFeed}>Refresh Feed</Button>
+                  <Button variant="ghost" className="mt-2" onClick={() => navigate("/dream-buys")}>Set up Dream Buys →</Button>
+                </motion.div>
+              )}
+            </div>
+
+            {visibleCards.length > 0 && (
+              <div className="flex items-center justify-center gap-6 mt-4">
+                <button onClick={() => handleSwipe("left")} className="w-14 h-14 rounded-full border-2 border-border bg-card flex items-center justify-center hover:border-destructive hover:text-destructive transition-all active:scale-95"><X className="w-6 h-6" /></button>
+                <button onClick={() => handleSwipe("right")} className="w-16 h-16 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-lg active:scale-95 transition-transform" style={{ boxShadow: "0 0 20px hsl(var(--nab-cyan) / 0.4)" }}><ShoppingBag className="w-7 h-7" /></button>
+                <button onClick={handleBookmark} className="w-14 h-14 rounded-full border-2 border-border bg-card flex items-center justify-center hover:border-primary hover:text-primary transition-all active:scale-95"><Bookmark className="w-6 h-6" /></button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
@@ -171,7 +247,10 @@ const Feed = () => {
                 <span className="text-2xl">{item.emoji}</span>
                 <div className="flex-1 min-w-0"><p className="text-sm font-medium text-foreground truncate">{item.name}</p><p className="text-xs text-muted-foreground">{item.category}</p></div>
                 <span className="font-bold text-foreground text-sm">${item.price.toLocaleString()}</span>
-                <Button variant="ghost" size="sm" className="text-primary text-xs">Buy</Button>
+                <Button variant="ghost" size="sm" className="text-primary text-xs" onClick={() => {
+                  if (item.listing_type === 'auction') navigate(`/auctions`);
+                  else navigate(`/play`);
+                }}>View</Button>
               </div>
             ))}
           </div>
