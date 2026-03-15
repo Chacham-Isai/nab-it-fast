@@ -11,6 +11,8 @@ import GroupDealCard from "@/components/community/GroupDealCard";
 import LeaderboardTab from "@/components/community/LeaderboardTab";
 import StreakWidget from "@/components/community/StreakWidget";
 import AIPicksBanner from "@/components/community/AIPicksBanner";
+import CreateDealForm from "@/components/community/CreateDealForm";
+import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
 
 const activityFeed = [
