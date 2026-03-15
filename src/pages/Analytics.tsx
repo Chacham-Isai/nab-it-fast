@@ -219,13 +219,13 @@ const Analytics = () => {
           {/* Stat Cards */}
           <div className="grid grid-cols-2 gap-2 sm:gap-3">
             {stats.map((s, i) => (
-              <Card key={i} className="p-4 bg-card border-border">
-                <div className="flex items-center gap-2 mb-1">
+              <Card key={i} className="p-3 sm:p-4 bg-card border-border">
+                <div className="flex items-center gap-1.5 sm:gap-2 mb-1">
                   {s.icon}
-                  <span className="text-xs text-muted-foreground font-medium">{s.label}</span>
+                  <span className="text-[10px] sm:text-xs text-muted-foreground font-medium truncate">{s.label}</span>
                 </div>
-                <p className="text-2xl font-heading font-bold text-foreground">{s.value}</p>
-                {s.change && <p className="text-xs text-primary font-medium mt-0.5">{s.change}</p>}
+                <p className="text-xl sm:text-2xl font-heading font-bold text-foreground">{s.value}</p>
+                {s.change && <p className="text-[10px] sm:text-xs text-primary font-medium mt-0.5">{s.change}</p>}
               </Card>
             ))}
           </div>

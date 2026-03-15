@@ -189,17 +189,17 @@ const HeroSection = () => {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: 20 }}
                 transition={{ duration: 0.3 }}
-                className="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-full bg-success/[0.08] border border-success/20 text-sm"
+                className="inline-flex items-center gap-2 sm:gap-2.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-full bg-success/[0.08] border border-success/20 text-xs sm:text-sm max-w-full"
               >
-                <span className="relative flex h-2 w-2">
+                <span className="relative flex h-2 w-2 shrink-0">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-success" />
                 </span>
-                <span className="text-muted-foreground">
+                <span className="text-muted-foreground truncate">
                   {currentNab.user} nabbed <strong className="text-foreground">{currentNab.item}</strong> — saved{" "}
                   <strong className="text-success">{currentNab.saved}</strong>
                 </span>
-                <span className="text-xs text-muted-foreground/50">{currentNab.time}</span>
+                <span className="text-xs text-muted-foreground/50 shrink-0 hidden sm:inline">{currentNab.time}</span>
               </motion.div>
             </AnimatePresence>
           </div>
