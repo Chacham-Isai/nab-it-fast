@@ -235,7 +235,7 @@ const CrewDetail = () => {
           )}
           <div className="flex items-center gap-3">
             <span className="text-xs text-muted-foreground flex items-center gap-1">
-              <Users className="w-3.5 h-3.5" /> {crew.member_count.toLocaleString()} members
+              <Users className="w-3.5 h-3.5" /> {crew.member_count.toLocaleString()} {crew.member_count === 1 ? "member" : "members"}
             </span>
 
             {/* Member avatar stack */}
