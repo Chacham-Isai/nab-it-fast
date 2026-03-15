@@ -56,7 +56,7 @@ const CrewDiscovery = ({ joinedCrews, onToggleCrew }: CrewDiscoveryProps) => {
       .from("crews" as any)
       .select("*")
       .order("member_count", { ascending: false });
-    setCrews(data || []);
+    setCrews((data as unknown as Crew[]) || []);
     setLoading(false);
   };
 
