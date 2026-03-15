@@ -26,6 +26,8 @@ import Orders from "@/pages/Orders";
 import ListingDetail from "@/pages/ListingDetail";
 import CrewDetail from "@/pages/CrewDetail";
 import Analytics from "@/pages/Analytics";
+import Terms from "@/pages/Terms";
+import Privacy from "@/pages/Privacy";
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -40,6 +42,8 @@ const AnimatedRoutes = () => {
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
         <Route path="/signup" element={<PageTransition><Signup /></PageTransition>} />
+        <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
+        <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
 
         {/* Protected routes */}
         <Route path="/onboarding" element={<PageTransition><ProtectedRoute><Onboarding /></ProtectedRoute></PageTransition>} />
