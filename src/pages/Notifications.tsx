@@ -33,7 +33,7 @@ const typeIcons: Record<string, { icon: typeof Zap; color: string }> = {
   dream_match: { icon: Zap, color: "text-primary" },
   price_drop: { icon: TrendingDown, color: "text-success" },
   group_deal: { icon: Users, color: "text-nab-blue" },
-  tribe: { icon: Users, color: "text-nab-purple" },
+  crew: { icon: Users, color: "text-nab-purple" },
   giving: { icon: Heart, color: "text-accent" },
   feed: { icon: ShoppingBag, color: "text-muted-foreground" },
 };
