@@ -201,7 +201,7 @@ const Onboarding = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col relative overflow-hidden">
-      <div className="absolute top-0 right-0 w-72 h-72 rounded-full opacity-10 blur-[100px]" style={{ background: "hsl(var(--coral))" }} />
+      <div className="absolute top-0 right-0 w-72 h-72 rounded-full opacity-10 blur-[100px]" style={{ background: "hsl(var(--nab-cyan))" }} />
 
       <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
         <div className="flex items-center justify-between max-w-lg mx-auto">

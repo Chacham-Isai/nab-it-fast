@@ -233,7 +233,7 @@ const About = () => {
                 </p>
                 <Button
                   size="lg"
-                  className="rounded-full px-10 font-black text-lg gap-2 shimmer-btn shadow-[0_0_50px_-5px_hsl(var(--coral)/0.5)]"
+                  className="rounded-full px-10 font-black text-lg gap-2 shimmer-btn shadow-[0_0_50px_-5px_hsl(var(--nab-cyan)/0.4)]"
                   onClick={() => navigate("/signup")}
                 >
                   Start Nabbing Free <ArrowRight className="w-5 h-5" />

@@ -111,7 +111,7 @@ const PricingSection = () => {
               </div>
               <Button
                 className={`w-full rounded-full font-semibold gap-2 ${
-                  plan.featured ? "shimmer-btn shadow-[0_0_20px_-5px_hsl(var(--coral)/0.4)]" : "bg-secondary text-foreground hover:bg-secondary/80"
+                  plan.featured ? "shimmer-btn shadow-[0_0_20px_-5px_hsl(var(--nab-cyan)/0.4)]" : "bg-secondary text-foreground hover:bg-secondary/80"
                 }`}
                 variant={plan.featured ? "default" : "secondary"}
                 onClick={() => navigate(`/signup?plan=${plan.slug}`)}

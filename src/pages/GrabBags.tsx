@@ -89,7 +89,7 @@ const GrabBags = () => {
     return (
       <div className="fixed inset-0 z-50 bg-background flex items-center justify-center px-4">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full opacity-20 blur-[120px]" style={{ background: "hsl(var(--coral))" }} />
+          <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full opacity-20 blur-[120px]" style={{ background: "hsl(var(--nab-cyan))" }} />
         </div>
         <AnimatePresence mode="wait">
           {revealPhase === "shake" && (
