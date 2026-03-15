@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, TrendingUp, Users, Zap, BarChart3, Loader2, RefreshCw } from "lucide-react";
+import { ArrowLeft, TrendingUp, Users, Zap, BarChart3, Loader2, RefreshCw, Calendar } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
