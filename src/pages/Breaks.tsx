@@ -254,7 +254,7 @@ const Breaks = () => {
 
                   return (
                     <motion.div key={listing.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.06 }} className="flex items-center gap-3 p-4 rounded-2xl bg-card border border-border">
-                      <span className="text-3xl">{getCategoryEmoji(listing.category)}</span>
+                       <img src={getCategoryImage(listing.category)} alt="" className="w-10 h-10 rounded-xl object-cover" />
                       <div className="flex-1">
                         <h3 className="font-semibold text-foreground text-sm">{listing.title}</h3>
                         <p className="text-xs text-muted-foreground">${avgPrice}/slot · {slotsLeft}/{listingSlots.length} slots left</p>
