@@ -9,6 +9,7 @@ import { toast } from "@/hooks/use-toast";
 import Countdown from "@/components/Countdown";
 import BottomNav from "@/components/BottomNav";
 import usePageMeta from "@/hooks/usePageMeta";
+import ReviewList from "@/components/reviews/ReviewList";
 
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
