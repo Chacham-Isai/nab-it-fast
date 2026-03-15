@@ -31,6 +31,11 @@ const Login = () => {
     }
   };
 
+  // Redirect if already authenticated
+  if (!authLoading && session) {
+    return <Navigate to="/feed" replace />;
+  }
+
   return (
     <div className="min-h-screen bg-background relative overflow-hidden flex items-center justify-center px-4">
       {/* Background effects */}
