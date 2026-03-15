@@ -1,6 +1,6 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import Stripe from "https://esm.sh/stripe@14.21.0";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import Stripe from "https://esm.sh/stripe@18.5.0";
+import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 serve(async (req) => {
   try {
@@ -8,7 +8,7 @@ serve(async (req) => {
     const STRIPE_WEBHOOK_SECRET = Deno.env.get('STRIPE_WEBHOOK_SECRET');
     if (!STRIPE_SECRET_KEY) throw new Error('STRIPE_SECRET_KEY not configured');
 
-    const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: '2023-10-16' });
+    const stripe = new Stripe(STRIPE_SECRET_KEY, { apiVersion: '2025-08-27.basil' });
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
@@ -27,7 +27,7 @@ serve(async (req) => {
     switch (event.type) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
-        const { listing_id, buyer_id, seller_id, type } = session.metadata!;
+        const { listing_id, buyer_id, seller_id, type, slot_id } = session.metadata!;
 
         // Update order to paid
         await supabase
@@ -46,6 +46,14 @@ serve(async (req) => {
             .eq('id', listing_id);
         }
 
+        // Mark break slot as taken
+        if (type === 'break_slot' && slot_id) {
+          await supabase
+            .from('break_slots')
+            .update({ taken: true, buyer_id })
+            .eq('id', slot_id);
+        }
+
         // Update seller stats
         await supabase.rpc('increment_seller_sales', {
           p_seller_id: seller_id,
@@ -56,7 +64,7 @@ serve(async (req) => {
         await supabase.from('notifications_log').insert({
           user_id: buyer_id,
           title: 'Purchase confirmed! 🎉',
-          body: `Your order has been confirmed. The seller will ship your item soon.`,
+          body: 'Your order has been confirmed. The seller will ship your item soon.',
           type: 'order',
           action_label: 'View Order',
         });
@@ -65,7 +73,7 @@ serve(async (req) => {
         await supabase.from('notifications_log').insert({
           user_id: seller_id,
           title: 'New sale! 💰',
-          body: `You have a new order to fulfill.`,
+          body: 'You have a new order to fulfill.',
           type: 'order',
           action_label: 'View Order',
         });
@@ -75,7 +83,6 @@ serve(async (req) => {
 
       case 'payment_intent.payment_failed': {
         const paymentIntent = event.data.object as Stripe.PaymentIntent;
-        // Update order status
         await supabase
           .from('orders')
           .update({ status: 'failed' })

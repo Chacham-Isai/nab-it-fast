@@ -64,7 +64,10 @@ const Browse = () => {
       .limit(100);
 
     if (category !== "All") query = query.eq('category', category);
-    if (type !== "All") query = query.eq('listing_type', type.toLowerCase().replace(' ', '_'));
+    if (type !== "All") {
+      const typeMap: Record<string, string> = { "Auction": "auction", "Buy Now": "buy_now", "Break": "break", "Grab Bag": "grab_bag" };
+      query = query.eq('listing_type', typeMap[type] || type.toLowerCase());
+    }
 
     const { data } = await query;
     setListings(data || []);

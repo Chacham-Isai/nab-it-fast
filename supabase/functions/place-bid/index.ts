@@ -1,9 +1,9 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.0";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "npm:@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version',
 };
 
 serve(async (req) => {
@@ -82,7 +82,7 @@ serve(async (req) => {
     // Auto-extend if less than 2 minutes remaining
     if (auction.auto_extend) {
       const timeLeft = new Date(auction.ends_at).getTime() - Date.now();
-      if (timeLeft < 120000) { // 2 minutes
+      if (timeLeft < 120000) {
         const newEnd = new Date(Date.now() + 120000).toISOString();
         await supabase
           .from('auctions')
