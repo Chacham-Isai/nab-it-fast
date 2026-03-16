@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import CreateListingForm from "@/components/sell/CreateListingForm";
 import usePageMeta from "@/hooks/usePageMeta";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import NabbitLogo from "@/components/NabbitLogo";
 
 const Sell = () => {
   usePageMeta({ title: "Sell — nabbit.ai", description: "List items, manage auctions, and track your seller dashboard.", path: "/sell" });
