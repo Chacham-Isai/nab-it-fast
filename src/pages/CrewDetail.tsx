@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Users, TrendingUp, Share2, Loader2, Flame, Clock } from "lucide-react";
+import { ArrowLeft, Users, TrendingUp, Share2, Loader2, Flame, Clock, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { motion, AnimatePresence } from "framer-motion";
 import BottomNav from "@/components/BottomNav";
+import Countdown from "@/components/Countdown";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import usePageMeta from "@/hooks/usePageMeta";
-import GroupDealCard from "@/components/community/GroupDealCard";
 import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
