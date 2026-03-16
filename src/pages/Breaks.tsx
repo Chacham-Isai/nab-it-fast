@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Radio, Eye, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import NabbitLogo from "@/components/NabbitLogo";
 import { motion } from "framer-motion";
 import Countdown from "@/components/Countdown";
 import BottomNav from "@/components/BottomNav";
