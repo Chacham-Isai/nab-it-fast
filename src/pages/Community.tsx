@@ -19,6 +19,7 @@ import { toast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { cn } from "@/lib/utils";
 import nabbitLogo from "@/assets/nabbit-logo.png";
+import NabbitLogo from "@/components/NabbitLogo";
 import CrewActivityFeed from "@/components/community/CrewActivityFeed";
 
 import crewHeroImg from "@/assets/crew/crew-hero.jpg";
