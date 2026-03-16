@@ -50,7 +50,7 @@ const Footer = () => {
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">
               <motion.img
-                src={nabbitLogo}
+                src={nabbitIcon}
                 alt=""
                 className="w-10 h-10 drop-shadow-[0_0_15px_hsl(var(--nab-cyan)/0.3)]"
                 animate={{ rotate: [0, 5, -5, 0] }}
