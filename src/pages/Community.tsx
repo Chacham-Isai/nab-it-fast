@@ -240,7 +240,7 @@ const Community = () => {
   };
 
   const shareDeal = async (dealId: string) => {
-    const url = `${window.location.origin}/community?deal=${dealId}`;
+    const url = `${window.location.origin}/deal/${dealId}`;
     navigator.clipboard.writeText(url);
     const deal = deals.find((d) => d.id === dealId);
     if (user && deal?.tribe_name) {

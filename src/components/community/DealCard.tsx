@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, Clock, Share2, Trophy, Flame, ChevronDown, ChevronUp, Gift, Truck, Package, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -33,6 +34,7 @@ const sourceStatusConfig: Record<string, { icon: any; label: string; color: stri
 
 const DealCard = ({ deal, isJoined, avatars, categoryImage, onJoin, onLeave, onShare }: DealCardProps) => {
   const [expanded, setExpanded] = useState(false);
+  const navigate = useNavigate();
 
   const progress = Math.min((deal.current_participants / deal.target_participants) * 100, 100);
   const almostThere = progress > 80 && deal.status === "active";
@@ -111,7 +113,7 @@ const DealCard = ({ deal, isJoined, avatars, categoryImage, onJoin, onLeave, onS
       <div className="bg-card border border-t-0 border-border rounded-b-2xl p-4 space-y-3">
         {/* Title + Price */}
         <div>
-          <h3 className="font-heading font-bold text-foreground text-sm leading-tight">{deal.title}</h3>
+          <h3 onClick={() => navigate(`/deal/${deal.id}`)} className="font-heading font-bold text-foreground text-sm leading-tight cursor-pointer hover:text-primary transition-colors">{deal.title}</h3>
           <div className="flex items-baseline gap-2 mt-1.5">
             <span className="text-2xl font-heading font-black gradient-text">${currentPrice}</span>
             <span className="text-sm text-muted-foreground line-through">${deal.retail_price}</span>

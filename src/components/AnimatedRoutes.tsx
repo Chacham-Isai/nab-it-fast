@@ -28,6 +28,7 @@ import CrewDetail from "@/pages/CrewDetail";
 import Analytics from "@/pages/Analytics";
 import Terms from "@/pages/Terms";
 import Privacy from "@/pages/Privacy";
+import DealDetail from "@/pages/DealDetail";
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -62,6 +63,7 @@ const AnimatedRoutes = () => {
         <Route path="/orders" element={<PageTransition><ProtectedRoute><Orders /></ProtectedRoute></PageTransition>} />
         <Route path="/listing/:id" element={<PageTransition><ListingDetail /></PageTransition>} />
         <Route path="/crew/:name" element={<PageTransition><CrewDetail /></PageTransition>} />
+        <Route path="/deal/:id" element={<PageTransition><ProtectedRoute><DealDetail /></ProtectedRoute></PageTransition>} />
         <Route path="/analytics" element={<PageTransition><ProtectedRoute><Analytics /></ProtectedRoute></PageTransition>} />
 
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
