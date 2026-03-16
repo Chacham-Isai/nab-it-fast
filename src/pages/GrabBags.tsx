@@ -203,6 +203,26 @@ const GrabBags = () => {
       </div>
 
       <div className="max-w-lg mx-auto px-4 space-y-4">
+        {/* Hero banner */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative rounded-2xl overflow-hidden h-28"
+        >
+          <img src={modeImages.grabBags} alt="" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/60 to-transparent" />
+          <div className="relative z-10 p-4 flex items-center h-full">
+            <div>
+              <h2 className="font-heading font-black text-foreground text-lg">Mystery Drops</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">Every pull is a surprise. Standard to Legendary tiers.</p>
+              <div className="flex items-center gap-3 mt-2 text-[10px] font-bold">
+                <span className="flex items-center gap-1 text-primary"><Sparkles className="w-3 h-3" /> AI-curated packs</span>
+                <span className="flex items-center gap-1 text-success">Guaranteed value</span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-6 h-6 animate-spin text-primary" />
@@ -210,7 +230,7 @@ const GrabBags = () => {
         ) : filteredBags.length === 0 ? (
            <div className="text-center py-16">
              <img src={modeImages.emptyState} alt="" className="w-24 h-24 rounded-2xl object-cover mx-auto mb-4 opacity-80" />
-             <p className="text-muted-foreground">No grab bags available</p>
+             <p className="font-heading font-bold text-foreground">No grab bags available</p>
              <p className="text-xs text-muted-foreground mt-1">Check back soon for new mystery drops</p>
            </div>
         ) : (

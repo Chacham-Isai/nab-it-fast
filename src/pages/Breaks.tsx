@@ -145,6 +145,26 @@ const Breaks = () => {
       </div>
 
       <div className="max-w-lg mx-auto px-4 py-4 space-y-4">
+        {/* Hero banner */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative rounded-2xl overflow-hidden h-28"
+        >
+          <img src={modeImages.breaks} alt="" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/60 to-transparent" />
+          <div className="relative z-10 p-4 flex items-center h-full">
+            <div>
+              <h2 className="font-heading font-black text-foreground text-lg">Live Pack Rips</h2>
+              <p className="text-xs text-muted-foreground mt-0.5">Claim your slot. Watch it break. Keep what you pull.</p>
+              <div className="flex items-center gap-3 mt-2 text-[10px] font-bold">
+                <span className="flex items-center gap-1 text-destructive"><Radio className="w-3 h-3" /> {liveCount} live now</span>
+                <span className="flex items-center gap-1 text-success">Every card authenticated</span>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
         {loading ? (
           <div className="flex items-center justify-center py-20">
             <Loader2 className="w-6 h-6 animate-spin text-primary" />
