@@ -7,9 +7,9 @@ interface NabbitLogoProps {
 }
 
 const sizeMap = {
-  sm: { img: "h-5", text: "text-sm" },
-  md: { img: "h-6", text: "text-base" },
-  lg: { img: "h-7 sm:h-8", text: "text-base sm:text-lg" },
+  sm: { img: "h-7", text: "text-base" },
+  md: { img: "h-8", text: "text-lg" },
+  lg: { img: "h-9 sm:h-10", text: "text-lg sm:text-xl" },
 };
 
 const NabbitLogo = ({ size = "md", className = "" }: NabbitLogoProps) => {
