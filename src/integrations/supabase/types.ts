@@ -343,18 +343,24 @@ export type Database = {
           deal_id: string
           id: string
           joined_at: string | null
+          price_paid: number | null
+          tier_name: string | null
           user_id: string
         }
         Insert: {
           deal_id: string
           id?: string
           joined_at?: string | null
+          price_paid?: number | null
+          tier_name?: string | null
           user_id: string
         }
         Update: {
           deal_id?: string
           id?: string
           joined_at?: string | null
+          price_paid?: number | null
+          tier_name?: string | null
           user_id?: string
         }
         Relationships: [
@@ -385,12 +391,18 @@ export type Database = {
           discount_pct: number
           emoji: string | null
           ends_at: string
+          giveaway_enabled: boolean | null
+          giveaway_prize: string | null
+          giveaway_winner_id: string | null
           id: string
+          price_tiers: Json | null
           retail_price: number
           reward_tier: string | null
+          source_status: string | null
           status: string
           target_participants: number
           title: string
+          total_savings: number | null
           tribe_name: string | null
         }
         Insert: {
@@ -403,12 +415,18 @@ export type Database = {
           discount_pct?: number
           emoji?: string | null
           ends_at: string
+          giveaway_enabled?: boolean | null
+          giveaway_prize?: string | null
+          giveaway_winner_id?: string | null
           id?: string
+          price_tiers?: Json | null
           retail_price: number
           reward_tier?: string | null
+          source_status?: string | null
           status?: string
           target_participants?: number
           title: string
+          total_savings?: number | null
           tribe_name?: string | null
         }
         Update: {
@@ -421,18 +439,31 @@ export type Database = {
           discount_pct?: number
           emoji?: string | null
           ends_at?: string
+          giveaway_enabled?: boolean | null
+          giveaway_prize?: string | null
+          giveaway_winner_id?: string | null
           id?: string
+          price_tiers?: Json | null
           retail_price?: number
           reward_tier?: string | null
+          source_status?: string | null
           status?: string
           target_participants?: number
           title?: string
+          total_savings?: number | null
           tribe_name?: string | null
         }
         Relationships: [
           {
             foreignKeyName: "group_deals_created_by_fkey"
             columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "group_deals_giveaway_winner_id_fkey"
+            columns: ["giveaway_winner_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]

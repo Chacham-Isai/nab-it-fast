@@ -22,7 +22,6 @@ serve(async (req) => {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    // Get user profile and tribe memberships
     const [{ data: profile }, { data: tribes }] = await Promise.all([
       supabase.from("profiles").select("taste_tags, brand_affinities, spending_style").eq("id", user.id).single(),
       supabase.from("tribe_memberships").select("tribe_name").eq("user_id", user.id),
@@ -47,24 +46,33 @@ serve(async (req) => {
         messages: [
           {
             role: "system",
-            content: "You are a deal recommendation engine for nabbit.ai, a marketplace for collectors and deal hunters. Generate personalized group deal suggestions that would appeal to users based on their interests. Each deal should feel urgent and exciting."
+            content: "You are a deal recommendation engine for nabbit.ai, a marketplace for collectors and deal hunters. Generate personalized group deal suggestions with TIERED early-bird pricing. Each deal has 3 price tiers: Early Bird (cheapest, fewest slots), Standard (mid-price, most slots), Late Entry (highest price, fewer slots). The earlier you join, the more you save. Deals should feel urgent and exciting."
           },
           {
             role: "user",
-            content: `Generate 4 group deal suggestions for a user with these preferences:
+            content: `Generate 4 group deal suggestions with tiered pricing for a user with these preferences:
 - Crews: ${tribeNames.join(", ") || "none yet"}
 - Taste tags: ${tasteTags.join(", ") || "general"}
 - Favorite brands: ${brands.join(", ") || "various"}
 - Spending style: ${style}
 
-Each deal should have a title, description, emoji, category, tribe_name, deal_price (number), retail_price (number), discount_pct (number 10-50), and target_participants (number 5-20).`
+Each deal must include:
+- title, description, emoji, category, tribe_name
+- retail_price (number - full retail)
+- price_tiers: array of exactly 3 objects with {tier_name, price, slots, slots_filled: 0}
+  - Tier 1: "Early Bird" (biggest discount, 3-5 slots)
+  - Tier 2: "Standard" (medium discount, 5-10 slots)
+  - Tier 3: "Late Entry" (smallest discount, 3-5 slots)
+- giveaway_enabled: boolean (true for ~50% of deals)
+- giveaway_prize: string if enabled (e.g. "1 FREE order", "$50 credit")
+- target_participants: sum of all tier slots`
           }
         ],
         tools: [{
           type: "function",
           function: {
             name: "suggest_deals",
-            description: "Return 4 personalized group deal suggestions",
+            description: "Return 4 personalized group deal suggestions with tiered pricing",
             parameters: {
               type: "object",
               properties: {
@@ -78,12 +86,26 @@ Each deal should have a title, description, emoji, category, tribe_name, deal_pr
                       emoji: { type: "string" },
                       category: { type: "string" },
                       tribe_name: { type: "string" },
-                      deal_price: { type: "number" },
                       retail_price: { type: "number" },
-                      discount_pct: { type: "number" },
+                      price_tiers: {
+                        type: "array",
+                        items: {
+                          type: "object",
+                          properties: {
+                            tier_name: { type: "string" },
+                            price: { type: "number" },
+                            slots: { type: "number" },
+                            slots_filled: { type: "number" }
+                          },
+                          required: ["tier_name", "price", "slots", "slots_filled"],
+                          additionalProperties: false
+                        }
+                      },
+                      giveaway_enabled: { type: "boolean" },
+                      giveaway_prize: { type: "string" },
                       target_participants: { type: "number" }
                     },
-                    required: ["title", "description", "emoji", "category", "tribe_name", "deal_price", "retail_price", "discount_pct", "target_participants"],
+                    required: ["title", "description", "emoji", "category", "tribe_name", "retail_price", "price_tiers", "giveaway_enabled", "target_participants"],
                     additionalProperties: false
                   }
                 }

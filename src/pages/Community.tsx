@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Users, Flame, Clock, Loader2, Plus, ChevronRight, Zap, ShoppingBag, Gavel, Gift, Search, TrendingUp, Share2, Trophy, Sparkles, Crown, Star, Target } from "lucide-react";
+import DealCard from "@/components/community/DealCard";
+import BuyingPowerDashboard from "@/components/community/BuyingPowerDashboard";
+import GiveawayReveal from "@/components/community/GiveawayReveal";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
@@ -78,6 +81,7 @@ const Community = () => {
   // Streak state
   const [streak, setStreak] = useState(0);
   const [xp, setXp] = useState(0);
+  const [giveawayReveal, setGiveawayReveal] = useState<{ show: boolean; winner: string; emoji: string; prize: string; title: string }>({ show: false, winner: "", emoji: "🐇", prize: "", title: "" });
 
   useEffect(() => { loadData(); }, [user]);
 
@@ -175,6 +179,22 @@ const Community = () => {
     const deal = deals.find(d => d.id === dealId);
     if (deal && deal.current_participants + 1 >= deal.target_participants) {
       setShowCelebration({ show: true, title: deal.title });
+      // Check for giveaway winner after a short delay for DB to update
+      if (deal.giveaway_enabled) {
+        setTimeout(async () => {
+          const { data: updatedDeal } = await supabase.from("group_deals").select("giveaway_winner_id, giveaway_prize").eq("id", dealId).single();
+          if (updatedDeal?.giveaway_winner_id) {
+            const { data: winner } = await supabase.from("profiles").select("display_name, avatar_emoji").eq("id", updatedDeal.giveaway_winner_id).single();
+            setGiveawayReveal({
+              show: true,
+              winner: winner?.display_name || "Lucky Nabber",
+              emoji: winner?.avatar_emoji || "🐇",
+              prize: updatedDeal.giveaway_prize || "1 FREE order",
+              title: deal.title,
+            });
+          }
+        }, 1500);
+      }
     }
     const xpGain = await awardXP(user.id, "join_deal");
     toast({ title: `+${xpGain} XP! 🎮`, description: "You joined a crew deal!" });
@@ -203,12 +223,18 @@ const Community = () => {
     if (!user) { navigate("/login"); return; }
     const endsAt = new Date();
     endsAt.setHours(endsAt.getHours() + 24);
+    const lowestPrice = deal.price_tiers?.[0]?.price || 0;
+    const discountPct = deal.retail_price ? Math.round((1 - lowestPrice / deal.retail_price) * 100) : 0;
+    const totalSlots = deal.price_tiers?.reduce((s: number, t: any) => s + (t.slots || 0), 0) || deal.target_participants;
     const { error } = await supabase.from("group_deals").insert({
       title: deal.title, description: deal.description, emoji: deal.emoji, category: deal.category,
-      tribe_name: deal.tribe_name, deal_price: deal.deal_price, retail_price: deal.retail_price,
-      discount_pct: deal.discount_pct, target_participants: deal.target_participants,
+      tribe_name: deal.tribe_name, deal_price: lowestPrice, retail_price: deal.retail_price,
+      discount_pct: discountPct, target_participants: totalSlots,
+      price_tiers: deal.price_tiers || [],
+      giveaway_enabled: deal.giveaway_enabled || false,
+      giveaway_prize: deal.giveaway_prize || null,
       ends_at: endsAt.toISOString(), created_by: user.id,
-    });
+    } as any);
     if (error) { toast({ title: "Failed to create deal", description: error.message, variant: "destructive" }); }
     else { toast({ title: "Deal created! 🚀", description: "Share it with your crew." }); }
   };
@@ -475,34 +501,8 @@ const Community = () => {
           {/* ===== CREW DEALS ===== */}
           {tab === "crew-deals" && (
             <motion.div key="crew-deals" initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: 20 }} className="space-y-5">
-              {/* Crew Deals Header */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="rounded-2xl glass-card gradient-border p-5 relative overflow-hidden"
-              >
-                <motion.div animate={{ x: ["-100%", "200%"] }} transition={{ duration: 4, repeat: Infinity, ease: "linear" }} className="absolute inset-0 w-1/3 bg-gradient-to-r from-transparent via-primary/[0.03] to-transparent pointer-events-none" />
-                <div className="relative">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Target className="w-4 h-4 text-primary" />
-                    <span className="text-[10px] font-black text-primary uppercase tracking-widest">Group Buying Power</span>
-                  </div>
-                  <h2 className="font-heading font-black text-foreground text-xl tracking-tight">
-                    CREW <span className="gradient-text">DEALS</span>
-                  </h2>
-                  <p className="text-xs text-muted-foreground mt-1">Team up → Unlock discounts → Win together</p>
-                  <div className="flex gap-3 mt-3">
-                    <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-success/10 border border-success/20">
-                      <TrendingUp className="w-3 h-3 text-success" />
-                      <span className="text-[10px] font-bold text-success">{deals.length} active</span>
-                    </div>
-                    <div className="flex items-center gap-1 px-2 py-1 rounded-lg bg-primary/10 border border-primary/20">
-                      <Users className="w-3 h-3 text-primary" />
-                      <span className="text-[10px] font-bold text-primary">{deals.reduce((s, d) => s + d.current_participants, 0)} joined</span>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
+              {/* Buying Power Dashboard */}
+              <BuyingPowerDashboard />
 
               {/* AI Picks */}
               <AIPicksBanner onCreateDeal={handleCreateFromAI} />
@@ -556,7 +556,7 @@ const Community = () => {
                   </div>
                   <div className="text-left">
                     <span className="text-sm font-bold text-foreground block">Create Crew Deal</span>
-                    <span className="text-[10px] text-muted-foreground">Start a group buy and invite your crew</span>
+                    <span className="text-[10px] text-muted-foreground">Start a group buy with tiered pricing</span>
                   </div>
                 </motion.button>
               )}
@@ -572,165 +572,18 @@ const Community = () => {
                 </div>
               ) : (
                 <AnimatePresence>
-              {deals.map((deal, i) => {
-                    const progress = Math.min((deal.current_participants / deal.target_participants) * 100, 100);
-                    const almostThere = progress > 80 && deal.status === "active";
-                    const isFunded = deal.status === "funded";
-                    const secondsLeft = Math.max(0, Math.floor((new Date(deal.ends_at).getTime() - Date.now()) / 1000));
-                    const isJoined = joinedDeals.includes(deal.id);
-                    const avatars = dealAvatars[deal.id] || [];
-                    const catImage = categoryImages[deal.category?.toLowerCase()] || imgCardsBox;
-
-                    return (
-                      <motion.div
-                        key={deal.id}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        whileHover={{ y: -3 }}
-                        transition={{ delay: i * 0.08 }}
-                        className={cn(
-                          "rounded-2xl relative overflow-hidden group",
-                          isFunded && "shadow-[0_0_40px_-8px_hsl(var(--success)/0.4)]",
-                          almostThere && "shadow-[0_0_30px_-8px_hsl(var(--primary)/0.3)]",
-                        )}
-                      >
-                        {/* Product image background */}
-                        <div className="relative h-28 overflow-hidden">
-                          <img src={catImage} alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
-                          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/20" />
-                          {/* Top badges */}
-                          <div className="absolute top-3 left-3 flex items-center gap-1.5">
-                            {deal.tribe_name && (
-                              <span className="text-[10px] font-bold text-foreground bg-background/70 backdrop-blur-xl px-2.5 py-1 rounded-lg border border-border/30">{deal.emoji} {deal.tribe_name}</span>
-                            )}
-                            {deal.reward_tier && (
-                              <span className={cn("text-[10px] font-bold backdrop-blur-xl px-2.5 py-1 rounded-lg border",
-                                deal.reward_tier === "gold" ? "text-yellow-400 bg-yellow-400/20 border-yellow-400/30" :
-                                deal.reward_tier === "silver" ? "text-slate-300 bg-slate-400/20 border-slate-400/30" :
-                                "text-amber-500 bg-amber-600/20 border-amber-600/30"
-                              )}>
-                                {deal.reward_tier === "gold" ? "🥇" : deal.reward_tier === "silver" ? "🥈" : "🥉"} {deal.reward_tier}
-                              </span>
-                            )}
-                          </div>
-                          {/* Discount pill */}
-                          <div className="absolute top-3 right-3">
-                            <motion.span
-                              initial={{ scale: 0 }}
-                              animate={{ scale: 1 }}
-                              className="inline-flex items-center gap-1 text-xs font-black px-2.5 py-1 rounded-lg bg-success/90 text-white backdrop-blur-xl"
-                            >
-                              -{deal.discount_pct}%
-                            </motion.span>
-                          </div>
-                          {/* Status bar */}
-                          {isFunded && <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-success via-primary to-accent" />}
-                          {almostThere && (
-                            <motion.div
-                              animate={{ opacity: [0.5, 1, 0.5] }}
-                              transition={{ duration: 2, repeat: Infinity }}
-                              className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent"
-                            />
-                          )}
-                        </div>
-
-                        <div className="bg-card border border-t-0 border-border rounded-b-2xl p-4 space-y-3">
-                          {/* Title + Price */}
-                          <div>
-                            <h3 className="font-heading font-bold text-foreground text-sm leading-tight">{deal.title}</h3>
-                            <div className="flex items-baseline gap-2 mt-1.5">
-                              <span className="text-2xl font-heading font-black gradient-text">${deal.deal_price}</span>
-                              <span className="text-sm text-muted-foreground line-through">${deal.retail_price}</span>
-                            </div>
-                          </div>
-
-                          {/* Progress */}
-                          <div>
-                            <div className="flex justify-between text-xs mb-1.5">
-                              <span className="text-muted-foreground flex items-center gap-1">
-                                <Users className="w-3 h-3" />
-                                <span className="font-bold text-foreground">{deal.current_participants}</span>
-                                <span className="text-muted-foreground">/ {deal.target_participants}</span>
-                              </span>
-                              {almostThere && (
-                                <motion.span animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 1.2, repeat: Infinity }} className="text-primary font-bold flex items-center gap-1">
-                                  <Flame className="w-3 h-3 text-destructive" /> Almost there!
-                                </motion.span>
-                              )}
-                              {isFunded && (
-                                <span className="text-success font-bold flex items-center gap-1">
-                                  <Trophy className="w-3 h-3" /> Funded! 🎉
-                                </span>
-                              )}
-                            </div>
-                            <div className="relative h-3 rounded-full bg-secondary overflow-hidden">
-                              <motion.div
-                                className="absolute inset-y-0 left-0 rounded-full"
-                                style={{ background: isFunded
-                                  ? "linear-gradient(90deg, hsl(var(--success)), hsl(var(--primary)))"
-                                  : "linear-gradient(90deg, hsl(var(--nab-cyan)), hsl(var(--nab-blue)), hsl(var(--nab-purple)))"
-                                }}
-                                initial={{ width: 0 }}
-                                animate={{ width: `${progress}%` }}
-                                transition={{ duration: 1, ease: "easeOut" }}
-                              />
-                              {/* Shimmer on progress */}
-                              {!isFunded && progress > 0 && (
-                                <motion.div
-                                  className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent"
-                                  animate={{ x: ["-100%", "400%"] }}
-                                  transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-                                />
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Avatars + Timer */}
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                              {avatars.slice(0, 5).map((emoji, j) => (
-                                <motion.span
-                                  key={j}
-                                  initial={{ scale: 0, x: -10 }}
-                                  animate={{ scale: 1, x: 0 }}
-                                  transition={{ delay: j * 0.05 }}
-                                  className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center text-sm ring-2 ring-card -ml-1.5 first:ml-0"
-                                >
-                                  {emoji}
-                                </motion.span>
-                              ))}
-                              {deal.current_participants > 5 && (
-                                <span className="w-7 h-7 rounded-full bg-primary/15 flex items-center justify-center text-[10px] font-bold text-primary ring-2 ring-card -ml-1.5">
-                                  +{deal.current_participants - 5}
-                                </span>
-                              )}
-                            </div>
-                            <span className="text-[11px] text-muted-foreground flex items-center gap-1 bg-secondary/60 px-2 py-1 rounded-lg">
-                              <Clock className="w-3 h-3" /><Countdown seconds={secondsLeft} />
-                            </span>
-                          </div>
-
-                          {/* Actions */}
-                          <div className="flex items-center gap-2 pt-1">
-                            <motion.div whileTap={{ scale: 0.95 }} className="flex-1">
-                              <Button
-                                size="sm"
-                                variant={isJoined ? "secondary" : "default"}
-                                className={cn("rounded-xl text-xs h-9 w-full font-bold", !isJoined && "shimmer-btn")}
-                                onClick={() => isJoined ? leaveDeal(deal.id) : joinDeal(deal.id)}
-                                disabled={isFunded && !isJoined}
-                              >
-                                {isJoined ? "✓ Joined" : "🚀 Join Deal"}
-                              </Button>
-                            </motion.div>
-                            <Button size="sm" variant="outline" className="rounded-xl text-xs h-9 px-3" onClick={() => shareDeal(deal.id)}>
-                              <Share2 className="w-3.5 h-3.5" />
-                            </Button>
-                          </div>
-                        </div>
-                      </motion.div>
-                    );
-                  })}
+                  {deals.map((deal, i) => (
+                    <DealCard
+                      key={deal.id}
+                      deal={deal}
+                      isJoined={joinedDeals.includes(deal.id)}
+                      avatars={dealAvatars[deal.id] || []}
+                      categoryImage={categoryImages[deal.category?.toLowerCase()] || imgCardsBox}
+                      onJoin={() => joinDeal(deal.id)}
+                      onLeave={() => leaveDeal(deal.id)}
+                      onShare={() => shareDeal(deal.id)}
+                    />
+                  ))}
                 </AnimatePresence>
               )}
             </motion.div>
@@ -771,6 +624,14 @@ const Community = () => {
       />
       <CreateDealForm open={showCreateDeal} onClose={() => setShowCreateDeal(false)} onCreated={loadData} />
       <CreateCrewForm open={showCreateCrew} onClose={() => setShowCreateCrew(false)} onCreated={loadData} />
+      <GiveawayReveal
+        show={giveawayReveal.show}
+        winnerName={giveawayReveal.winner}
+        winnerEmoji={giveawayReveal.emoji}
+        prize={giveawayReveal.prize}
+        dealTitle={giveawayReveal.title}
+        onClose={() => setGiveawayReveal(prev => ({ ...prev, show: false }))}
+      />
       <BottomNav />
     </div>
   );
