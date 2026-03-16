@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Users, Clock, Share2, Trophy, Flame, ChevronDown, ChevronUp, Gift, Truck, Package, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
