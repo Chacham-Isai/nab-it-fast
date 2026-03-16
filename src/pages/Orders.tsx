@@ -11,7 +11,7 @@ import ReviewForm from "@/components/reviews/ReviewForm";
 import GrabBagReveal from "@/components/GrabBagReveal";
 import usePageMeta from "@/hooks/usePageMeta";
 import { awardXP } from "@/lib/xp";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import NabbitLogo from "@/components/NabbitLogo";
 
 const statusConfig: Record<string, { icon: any; color: string; label: string }> = {
   pending: { icon: Clock, color: "text-[hsl(40_90%_55%)]", label: "Pending Payment" },
