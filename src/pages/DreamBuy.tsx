@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import usePageMeta from "@/hooks/usePageMeta";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import NabbitLogo from "@/components/NabbitLogo";
 
 const guessEmoji = (name: string): string => {
   const lower = name.toLowerCase();
