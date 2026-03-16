@@ -81,8 +81,8 @@ const Footer = () => {
           {/* Brand */}
           <div className="space-y-5">
             <div className="flex items-center gap-2.5">
-              <img src={nabbitLogo} alt="nabbit.ai" className="h-8 drop-shadow-[0_0_10px_hsl(var(--nab-cyan)/0.2)]" />
-              <span className="font-heading font-black text-foreground text-lg">nabbit.ai</span>
+              <img src={nabbitIcon} alt="nabbit.ai" className="h-8 w-8 drop-shadow-[0_0_10px_hsl(var(--nab-cyan)/0.2)]" />
+              <span className="font-heading font-black text-foreground text-lg">nabbit<span className="text-primary">.ai</span></span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Stop chasing. Start nabbing. The Nabbit Engine never sleeps — so you can.

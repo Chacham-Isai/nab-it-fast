@@ -18,7 +18,7 @@ import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { cn } from "@/lib/utils";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+// NabbitLogo component used below
 import NabbitLogo from "@/components/NabbitLogo";
 import CrewActivityFeed from "@/components/community/CrewActivityFeed";
 

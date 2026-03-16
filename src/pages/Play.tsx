@@ -201,7 +201,7 @@ const Play = () => {
           className="flex items-center gap-2 p-3 rounded-xl glass-card gradient-border text-center justify-center"
         >
           <Shield className="w-4 h-4 text-primary" />
-          <span className="text-xs font-semibold text-foreground">Navigator Authenticated — every item verified</span>
+          <span className="text-xs font-semibold text-foreground">nabbit Authenticated — every item verified</span>
         </motion.div>
       </div>
 

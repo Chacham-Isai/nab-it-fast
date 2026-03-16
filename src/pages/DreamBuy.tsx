@@ -139,7 +139,7 @@ const DreamBuy = () => {
               </motion.div>
               <div className="space-y-1.5">
                 <h2 className="font-heading font-black text-foreground text-base">
-                  Navigator hunts <span className="gradient-text">24/7</span>
+                  nabbit hunts <span className="gradient-text">24/7</span>
                 </h2>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   Drop your dream items and set a target price. We'll alert you the moment we find a match below market value.
