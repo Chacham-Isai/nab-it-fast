@@ -4,7 +4,7 @@ import { Gift, Radio, Gavel, Target, ArrowRight, Users, Clock, Flame, Trophy, Za
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import nabbitIcon from "@/assets/nabbit-icon.png";
 
 const modes = [
   {

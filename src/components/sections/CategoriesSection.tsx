@@ -1,7 +1,7 @@
 import SectionWrapper from "@/components/SectionWrapper";
 import { motion } from "framer-motion";
 import { Footprints, Smartphone, ShoppingBag, Layers, Sparkles, Sofa, Baby, Car, TrendingUp, Users } from "lucide-react";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import nabbitIcon from "@/assets/nabbit-icon.png";
 import { useState } from "react";
 
 const categories = [

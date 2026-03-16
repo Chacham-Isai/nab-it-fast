@@ -4,7 +4,7 @@ import { Search, Brain, Zap, PartyPopper, ArrowRight, Activity } from "lucide-re
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import nabbitIcon from "@/assets/nabbit-icon.png";
 
 const steps = [
   {

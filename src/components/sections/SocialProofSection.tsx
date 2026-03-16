@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Star, CheckCircle, ArrowRight, Trophy, Users, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import nabbitIcon from "@/assets/nabbit-icon.png";
 
 const recentNabs = [
   { emoji: "👟", item: "Jordan 4 Retro", user: "Jake R.", saved: "$89", method: "Auto-Nab", accent: "nab-cyan" },

@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Progress } from "@/components/ui/progress";
 import { ArrowLeft, Check, X, Plus, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import nabbitIcon from "@/assets/nabbit-icon.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import usePageMeta from "@/hooks/usePageMeta";
