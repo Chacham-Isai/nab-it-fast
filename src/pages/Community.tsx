@@ -608,6 +608,14 @@ const Community = () => {
       />
       <CreateDealForm open={showCreateDeal} onClose={() => setShowCreateDeal(false)} onCreated={loadData} />
       <CreateCrewForm open={showCreateCrew} onClose={() => setShowCreateCrew(false)} onCreated={loadData} />
+      <GiveawayReveal
+        show={giveawayReveal.show}
+        winnerName={giveawayReveal.winner}
+        winnerEmoji={giveawayReveal.emoji}
+        prize={giveawayReveal.prize}
+        dealTitle={giveawayReveal.title}
+        onClose={() => setGiveawayReveal(prev => ({ ...prev, show: false }))}
+      />
       <BottomNav />
     </div>
   );
