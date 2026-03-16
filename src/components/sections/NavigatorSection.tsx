@@ -31,7 +31,7 @@ const NavigatorSection = () => {
   return (
     <SectionWrapper id="navigator">
       <div className="text-center mb-16">
-        <p className="section-label mb-4">NAVIGATOR</p>
+        <p className="section-label mb-4">EXPLORE</p>
         <h2 className="font-heading font-bold text-foreground mb-6" style={{ fontSize: "clamp(2rem, 4vw, 3.5rem)" }}>
           But nabbit is more than <span className="gradient-text">price alerts.</span>
         </h2>
