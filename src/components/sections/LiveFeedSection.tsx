@@ -1,203 +1,164 @@
 import SectionWrapper from "@/components/SectionWrapper";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { Flame, Clock, Users, ArrowRight, TrendingDown, Zap } from "lucide-react";
+import { Users, ArrowRight, TrendingDown, Clock, ChevronRight, Flame } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
-const liveDeals = [
-  { emoji: "👟", name: "Nike Dunk Low Panda", price: 79, was: 130, buyers: 847, timeLeft: "2h 14m", hot: true, accent: "nab-cyan" },
-  { emoji: "🎧", name: "AirPods Max", price: 389, was: 549, buyers: 1203, timeLeft: "45m", hot: true, accent: "nab-purple" },
-  { emoji: "🕹️", name: "Nintendo Switch OLED", price: 269, was: 349, buyers: 562, timeLeft: "5h 30m", hot: false, accent: "nab-blue" },
-  { emoji: "👜", name: "Lululemon Belt Bag", price: 24, was: 38, buyers: 2341, timeLeft: "18m", hot: true, accent: "success" },
-  { emoji: "🧴", name: "Drunk Elephant Set", price: 42, was: 98, buyers: 389, timeLeft: "1h 52m", hot: false, accent: "nab-cyan" },
-  { emoji: "📱", name: "iPhone 16 Pro Case", price: 12, was: 45, buyers: 4120, timeLeft: "32m", hot: true, accent: "nab-purple" },
-  { emoji: "⌚", name: "Apple Watch Ultra 2", price: 649, was: 799, buyers: 731, timeLeft: "3h 10m", hot: true, accent: "nab-blue" },
-  { emoji: "🎮", name: "PS5 DualSense Edge", price: 149, was: 199, buyers: 1890, timeLeft: "55m", hot: false, accent: "success" },
+interface CrewDeal {
+  id: string;
+  title: string;
+  emoji: string;
+  retail_price: number;
+  deal_price: number;
+  current_participants: number;
+  target_participants: number;
+  ends_at: string;
+  discount_pct: number;
+  category: string | null;
+  price_tiers: any;
+}
+
+const fallbackDeals: CrewDeal[] = [
+  { id: "1", title: "Air Jordan 4 Retro 'Thunder'", emoji: "👟", retail_price: 210, deal_price: 121, current_participants: 18, target_participants: 25, ends_at: new Date(Date.now() + 7200000).toISOString(), discount_pct: 42, category: "Sneakers", price_tiers: [{ tier_name: "Early Bird", price: 121, slots: 10, slots_filled: 10 }, { tier_name: "Standard", price: 145, slots: 10, slots_filled: 8 }, { tier_name: "Late Entry", price: 168, slots: 5, slots_filled: 0 }] },
+  { id: "2", title: "PSA 10 Charizard Slab", emoji: "🃏", retail_price: 450, deal_price: 289, current_participants: 32, target_participants: 50, ends_at: new Date(Date.now() + 14400000).toISOString(), discount_pct: 36, category: "Cards", price_tiers: [{ tier_name: "Early Bird", price: 289, slots: 15, slots_filled: 15 }, { tier_name: "Standard", price: 340, slots: 20, slots_filled: 17 }] },
+  { id: "3", title: "Rolex Submariner Date", emoji: "⌚", retail_price: 14500, deal_price: 11200, current_participants: 8, target_participants: 10, ends_at: new Date(Date.now() + 3600000).toISOString(), discount_pct: 23, category: "Watches", price_tiers: [{ tier_name: "Founders", price: 11200, slots: 5, slots_filled: 5 }, { tier_name: "Standard", price: 12400, slots: 5, slots_filled: 3 }] },
+  { id: "4", title: "PS5 Pro + Extra Controller", emoji: "🎮", retail_price: 559, deal_price: 372, current_participants: 42, target_participants: 50, ends_at: new Date(Date.now() + 5400000).toISOString(), discount_pct: 33, category: "Electronics", price_tiers: [{ tier_name: "Early Bird", price: 372, slots: 20, slots_filled: 20 }, { tier_name: "Standard", price: 420, slots: 20, slots_filled: 22 }] },
 ];
 
 const LiveFeedSection = () => {
   const navigate = useNavigate();
-  const [allDeals, setAllDeals] = useState(liveDeals);
-  const [visibleDeals, setVisibleDeals] = useState(liveDeals.slice(0, 4));
-  const [tick, setTick] = useState(0);
-  const [hoveredDeal, setHoveredDeal] = useState<number | null>(null);
-  const [totalSaved, setTotalSaved] = useState(47219);
+  const [deals, setDeals] = useState<CrewDeal[]>(fallbackDeals);
 
-  // Fetch hot group deals and merge
   useEffect(() => {
-    const fetchHotDeals = async () => {
+    const fetchDeals = async () => {
       const { data } = await supabase
         .from("group_deals")
         .select("*")
         .eq("status", "active")
         .order("current_participants", { ascending: false })
-        .limit(3);
-
-      if (data && data.length > 0) {
-        const hotGroupDeals = data
-          .filter((d: any) => d.current_participants / d.target_participants > 0.5)
-          .map((d: any) => ({
-            emoji: d.emoji || "🤝",
-            name: `🤝 ${d.title}`,
-            price: d.deal_price,
-            was: d.retail_price,
-            buyers: d.current_participants,
-            timeLeft: `${Math.max(1, Math.round((new Date(d.ends_at).getTime() - Date.now()) / 3600000))}h`,
-            hot: d.current_participants / d.target_participants > 0.8,
-            accent: "nab-cyan" as const,
-          }));
-        if (hotGroupDeals.length > 0) {
-          setAllDeals([...hotGroupDeals, ...liveDeals]);
-        }
-      }
+        .limit(4);
+      if (data && data.length > 0) setDeals(data as any);
     };
-    fetchHotDeals();
+    fetchDeals();
   }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setTick((prev) => {
-        const next = prev + 1;
-        const start = next % allDeals.length;
-        const deals = [];
-        for (let i = 0; i < 4; i++) {
-          deals.push(allDeals[(start + i) % allDeals.length]);
-        }
-        setVisibleDeals(deals);
-        return next;
-      });
-      setTotalSaved((prev) => prev + Math.floor(Math.random() * 50 + 10));
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [allDeals]);
 
   return (
     <SectionWrapper id="live-deals">
       <div className="text-center mb-12">
         <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-nab-cyan/40 bg-nab-cyan/[0.08] mb-6">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-nab-cyan opacity-75" />
-            <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-nab-cyan" />
-          </span>
-          <span className="text-sm font-bold text-nab-cyan uppercase tracking-wider">Live Right Now</span>
+          <Users className="w-4 h-4 text-nab-cyan" />
+          <span className="text-sm font-bold text-nab-cyan uppercase tracking-wider">Crew Deals — Live Now</span>
         </div>
-        <h2
-          className="font-heading font-black text-foreground mb-6"
-          style={{ fontSize: "clamp(2rem, 4.5vw, 3.5rem)" }}
-        >
-          Deals your feed{" "}
-          <span className="gradient-text">actually wants.</span>
+        <h2 className="font-heading font-black text-foreground mb-4" style={{ fontSize: "clamp(2rem, 4.5vw, 3.5rem)" }}>
+          More people join.{" "}
+          <span className="gradient-text">Price drops.</span>
         </h2>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          The Nabbit Engine curates drops based on your purchase history, swipes, and taste DNA. No algorithms selling you ads — just deals you'll actually buy.
+          Crew Deals use collective buying power to unlock tiered pricing. The earlier you join, the more you save. Every deal has a sourcing pipeline so you know exactly where your product comes from.
         </p>
       </div>
 
-      {/* Live stats strip */}
-      <motion.div
-        initial={{ opacity: 0, y: 15 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="flex flex-wrap items-center justify-center gap-6 mb-8 text-sm font-bold"
-      >
-        <div className="flex items-center gap-1.5 text-nab-cyan">
-          <Users className="w-4 h-4" />
-          <span>9,412 browsing</span>
-        </div>
-        <div className="flex items-center gap-1.5 text-success">
-          <TrendingDown className="w-4 h-4" />
-          <motion.span key={totalSaved}>${totalSaved.toLocaleString()} saved today</motion.span>
-        </div>
-        <div className="flex items-center gap-1.5 text-nab-purple">
-          <Zap className="w-4 h-4" />
-          <span>New deals every 30s</span>
-        </div>
-      </motion.div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+        {deals.map((deal, i) => {
+          const progress = Math.round((deal.current_participants / deal.target_participants) * 100);
+          const timeLeft = Math.max(0, Math.round((new Date(deal.ends_at).getTime() - Date.now()) / 3600000));
+          const tiers = Array.isArray(deal.price_tiers) ? deal.price_tiers : [];
+          const isFilling = progress > 70;
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <AnimatePresence mode="popLayout">
-          {visibleDeals.map((deal, i) => {
-            const pctOff = Math.round((1 - deal.price / deal.was) * 100);
-            return (
-              <motion.div
-                key={deal.name + tick}
-                layout
-                initial={{ opacity: 0, scale: 0.9, y: 20 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.9, y: -20 }}
-                transition={{ duration: 0.4, type: "spring", stiffness: 120 }}
-                whileHover={{ y: -4, scale: 1.02 }}
-                onHoverStart={() => setHoveredDeal(i)}
-                onHoverEnd={() => setHoveredDeal(null)}
-                className={`glass-card gradient-border p-5 group cursor-pointer relative overflow-hidden transition-shadow duration-500 group-hover:shadow-[0_0_40px_-5px_hsl(var(--${deal.accent})/0.3)]`}
-              >
-                {/* Hover gradient */}
-                <div className={`absolute inset-0 bg-gradient-to-r from-${deal.accent}/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+          return (
+            <motion.div
+              key={deal.id}
+              initial={{ opacity: 0, y: 30, scale: 0.95 }}
+              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.5, type: "spring" }}
+              whileHover={{ y: -6, scale: 1.01 }}
+              onClick={() => navigate(`/deal/${deal.id}`)}
+              className="glass-card gradient-border p-6 group cursor-pointer relative overflow-hidden transition-shadow duration-500 hover:shadow-[0_0_40px_-5px_hsl(var(--nab-cyan)/0.3)]"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-nab-cyan/10 via-transparent to-nab-purple/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
-                <div className="relative z-10 flex items-center gap-4">
-                  {/* Emoji icon with pulse */}
-                  <div className="relative">
+              <div className="relative z-10">
+                {/* Header */}
+                <div className="flex items-start justify-between mb-4">
+                  <div className="flex items-center gap-3">
+                    <span className="text-2xl">{deal.emoji}</span>
+                    <div>
+                      <h3 className="font-heading font-black text-foreground text-base leading-tight">{deal.title}</h3>
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">{deal.category}</span>
+                    </div>
+                  </div>
+                  {isFilling && (
                     <motion.div
-                      className={`w-14 h-14 rounded-2xl bg-${deal.accent}/[0.1] border border-${deal.accent}/30 flex items-center justify-center text-2xl shrink-0 group-hover:bg-${deal.accent}/[0.2] transition-all duration-300`}
-                      whileHover={{ rotate: [0, -8, 8, 0] }}
+                      animate={{ scale: [1, 1.1, 1] }}
+                      transition={{ duration: 1.5, repeat: Infinity }}
+                      className="flex items-center gap-1 px-2 py-1 rounded-full bg-destructive/10 border border-destructive/30"
                     >
-                      {deal.emoji}
+                      <Flame className="w-3 h-3 text-destructive" />
+                      <span className="text-[9px] font-black text-destructive">FILLING FAST</span>
                     </motion.div>
-                    {deal.hot && (
-                      <motion.div
-                        animate={{ scale: [1, 1.3, 1] }}
-                        transition={{ duration: 1.5, repeat: Infinity }}
-                        className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-destructive flex items-center justify-center"
-                      >
-                        <Flame className="w-3 h-3 text-white" />
-                      </motion.div>
-                    )}
-                  </div>
-
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="font-heading font-black text-foreground text-sm truncate">{deal.name}</p>
-                    </div>
-                    <div className="flex items-center gap-3 mt-1">
-                      <span className="text-xs text-muted-foreground line-through">${deal.was}</span>
-                      <span className={`font-black text-${deal.accent} text-base`}>${deal.price}</span>
-                      <span className="text-[10px] font-black text-success bg-success/10 px-2 py-0.5 rounded-full">-{pctOff}%</span>
-                    </div>
-                    <div className="flex items-center gap-3 mt-1.5 text-[11px] text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />
-                        {deal.timeLeft}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <span className="relative flex h-1.5 w-1.5">
-                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-75" />
-                          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-success" />
-                        </span>
-                        {deal.buyers.toLocaleString()} nabbing
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Nab button on hover */}
-                  <motion.div
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={hoveredDeal === i ? { opacity: 1, x: 0 } : { opacity: 0, x: 10 }}
-                    className="shrink-0"
-                  >
-                    <div className={`px-4 py-2 rounded-full bg-${deal.accent} text-[11px] font-black text-background`}>
-                      NAB IT
-                    </div>
-                  </motion.div>
+                  )}
                 </div>
-              </motion.div>
-            );
-          })}
-        </AnimatePresence>
+
+                {/* Price + savings */}
+                <div className="flex items-baseline gap-3 mb-4">
+                  <span className="text-2xl font-heading font-black gradient-text">${deal.deal_price.toLocaleString()}</span>
+                  <span className="text-sm text-muted-foreground line-through">${deal.retail_price.toLocaleString()}</span>
+                  <span className="text-xs font-black text-success bg-success/10 px-2 py-0.5 rounded-full">-{deal.discount_pct}%</span>
+                </div>
+
+                {/* Tier ladder mini */}
+                {tiers.length > 0 && (
+                  <div className="space-y-1.5 mb-4">
+                    {tiers.slice(0, 3).map((tier: any, ti: number) => {
+                      const tierProgress = tier.slots > 0 ? Math.round((tier.slots_filled / tier.slots) * 100) : 0;
+                      const isFull = tier.slots_filled >= tier.slots;
+                      return (
+                        <div key={ti} className="flex items-center gap-2">
+                          <span className={`text-[10px] font-bold w-16 truncate ${isFull ? "text-muted-foreground" : ti === 0 ? "text-nab-cyan" : "text-foreground"}`}>
+                            {tier.tier_name}
+                          </span>
+                          <div className="flex-1 h-2 rounded-full bg-muted/50 overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              whileInView={{ width: `${tierProgress}%` }}
+                              viewport={{ once: true }}
+                              transition={{ duration: 0.8, delay: ti * 0.15 }}
+                              className={`h-full rounded-full ${isFull ? "bg-muted-foreground/30" : ti === 0 ? "bg-nab-cyan" : "bg-primary"}`}
+                            />
+                          </div>
+                          <span className={`text-[10px] font-black ${isFull ? "text-muted-foreground line-through" : "text-foreground"}`}>
+                            ${tier.price}
+                          </span>
+                          <span className="text-[9px] text-muted-foreground">{tier.slots_filled}/{tier.slots}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Progress bar + stats */}
+                <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+                  <div className="flex items-center gap-1.5">
+                    <Users className="w-3.5 h-3.5 text-nab-cyan" />
+                    <span className="font-bold text-foreground">{deal.current_participants}/{deal.target_participants}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5" />
+                    <span>{timeLeft}h left</span>
+                  </div>
+                  <div className="ml-auto flex items-center gap-1 font-bold text-nab-cyan group-hover:gap-2 transition-all">
+                    Join <ChevronRight className="w-3.5 h-3.5" />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
-      {/* Bottom CTA */}
       <motion.div
         initial={{ opacity: 0, y: 15 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -205,11 +166,10 @@ const LiveFeedSection = () => {
         className="text-center mt-10"
       >
         <Button
-          variant="outline"
-          className="rounded-full px-8 font-bold gap-2 border-border hover:bg-secondary group"
-          onClick={() => navigate("/signup")}
+          className="rounded-full px-8 font-black gap-2 shimmer-btn"
+          onClick={() => navigate("/community")}
         >
-          See All Live Deals <ArrowRight className="w-4 h-4 opacity-0 -ml-2 group-hover:opacity-100 group-hover:ml-0 transition-all" />
+          See All Crew Deals <ArrowRight className="w-4 h-4" />
         </Button>
       </motion.div>
     </SectionWrapper>
