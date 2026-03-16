@@ -776,7 +776,7 @@ const Community = () => {
   );
 };
 
-// Premium inline leaderboard
+// Premium inline leaderboard with dramatic podium
 const LeaderboardInline = () => {
   const { user } = useAuth();
   const [profiles, setProfiles] = useState<any[]>([]);
@@ -797,46 +797,88 @@ const LeaderboardInline = () => {
 
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 text-primary animate-spin" /></div>;
 
+  const podiumConfig = [
+    { idx: 1, order: "order-1", height: "h-20", avatarSize: "w-14 h-14", textSize: "text-3xl", ring: "ring-slate-300/50", bg: "bg-slate-300/10", glow: "" },
+    { idx: 0, order: "order-2", height: "h-28", avatarSize: "w-18 h-18", textSize: "text-4xl", ring: "ring-yellow-400/60", bg: "bg-yellow-400/10", glow: "shadow-[0_0_30px_-5px_rgba(250,204,21,0.4)]" },
+    { idx: 2, order: "order-3", height: "h-16", avatarSize: "w-12 h-12", textSize: "text-2xl", ring: "ring-amber-600/40", bg: "bg-amber-600/10", glow: "" },
+  ];
   const medals = ["🥇", "🥈", "🥉"];
 
   return (
-    <div className="space-y-2.5">
-      {/* Top 3 podium */}
+    <div className="space-y-3">
+      {/* Top 3 podium — dramatic */}
       {profiles.length >= 3 && (
-        <div className="flex items-end justify-center gap-3 pb-4">
-          {[1, 0, 2].map((idx) => {
+        <div className="flex items-end justify-center gap-2 pt-6 pb-2">
+          {podiumConfig.map(({ idx, order, height, avatarSize, ring, bg, glow }) => {
             const p = profiles[idx];
             if (!p) return null;
-            const isCenter = idx === 0;
             const isMe = user?.id === p.id;
+            const isFirst = idx === 0;
             return (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                className={cn(
-                  "flex flex-col items-center",
-                  isCenter ? "order-2" : idx === 1 ? "order-1" : "order-3"
-                )}
+                initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: idx * 0.15, type: "spring", stiffness: 200, damping: 18 }}
+                className={cn("flex flex-col items-center flex-1 max-w-[130px]", order)}
               >
-                <div className={cn(
-                  "rounded-2xl flex items-center justify-center text-3xl mb-2 ring-2",
-                  isCenter ? "w-16 h-16 ring-yellow-400/40 bg-yellow-400/10" : "w-12 h-12 ring-border bg-secondary"
-                )}>
-                  {p.avatar_emoji || "🐇"}
-                </div>
-                <span className="text-lg mb-0.5">{medals[idx]}</span>
-                <p className="text-xs font-bold text-foreground text-center max-w-[80px] truncate">
-                  {p.display_name || "Anonymous"}
-                  {isMe && <span className="text-primary ml-0.5">(you)</span>}
-                </p>
-                <p className="text-[10px] font-bold gradient-text">{p.total_xp.toLocaleString()} XP</p>
+                {/* Crown for #1 */}
+                {isFirst && (
+                  <motion.span
+                    initial={{ y: -20, opacity: 0, rotate: -15 }}
+                    animate={{ y: 0, opacity: 1, rotate: 0 }}
+                    transition={{ delay: 0.5, type: "spring" }}
+                    className="text-2xl mb-1"
+                  >
+                    👑
+                  </motion.span>
+                )}
+                {/* Avatar */}
+                <motion.div
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  className={cn(
+                    "rounded-2xl flex items-center justify-center mb-2 ring-3 transition-shadow",
+                    avatarSize, ring, bg, glow,
+                    isMe && "ring-primary/50"
+                  )}
+                >
+                  <span className={isFirst ? "text-3xl" : "text-2xl"}>{p.avatar_emoji || "🐇"}</span>
+                </motion.div>
+                {/* Podium bar */}
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: "auto" }}
+                  transition={{ delay: 0.3 + idx * 0.1, duration: 0.5 }}
+                  className={cn(
+                    "w-full rounded-t-xl flex flex-col items-center justify-start pt-2 pb-3 px-1",
+                    isFirst
+                      ? "bg-gradient-to-b from-yellow-400/20 to-yellow-400/5 border border-yellow-400/20"
+                      : idx === 1
+                      ? "bg-gradient-to-b from-slate-300/15 to-slate-300/5 border border-slate-300/15"
+                      : "bg-gradient-to-b from-amber-600/15 to-amber-600/5 border border-amber-600/15",
+                    height
+                  )}
+                >
+                  <span className="text-xl mb-0.5">{medals[idx]}</span>
+                  <p className="text-[11px] font-bold text-foreground text-center truncate w-full">
+                    {p.display_name || "Anon"}
+                  </p>
+                  {isMe && <span className="text-[9px] text-primary font-bold">(you)</span>}
+                  <p className="text-[10px] font-bold gradient-text mt-0.5">{p.total_xp.toLocaleString()} XP</p>
+                  {p.streak_days > 0 && (
+                    <p className="text-[9px] text-muted-foreground flex items-center gap-0.5 mt-0.5">
+                      <Flame className="w-2.5 h-2.5 text-destructive" />{p.streak_days}d
+                    </p>
+                  )}
+                </motion.div>
               </motion.div>
             );
           })}
         </div>
       )}
+
+      {/* Divider */}
+      <div className="gradient-divider" />
 
       {/* Rest of list */}
       {profiles.slice(3).map((p, i) => {
@@ -845,15 +887,20 @@ const LeaderboardInline = () => {
         return (
           <motion.div
             key={p.id || i}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: (i + 3) * 0.03 }}
+            initial={{ opacity: 0, x: -12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 + i * 0.04 }}
             className={cn(
-              "flex items-center gap-3 p-3.5 rounded-2xl transition-all glass-card",
-              isMe && "gradient-border shadow-lg shadow-primary/10"
+              "flex items-center gap-3 p-3 rounded-xl transition-all",
+              isMe
+                ? "bg-primary/8 border border-primary/20 shadow-sm"
+                : "bg-card border border-border hover:bg-secondary/30"
             )}
           >
-            <span className="w-8 h-8 rounded-xl bg-secondary flex items-center justify-center text-xs font-bold text-muted-foreground">
+            <span className={cn(
+              "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold",
+              rank <= 5 ? "bg-primary/10 text-primary" : "bg-secondary text-muted-foreground"
+            )}>
               {rank}
             </span>
             <span className="text-xl">{p.avatar_emoji || "🐇"}</span>
@@ -862,23 +909,29 @@ const LeaderboardInline = () => {
                 {p.display_name || "Anonymous"}
                 {isMe && <span className="text-primary text-xs ml-1">(you)</span>}
               </p>
-              <p className="text-[10px] text-muted-foreground flex items-center gap-2">
-                {p.streak_days > 0 && (
-                  <span className="flex items-center gap-0.5">
-                    <Flame className="w-3 h-3 text-destructive" /> {p.streak_days}d streak
-                  </span>
-                )}
-              </p>
+              {p.streak_days > 0 && (
+                <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                  <Flame className="w-3 h-3 text-destructive" /> {p.streak_days} day streak
+                </p>
+              )}
             </div>
-            <span className="font-mono font-bold text-sm gradient-text">{p.total_xp.toLocaleString()} XP</span>
+            <div className="text-right shrink-0">
+              <span className="font-mono font-bold text-sm gradient-text">{p.total_xp.toLocaleString()}</span>
+              <span className="text-[10px] text-muted-foreground ml-0.5">XP</span>
+            </div>
           </motion.div>
         );
       })}
 
       {profiles.length === 0 && (
         <div className="text-center py-12">
-          <Star className="w-8 h-8 text-primary mx-auto mb-3 opacity-50" />
-          <p className="text-muted-foreground text-sm">No XP earned yet — be the first!</p>
+          <motion.div
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <Star className="w-10 h-10 text-primary mx-auto mb-3 opacity-40" />
+          </motion.div>
+          <p className="text-muted-foreground text-sm font-medium">No XP earned yet — be the first!</p>
         </div>
       )}
     </div>
