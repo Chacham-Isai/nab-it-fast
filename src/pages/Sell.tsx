@@ -10,6 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import CreateListingForm from "@/components/sell/CreateListingForm";
 import usePageMeta from "@/hooks/usePageMeta";
+import nabbitLogo from "@/assets/nabbit-logo.png";
 
 const Sell = () => {
   usePageMeta({ title: "Sell — nabbit.ai", description: "List items, manage auctions, and track your seller dashboard.", path: "/sell" });
@@ -112,20 +113,23 @@ const Sell = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
+      {/* Header */}
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border/50 px-4 py-3">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
+          <img src={nabbitLogo} alt="nabbit" className="w-6 h-6" />
           <div className="flex-1">
-            <h1 className="font-heading font-bold text-foreground text-lg">Seller Dashboard</h1>
-            <p className="text-[10px] text-muted-foreground">{sellerProfile?.shop_name || "My Shop"}</p>
+            <h1 className="font-heading font-black text-foreground text-lg tracking-tight">SELLER DASHBOARD</h1>
+            <p className="text-[10px] text-muted-foreground font-medium">{sellerProfile?.shop_name || "My Shop"}</p>
           </div>
-          <Button size="sm" className="rounded-xl shimmer-btn gap-1" onClick={() => setTab("create")}>
+          <Button size="sm" className="rounded-full shimmer-btn gap-1 font-bold" onClick={() => setTab("create")}>
             <Plus className="w-4 h-4" /> List Item
           </Button>
         </div>
+        {/* Tabs */}
         <div className="flex gap-2 mt-3 max-w-lg mx-auto">
           {(["listings", "orders", "stats"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)} className={`px-4 py-1.5 rounded-full text-xs font-medium capitalize transition-all ${tab === t ? "bg-primary text-primary-foreground" : "bg-secondary text-secondary-foreground"}`}>
+            <button key={t} onClick={() => setTab(t)} className={`px-4 py-1.5 rounded-full text-xs font-bold capitalize transition-all ${tab === t ? "bg-gradient-to-r from-primary to-[hsl(var(--nab-cyan))] text-primary-foreground shadow-[0_0_12px_hsl(var(--primary)/0.3)]" : "bg-secondary/60 text-secondary-foreground border border-border/50"}`}>
               {t} {t === "orders" && orders.filter(o => o.status === 'paid').length > 0 ? `(${orders.filter(o => o.status === 'paid').length})` : ""}
             </button>
           ))}
@@ -148,24 +152,27 @@ const Sell = () => {
                     { label: "Rating", value: sellerProfile?.rating ? `${sellerProfile.rating}⭐` : "N/A", icon: BarChart3 },
                     { label: "Active Listings", value: listings.filter(l => l.status === 'active').length, icon: Clock },
                   ].map((stat) => (
-                    <div key={stat.label} className="p-4 rounded-2xl bg-card border border-border text-center">
-                      <stat.icon className="w-5 h-5 text-primary mx-auto mb-2" />
-                      <p className="text-xl font-bold text-foreground">{stat.value}</p>
-                      <p className="text-xs text-muted-foreground">{stat.label}</p>
+                    <div key={stat.label} className="glass-card gradient-border p-4 text-center">
+                      <div className="w-9 h-9 rounded-xl bg-primary/[0.08] border border-primary/20 flex items-center justify-center mx-auto mb-2">
+                        <stat.icon className="w-4 h-4 text-primary" />
+                      </div>
+                      <p className="text-xl font-heading font-black text-foreground">{stat.value}</p>
+                      <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wider">{stat.label}</p>
                     </div>
                   ))}
                 </div>
 
-                {/* Stripe Connect */}
                 {!sellerProfile?.stripe_onboarding_complete && (
-                  <div className="p-4 rounded-2xl bg-card border border-primary/20 space-y-3">
+                  <div className="glass-card !border-primary/30 p-5 space-y-3 shadow-[0_0_20px_hsl(var(--primary)/0.1)]">
                     <div className="flex items-center gap-2">
-                      <DollarSign className="w-5 h-5 text-primary" />
-                      <h3 className="font-semibold text-foreground text-sm">Set Up Payouts</h3>
+                      <div className="w-9 h-9 rounded-xl bg-primary/[0.08] border border-primary/20 flex items-center justify-center">
+                        <DollarSign className="w-4 h-4 text-primary" />
+                      </div>
+                      <h3 className="font-heading font-bold text-foreground text-sm">Set Up Payouts</h3>
                     </div>
                     <p className="text-xs text-muted-foreground">Connect your bank account to receive payouts when your items sell.</p>
                     <Button
-                      className="w-full rounded-xl shimmer-btn text-xs gap-1"
+                      className="w-full rounded-full shimmer-btn text-xs gap-1 font-bold"
                       onClick={async () => {
                         try {
                           const { data, error } = await supabase.functions.invoke("create-connect-account");
@@ -182,9 +189,9 @@ const Sell = () => {
                   </div>
                 )}
                 {sellerProfile?.stripe_onboarding_complete && (
-                  <div className="p-3 rounded-xl bg-success/10 border border-success/20 flex items-center gap-2">
+                  <div className="glass-card !border-success/30 p-3 flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-success" />
-                    <span className="text-xs font-medium text-success">Payouts connected</span>
+                    <span className="text-xs font-bold text-success">Payouts connected</span>
                   </div>
                 )}
               </motion.div>
@@ -193,15 +200,18 @@ const Sell = () => {
             {tab === "listings" && (
               <motion.div key="listings" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-3">
                 {listings.length === 0 ? (
-                  <div className="text-center py-16">
-                    <Package className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground mb-4">No listings yet</p>
-                    <Button className="rounded-xl shimmer-btn" onClick={() => setTab("create")}>Create Your First Listing</Button>
-                  </div>
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-16">
+                    <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
+                      <Package className="w-14 h-14 text-primary/40 mx-auto mb-4" />
+                    </motion.div>
+                    <p className="font-heading font-bold text-foreground mb-1">No listings yet</p>
+                    <p className="text-xs text-muted-foreground mb-4">Create your first listing to start selling</p>
+                    <Button className="rounded-full shimmer-btn font-bold" onClick={() => setTab("create")}>Create Your First Listing</Button>
+                  </motion.div>
                 ) : listings.map((listing, i) => (
-                  <motion.div key={listing.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="p-4 rounded-2xl bg-card border border-border">
+                  <motion.div key={listing.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="glass-card gradient-border p-4">
                     <div className="flex items-start gap-3">
-                      <div className="w-14 h-14 rounded-xl bg-secondary flex items-center justify-center shrink-0 overflow-hidden">
+                      <div className="w-14 h-14 rounded-xl bg-secondary/50 flex items-center justify-center shrink-0 overflow-hidden border border-border/50">
                         {listing.images?.[0] ? (
                           <img src={listing.images[0]} alt={listing.title} className="w-full h-full object-cover" />
                         ) : (
@@ -210,31 +220,30 @@ const Sell = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${statusColors[listing.status] || ''}`}>{listing.status}</span>
-                          <span className="text-[10px] text-muted-foreground">{listing.listing_type.replace('_', ' ')}</span>
+                          <span className={`text-[10px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider ${statusColors[listing.status] || ''}`}>{listing.status}</span>
+                          <span className="text-[10px] text-muted-foreground font-medium">{listing.listing_type.replace('_', ' ')}</span>
                         </div>
-                        <h3 className="font-semibold text-foreground text-sm truncate">{listing.title}</h3>
+                        <h3 className="font-heading font-bold text-foreground text-sm truncate">{listing.title}</h3>
                         <p className="text-xs text-muted-foreground">{listing.category} · {listing.condition}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-bold text-foreground">${listing.starting_price}</p>
+                        <p className="text-sm font-heading font-black text-foreground">${listing.starting_price}</p>
                         {listing.auctions?.[0] && (
-                          <p className="text-xs text-primary">{listing.auctions[0].bid_count} bids</p>
+                          <p className="text-xs text-primary font-bold">{listing.auctions[0].bid_count} bids</p>
                         )}
                       </div>
                     </div>
-                    {/* Action buttons */}
                     <div className="flex gap-2 mt-3">
-                      <Button variant="outline" size="sm" className="flex-1 rounded-xl text-xs gap-1 h-8" onClick={() => navigate(`/listing/${listing.id}`)}>
+                      <Button variant="outline" size="sm" className="flex-1 rounded-full text-xs gap-1 h-8 border-border/50 font-bold" onClick={() => navigate(`/listing/${listing.id}`)}>
                         <Eye className="w-3 h-3" /> View
                       </Button>
                       {listing.status === 'active' && (
-                        <Button variant="outline" size="sm" className="rounded-xl text-xs gap-1 h-8 text-destructive hover:text-destructive" onClick={() => cancelListing(listing.id)}>
+                        <Button variant="outline" size="sm" className="rounded-full text-xs gap-1 h-8 text-destructive hover:text-destructive border-border/50 font-bold" onClick={() => cancelListing(listing.id)}>
                           <XCircle className="w-3 h-3" /> Cancel
                         </Button>
                       )}
                       {(listing.status === 'draft' || listing.status === 'cancelled') && (
-                        <Button variant="outline" size="sm" className="rounded-xl text-xs gap-1 h-8 text-destructive hover:text-destructive" onClick={() => deleteListing(listing.id, listing.status)}>
+                        <Button variant="outline" size="sm" className="rounded-full text-xs gap-1 h-8 text-destructive hover:text-destructive border-border/50 font-bold" onClick={() => deleteListing(listing.id, listing.status)}>
                           <Trash2 className="w-3 h-3" /> Delete
                         </Button>
                       )}
@@ -247,20 +256,23 @@ const Sell = () => {
             {tab === "orders" && (
               <motion.div key="orders" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-3">
                 {orders.length === 0 ? (
-                  <div className="text-center py-16">
-                    <CheckCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4" />
-                    <p className="text-muted-foreground">No orders yet</p>
-                  </div>
+                  <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-16">
+                    <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
+                      <CheckCircle className="w-14 h-14 text-primary/40 mx-auto mb-4" />
+                    </motion.div>
+                    <p className="font-heading font-bold text-foreground">No orders yet</p>
+                    <p className="text-xs text-muted-foreground mt-1">Orders from buyers will appear here</p>
+                  </motion.div>
                 ) : orders.map((order, i) => (
-                  <motion.div key={order.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="p-4 rounded-2xl bg-card border border-border">
+                  <motion.div key={order.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }} className="glass-card gradient-border p-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${orderStatusColors[order.status] || ''}`}>{order.status}</span>
-                        <h3 className="font-semibold text-foreground text-sm mt-1">{order.listings?.title || 'Unknown'}</h3>
+                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-black uppercase tracking-wider ${orderStatusColors[order.status] || ''}`}>{order.status}</span>
+                        <h3 className="font-heading font-bold text-foreground text-sm mt-1">{order.listings?.title || 'Unknown'}</h3>
                         <p className="text-xs text-muted-foreground">{new Date(order.created_at).toLocaleDateString()}</p>
                       </div>
                       <div className="text-right">
-                        <p className="text-sm font-bold text-foreground">${order.amount}</p>
+                        <p className="text-sm font-heading font-black text-foreground">${order.amount}</p>
                         <p className="text-[10px] text-muted-foreground">Fee: ${order.platform_fee}</p>
                       </div>
                     </div>
@@ -270,16 +282,16 @@ const Sell = () => {
                           placeholder="Tracking number (optional)"
                           value={trackingInputs[order.id] || ""}
                           onChange={(e) => setTrackingInputs(p => ({ ...p, [order.id]: e.target.value }))}
-                          className="h-9 rounded-xl bg-secondary/50 border-border text-xs"
+                          className="h-9 rounded-full bg-secondary/50 border-border/50 text-xs"
                         />
-                        <Button size="sm" className="rounded-xl w-full text-xs gap-1" onClick={() => markShipped(order.id, trackingInputs[order.id])}>
+                        <Button size="sm" className="rounded-full w-full text-xs gap-1 shimmer-btn font-bold" onClick={() => markShipped(order.id, trackingInputs[order.id])}>
                           <Truck className="w-3.5 h-3.5" /> Mark as Shipped
                         </Button>
                       </div>
                     )}
                     {order.status === 'shipped' && order.tracking_number && (
                       <p className="mt-2 text-xs text-muted-foreground">
-                        Tracking: <a href={order.tracking_url} target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{order.tracking_number}</a>
+                        Tracking: <a href={order.tracking_url} target="_blank" rel="noopener noreferrer" className="text-primary font-bold hover:underline">{order.tracking_number}</a>
                       </p>
                     )}
                   </motion.div>
