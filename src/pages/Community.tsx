@@ -81,6 +81,7 @@ const Community = () => {
   // Streak state
   const [streak, setStreak] = useState(0);
   const [xp, setXp] = useState(0);
+  const [giveawayReveal, setGiveawayReveal] = useState<{ show: boolean; winner: string; emoji: string; prize: string; title: string }>({ show: false, winner: "", emoji: "🐇", prize: "", title: "" });
 
   useEffect(() => { loadData(); }, [user]);
 
