@@ -14,7 +14,7 @@ const Play = () => {
   const [tickerIndex, setTickerIndex] = useState(0);
   const [liveAuctionCount, setLiveAuctionCount] = useState(0);
   const [recentWins, setRecentWins] = useState<any[]>([]);
-  const [tickerItems, setTickerItems] = useState<string[]>(["🎉 Welcome to Navigator Play!"]);
+  const [tickerItems, setTickerItems] = useState<string[]>(["🎉 Welcome to nabbit Play!"]);
 
   useEffect(() => {
     const interval = setInterval(() => setTickerIndex((i) => (i + 1) % Math.max(tickerItems.length, 1)), 3500);
