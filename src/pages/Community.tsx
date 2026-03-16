@@ -19,6 +19,7 @@ import { toast } from "@/hooks/use-toast";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { cn } from "@/lib/utils";
 import nabbitLogo from "@/assets/nabbit-logo.png";
+import NabbitLogo from "@/components/NabbitLogo";
 import CrewActivityFeed from "@/components/community/CrewActivityFeed";
 
 import crewHeroImg from "@/assets/crew/crew-hero.jpg";
@@ -276,7 +277,7 @@ const Community = () => {
               </button>
               <div className="flex-1">
                 <div className="flex items-center gap-2">
-                  <img src={nabbitLogo} alt="" className="h-5" />
+                  <NabbitLogo size="sm" />
                   <h1 className="font-heading font-black text-foreground text-xl tracking-tight">CREW HUB</h1>
                 </div>
                 <p className="text-[11px] text-muted-foreground font-medium mt-0.5">Squad up. Nab together. Win bigger.</p>

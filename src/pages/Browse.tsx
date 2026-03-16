@@ -10,7 +10,7 @@ import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import Countdown from "@/components/Countdown";
 import usePageMeta from "@/hooks/usePageMeta";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import NabbitLogo from "@/components/NabbitLogo";
 
 // Product placeholder images
 import imgCardsBox from "@/assets/products/cards-box.jpg";
@@ -182,9 +182,7 @@ const Browse = () => {
         <div className="max-w-5xl mx-auto px-4 py-3 space-y-3">
           {/* Search Bar */}
           <div className="flex items-center gap-3">
-            <Link to="/" className="shrink-0">
-              <img src={nabbitLogo} alt="nabbit" className="h-6" />
-            </Link>
+            <NabbitLogo size="sm" />
             <div className="flex-1 relative">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none" />
               <Input
