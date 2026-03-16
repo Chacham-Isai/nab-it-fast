@@ -34,6 +34,7 @@ const sourceStatusConfig: Record<string, { icon: any; label: string; color: stri
 
 const DealCard = ({ deal, isJoined, avatars, categoryImage, onJoin, onLeave, onShare }: DealCardProps) => {
   const [expanded, setExpanded] = useState(false);
+  const navigate = useNavigate();
 
   const progress = Math.min((deal.current_participants / deal.target_participants) * 100, 100);
   const almostThere = progress > 80 && deal.status === "active";
