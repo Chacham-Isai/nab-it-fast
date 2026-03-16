@@ -207,12 +207,18 @@ const Community = () => {
     if (!user) { navigate("/login"); return; }
     const endsAt = new Date();
     endsAt.setHours(endsAt.getHours() + 24);
+    const lowestPrice = deal.price_tiers?.[0]?.price || 0;
+    const discountPct = deal.retail_price ? Math.round((1 - lowestPrice / deal.retail_price) * 100) : 0;
+    const totalSlots = deal.price_tiers?.reduce((s: number, t: any) => s + (t.slots || 0), 0) || deal.target_participants;
     const { error } = await supabase.from("group_deals").insert({
       title: deal.title, description: deal.description, emoji: deal.emoji, category: deal.category,
-      tribe_name: deal.tribe_name, deal_price: deal.deal_price, retail_price: deal.retail_price,
-      discount_pct: deal.discount_pct, target_participants: deal.target_participants,
+      tribe_name: deal.tribe_name, deal_price: lowestPrice, retail_price: deal.retail_price,
+      discount_pct: discountPct, target_participants: totalSlots,
+      price_tiers: deal.price_tiers || [],
+      giveaway_enabled: deal.giveaway_enabled || false,
+      giveaway_prize: deal.giveaway_prize || null,
       ends_at: endsAt.toISOString(), created_by: user.id,
-    });
+    } as any);
     if (error) { toast({ title: "Failed to create deal", description: error.message, variant: "destructive" }); }
     else { toast({ title: "Deal created! 🚀", description: "Share it with your crew." }); }
   };
