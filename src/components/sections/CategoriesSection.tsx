@@ -22,7 +22,7 @@ const CategoriesSection = () => {
     <SectionWrapper id="categories">
       <div className="text-center mb-16 relative">
         <motion.img
-          src={nabbitLogo}
+          src={nabbitIcon}
           alt=""
           className="absolute left-1/2 -translate-x-1/2 -top-6 w-14 h-14 opacity-[0.06] pointer-events-none"
           animate={{ rotate: [0, 5, -5, 0] }}

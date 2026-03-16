@@ -206,7 +206,7 @@ const Onboarding = () => {
       <div className="sticky top-0 z-50 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
         <div className="flex items-center justify-between max-w-lg mx-auto">
           <Link to="/">
-            <img src={nabbitLogo} alt="nabbit" className="h-6" />
+            <img src={nabbitIcon} alt="nabbit" className="h-6" />
           </Link>
           <span className="text-sm font-mono text-muted-foreground">{step} / {totalSteps}</span>
         </div>

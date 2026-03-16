@@ -63,7 +63,7 @@ const FinalCTASection = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
             {/* Animated logo */}
             <motion.img
-              src={nabbitLogo}
+              src={nabbitIcon}
               alt="nabbit"
               className="w-16 h-16 mx-auto mb-6 drop-shadow-[0_0_25px_hsl(var(--nab-cyan)/0.4)]"
               animate={{ scale: [1, 1.08, 1], rotate: [0, 3, -3, 0] }}

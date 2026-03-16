@@ -89,7 +89,7 @@ const GameModesSection = () => {
     <SectionWrapper id="game-modes">
       <div className="text-center mb-16 relative">
         <motion.img
-          src={nabbitLogo}
+          src={nabbitIcon}
           alt=""
           className="absolute left-1/2 -translate-x-1/2 -top-6 w-16 h-16 opacity-[0.06] pointer-events-none"
           animate={{ rotate: [0, 4, -4, 0] }}
