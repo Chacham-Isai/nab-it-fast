@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Sparkles, Zap, Minus, Plus, Loader2 } from "lucide-react";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import NabbitLogo from "@/components/NabbitLogo";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import BottomNav from "@/components/BottomNav";
