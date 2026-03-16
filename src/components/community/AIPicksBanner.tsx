@@ -23,6 +23,7 @@ interface AIDeal {
   giveaway_enabled: boolean;
   giveaway_prize?: string;
   target_participants: number;
+  match_reason?: string;
 }
 
 interface AIPicksBannerProps {
@@ -122,8 +123,11 @@ const AIPicksBanner = ({ onCreateDeal }: AIPicksBannerProps) => {
                     </span>
                   )}
                 </div>
+                {deal.match_reason && (
+                  <p className="text-[9px] text-primary/80 mt-0.5 line-clamp-1 italic">✨ {deal.match_reason}</p>
+                )}
                 {earlySlots > 0 && (
-                  <div className="flex items-center gap-1 mt-1">
+                  <div className="flex items-center gap-1 mt-0.5">
                     <Zap className="w-2.5 h-2.5 text-success" />
                     <span className="text-[9px] font-bold text-success">{earlySlots} Early Bird spots!</span>
                   </div>
