@@ -139,7 +139,7 @@ const DreamBuy = () => {
               </motion.div>
               <div className="space-y-1.5">
                 <h2 className="font-heading font-black text-foreground text-base">
-                  Navigator hunts <span className="gradient-text">24/7</span>
+                  nabbit hunts <span className="gradient-text">24/7</span>
                 </h2>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   Drop your dream items and set a target price. We'll alert you the moment we find a match below market value.
@@ -270,7 +270,7 @@ const DreamBuy = () => {
             </motion.div>
             <p className="text-foreground font-heading font-black text-lg">No hunts yet</p>
             <p className="text-xs text-muted-foreground mt-2 max-w-[260px] mx-auto leading-relaxed">
-              Add your first dream buy and let Navigator find the best deal for you.
+              Add your first dream buy and let nabbit find the best deal for you.
             </p>
             <Button className="mt-6 rounded-xl shimmer-btn gap-1.5 text-xs font-black uppercase tracking-wider" onClick={() => setAdding(true)}>
               <Plus className="w-4 h-4" /> Add Your First Hunt

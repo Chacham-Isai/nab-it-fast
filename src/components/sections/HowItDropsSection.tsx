@@ -4,7 +4,7 @@ import { Search, Brain, Zap, PartyPopper, ArrowRight, Activity } from "lucide-re
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import nabbitIcon from "@/assets/nabbit-icon.png";
 
 const steps = [
   {
@@ -85,7 +85,7 @@ const HowItDropsSection = () => {
     <SectionWrapper id="how-it-drops">
       <div className="text-center mb-16 relative">
         <motion.img
-          src={nabbitLogo}
+          src={nabbitIcon}
           alt=""
           className="absolute left-1/2 -translate-x-1/2 -top-8 w-20 h-20 opacity-[0.06] pointer-events-none"
           animate={{ y: [-4, 4, -4], rotate: [-2, 2, -2] }}

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import nabbitIcon from "@/assets/nabbit-icon.png";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, Activity, Zap, Shield } from "lucide-react";
@@ -50,7 +50,7 @@ const Footer = () => {
           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-4">
               <motion.img
-                src={nabbitLogo}
+                src={nabbitIcon}
                 alt=""
                 className="w-10 h-10 drop-shadow-[0_0_15px_hsl(var(--nab-cyan)/0.3)]"
                 animate={{ rotate: [0, 5, -5, 0] }}
@@ -81,8 +81,8 @@ const Footer = () => {
           {/* Brand */}
           <div className="space-y-5">
             <div className="flex items-center gap-2.5">
-              <img src={nabbitLogo} alt="nabbit.ai" className="h-8 drop-shadow-[0_0_10px_hsl(var(--nab-cyan)/0.2)]" />
-              <span className="font-heading font-black text-foreground text-lg">nabbit.ai</span>
+              <img src={nabbitIcon} alt="nabbit.ai" className="h-8 w-8 drop-shadow-[0_0_10px_hsl(var(--nab-cyan)/0.2)]" />
+              <span className="font-heading font-black text-foreground text-lg">nabbit<span className="text-primary">.ai</span></span>
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed">
               Stop chasing. Start nabbing. The Nabbit Engine never sleeps — so you can.

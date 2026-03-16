@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
 import { ArrowRight, Zap } from "lucide-react";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import nabbitIcon from "@/assets/nabbit-icon.png";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { lovable } from "@/integrations/lovable/index";
@@ -76,7 +76,7 @@ const Login = () => {
         <form onSubmit={handleSubmit} className="glass-card gradient-border p-6 sm:p-8 space-y-5 sm:space-y-6">
           <div className="text-center space-y-4">
             <Link to="/" className="inline-block">
-              <img src={nabbitLogo} alt="nabbit.ai" className="h-12 mx-auto" />
+              <img src={nabbitIcon} alt="nabbit.ai" className="h-12 mx-auto" />
             </Link>
             <div>
               <h1 className="font-heading text-2xl font-bold text-foreground">Welcome back</h1>

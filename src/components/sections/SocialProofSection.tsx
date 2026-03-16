@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Star, CheckCircle, ArrowRight, Trophy, Users, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import nabbitIcon from "@/assets/nabbit-icon.png";
 
 const recentNabs = [
   { emoji: "👟", item: "Jordan 4 Retro", user: "Jake R.", saved: "$89", method: "Auto-Nab", accent: "nab-cyan" },
@@ -68,7 +68,7 @@ const SocialProofSection = () => {
     <SectionWrapper id="social-proof">
       <div className="text-center mb-16 relative">
         <motion.img
-          src={nabbitLogo}
+          src={nabbitIcon}
           alt=""
           className="absolute left-1/2 -translate-x-1/2 -top-6 w-14 h-14 opacity-[0.06] pointer-events-none"
           animate={{ y: [-3, 3, -3] }}

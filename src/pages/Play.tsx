@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Radio, Sparkles, Gavel, Shield, ChevronRight, Flame, Search, ShoppingBag, Package, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import BottomNav from "@/components/BottomNav";
+import NabbitLogo from "@/components/NabbitLogo";
 import { supabase } from "@/integrations/supabase/client";
 import usePageMeta from "@/hooks/usePageMeta";
 import { modeImages } from "@/lib/images";
@@ -13,7 +14,7 @@ const Play = () => {
   const [tickerIndex, setTickerIndex] = useState(0);
   const [liveAuctionCount, setLiveAuctionCount] = useState(0);
   const [recentWins, setRecentWins] = useState<any[]>([]);
-  const [tickerItems, setTickerItems] = useState<string[]>(["🎉 Welcome to Navigator Play!"]);
+  const [tickerItems, setTickerItems] = useState<string[]>(["🎉 Welcome to nabbit Play!"]);
 
   useEffect(() => {
     const interval = setInterval(() => setTickerIndex((i) => (i + 1) % Math.max(tickerItems.length, 1)), 3500);
@@ -43,7 +44,7 @@ const Play = () => {
         const method = o.listings?.listing_type?.replace('_', ' ') || "purchase";
         return `${emoji} ${name} won ${o.listings?.title || "an item"} via ${method}!`;
       });
-      setTickerItems(tickers.length > 0 ? tickers : ["🎉 Welcome to Navigator Play!"]);
+      setTickerItems(tickers.length > 0 ? tickers : ["🎉 Welcome to nabbit Play!"]);
       setRecentWins(orders.slice(0, 4).map((o: any) => ({
         user: o.profiles?.avatar_emoji || "🧑",
         name: o.profiles?.display_name || "User",
@@ -86,13 +87,11 @@ const Play = () => {
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border">
         <div className="flex items-center gap-3 max-w-lg mx-auto px-4 py-3">
-          <button onClick={() => navigate(-1)}>
+          <button onClick={() => navigate(-1)} className="p-1.5 rounded-xl hover:bg-secondary/50 transition-colors">
             <ArrowLeft className="w-5 h-5 text-foreground" />
           </button>
-          <div className="flex-1">
-            <h1 className="font-heading font-bold text-foreground text-lg">Navigator Play</h1>
-            <p className="text-[10px] text-muted-foreground">Breaks · Grab Bags · Auctions</p>
-          </div>
+          <NabbitLogo size="sm" />
+          <h1 className="font-heading font-black text-foreground text-base tracking-tight flex-1">PLAY</h1>
           <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">
             <Zap className="w-3 h-3" /> Live
           </span>
@@ -202,7 +201,7 @@ const Play = () => {
           className="flex items-center gap-2 p-3 rounded-xl glass-card gradient-border text-center justify-center"
         >
           <Shield className="w-4 h-4 text-primary" />
-          <span className="text-xs font-semibold text-foreground">Navigator Authenticated — every item verified</span>
+          <span className="text-xs font-semibold text-foreground">nabbit Authenticated — every item verified</span>
         </motion.div>
       </div>
 

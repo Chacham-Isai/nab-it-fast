@@ -1,7 +1,7 @@
 import SectionWrapper from "@/components/SectionWrapper";
 import { motion, AnimatePresence } from "framer-motion";
 import { Eye, BarChart3, Bot, ShieldCheck, Activity, TrendingUp } from "lucide-react";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import nabbitIcon from "@/assets/nabbit-icon.png";
 import { useState, useEffect } from "react";
 
 const layers = [
@@ -84,7 +84,7 @@ const NabbitEngineSection = () => {
     <SectionWrapper id="nabbit-engine">
       <div className="text-center mb-16 relative">
         <motion.img
-          src={nabbitLogo}
+          src={nabbitIcon}
           alt=""
           className="absolute left-1/2 -translate-x-1/2 -top-8 w-20 h-20 opacity-[0.08] pointer-events-none"
           animate={{ y: [-4, 4, -4], rotate: [-2, 2, -2] }}
