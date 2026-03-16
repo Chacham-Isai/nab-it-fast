@@ -87,13 +87,11 @@ const Play = () => {
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border">
         <div className="flex items-center gap-3 max-w-lg mx-auto px-4 py-3">
-          <button onClick={() => navigate(-1)}>
+          <button onClick={() => navigate(-1)} className="p-1.5 rounded-xl hover:bg-secondary/50 transition-colors">
             <ArrowLeft className="w-5 h-5 text-foreground" />
           </button>
-          <div className="flex-1">
-            <h1 className="font-heading font-bold text-foreground text-lg">Navigator Play</h1>
-            <p className="text-[10px] text-muted-foreground">Breaks · Grab Bags · Auctions</p>
-          </div>
+          <NabbitLogo size="sm" />
+          <h1 className="font-heading font-black text-foreground text-base tracking-tight flex-1">PLAY</h1>
           <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-bold uppercase tracking-wider">
             <Zap className="w-3 h-3" /> Live
           </span>
