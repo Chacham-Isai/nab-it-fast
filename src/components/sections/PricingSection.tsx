@@ -30,7 +30,7 @@ const plans = [
     name: "Nabbit Pro",
     monthly: 29,
     annual: 23,
-    tagline: "Unlimited hunts + full Navigator access: swipe feed, live breaks, grab bags, group deals, and auctions.",
+    tagline: "Unlimited hunts + full nabbit access: swipe feed, live breaks, grab bags, group deals, and auctions.",
     features: ["Unlimited hunts", "Instant alerts", "All marketplaces", "Real-time scan", "Deal concierge", "Price analytics"],
     cta: "Go Pro",
     featured: false,

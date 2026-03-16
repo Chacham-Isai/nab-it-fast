@@ -67,7 +67,7 @@ const NavigatorSection = () => {
       >
         <Button asChild size="lg" className="rounded-full px-8 font-semibold text-base gap-2 shimmer-btn shadow-[0_0_30px_-5px_hsl(var(--nab-cyan)/0.4)]">
           <Link to="/feed">
-            Explore Navigator <ArrowRight className="w-4 h-4" />
+            Explore nabbit <ArrowRight className="w-4 h-4" />
           </Link>
         </Button>
       </motion.div>
