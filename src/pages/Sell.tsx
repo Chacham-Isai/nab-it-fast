@@ -117,7 +117,7 @@ const Sell = () => {
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border/50 px-4 py-3">
         <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
-          <img src={nabbitLogo} alt="nabbit" className="w-6 h-6" />
+          <NabbitLogo size="sm" />
           <div className="flex-1">
             <h1 className="font-heading font-black text-foreground text-lg tracking-tight">SELLER DASHBOARD</h1>
             <p className="text-[10px] text-muted-foreground font-medium">{sellerProfile?.shop_name || "My Shop"}</p>

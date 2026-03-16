@@ -188,10 +188,8 @@ const GrabBags = () => {
           <button onClick={() => navigate(-1)} className="p-1.5 rounded-xl hover:bg-secondary/50 transition-colors">
             <ArrowLeft className="w-5 h-5 text-foreground" />
           </button>
-          <div className="flex items-center gap-2 flex-1">
-            <img src={nabbitLogo} alt="" className="w-5 h-5" />
-            <h1 className="font-heading font-black text-foreground text-base tracking-tight">GRAB BAGS</h1>
-          </div>
+          <NabbitLogo size="sm" />
+          <h1 className="font-heading font-black text-foreground text-base tracking-tight flex-1">GRAB BAGS</h1>
           <Sparkles className="w-5 h-5 text-primary" />
         </div>
       </div>

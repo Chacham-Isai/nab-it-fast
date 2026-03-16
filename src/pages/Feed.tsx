@@ -403,12 +403,7 @@ const Feed = () => {
       {/* ─── Premium Header ─── */}
       <div className="sticky top-0 z-40 bg-background/60 backdrop-blur-2xl border-b border-border/30">
         <div className="flex items-center justify-between max-w-lg mx-auto px-4 h-14">
-          <Link to="/" className="flex items-center gap-2">
-            <img src={nabbitLogo} alt="nabbit" className="h-6" />
-            <div>
-              <span className="font-heading font-black text-foreground text-base tracking-tight">NABBIT<span className="gradient-text">.AI</span></span>
-            </div>
-          </Link>
+          <NabbitLogo size="md" />
           <div className="flex items-center gap-0.5">
             <Button variant="ghost" size="icon" className="w-9 h-9 rounded-xl" onClick={() => navigate("/dream-buys")}>
               <Zap className="w-4.5 h-4.5 text-primary" />

@@ -127,10 +127,8 @@ const Breaks = () => {
           <button onClick={() => navigate(-1)} className="p-1.5 rounded-xl hover:bg-secondary/50 transition-colors">
             <ArrowLeft className="w-5 h-5 text-foreground" />
           </button>
-          <div className="flex items-center gap-2 flex-1">
-            <img src={nabbitLogo} alt="" className="w-5 h-5" />
-            <h1 className="font-heading font-black text-foreground text-base tracking-tight">BREAKS</h1>
-          </div>
+          <NabbitLogo size="sm" />
+          <h1 className="font-heading font-black text-foreground text-base tracking-tight flex-1">BREAKS</h1>
           {liveCount > 0 && (
             <span className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-destructive text-destructive-foreground text-[10px] font-black uppercase tracking-wider">
               <Radio className="w-3 h-3 animate-pulse" /> {liveCount} LIVE
