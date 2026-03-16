@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Users, TrendingUp, Share2, Loader2, Flame, Clock } from "lucide-react";
+import { ArrowLeft, Users, TrendingUp, Share2, Loader2, Flame, Clock, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
 import { motion, AnimatePresence } from "framer-motion";
 import BottomNav from "@/components/BottomNav";
+import Countdown from "@/components/Countdown";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import usePageMeta from "@/hooks/usePageMeta";
-import GroupDealCard from "@/components/community/GroupDealCard";
 import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
@@ -339,16 +340,72 @@ const CrewDetail = () => {
               </div>
             ) : (
               <AnimatePresence>
-                {deals.map((deal) => (
-                  <GroupDealCard
-                    key={deal.id}
-                    deal={deal}
-                    participantAvatars={dealAvatars[deal.id] || []}
-                    isJoined={joinedDeals.includes(deal.id)}
-                    onJoin={joinDeal}
-                    onLeave={leaveDeal}
-                  />
-                ))}
+                {deals.map((deal) => {
+                  const progress = Math.min((deal.current_participants / deal.target_participants) * 100, 100);
+                  const isFunded = deal.status === "funded";
+                  const almostThere = progress > 80 && deal.status === "active";
+                  const secondsLeft = Math.max(0, Math.floor((new Date(deal.ends_at).getTime() - Date.now()) / 1000));
+                  const isDealJoined = joinedDeals.includes(deal.id);
+                  const avatars = dealAvatars[deal.id] || [];
+
+                  return (
+                    <motion.div
+                      key={deal.id}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={cn(
+                        "p-4 rounded-2xl bg-card border space-y-3",
+                        isFunded ? "border-primary/40 shadow-[0_0_20px_-5px_hsl(var(--primary)/0.3)]" : "border-border"
+                      )}
+                    >
+                      <div className="flex items-start gap-3">
+                        <span className="text-3xl">{deal.emoji}</span>
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-heading font-semibold text-foreground text-sm">{deal.title}</h3>
+                          <div className="flex items-baseline gap-2 mt-1">
+                            <span className="text-lg font-bold gradient-text">${deal.deal_price}</span>
+                            <span className="text-sm text-muted-foreground line-through">${deal.retail_price}</span>
+                            <span className="text-xs font-bold text-success">-{deal.discount_pct}%</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div className="flex justify-between text-xs mb-1">
+                          <span className="text-muted-foreground flex items-center gap-1">
+                            <Users className="w-3 h-3" /> {deal.current_participants} / {deal.target_participants}
+                          </span>
+                          {almostThere && <span className="text-primary font-bold">Almost there! 🔥</span>}
+                          {isFunded && <span className="text-success font-bold flex items-center gap-1"><Trophy className="w-3 h-3" /> Funded!</span>}
+                        </div>
+                        <Progress value={progress} className="h-2" />
+                      </div>
+
+                      {avatars.length > 0 && (
+                        <div className="flex items-center gap-1">
+                          {avatars.slice(0, 5).map((emoji, j) => (
+                            <span key={j} className="w-6 h-6 rounded-full bg-secondary flex items-center justify-center text-xs ring-2 ring-card -ml-1 first:ml-0">{emoji}</span>
+                          ))}
+                        </div>
+                      )}
+
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs text-muted-foreground flex items-center gap-1">
+                          <Clock className="w-3 h-3" /><Countdown seconds={secondsLeft} />
+                        </span>
+                        <Button
+                          size="sm"
+                          variant={isDealJoined ? "secondary" : "default"}
+                          className="rounded-xl text-xs"
+                          onClick={() => isDealJoined ? leaveDeal(deal.id) : joinDeal(deal.id)}
+                          disabled={isFunded && !isDealJoined}
+                        >
+                          {isDealJoined ? "Joined ✓" : "Join Deal"}
+                        </Button>
+                      </div>
+                    </motion.div>
+                  );
+                })}
               </AnimatePresence>
             )}
           </div>

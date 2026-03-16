@@ -572,129 +572,160 @@ const Community = () => {
                 </div>
               ) : (
                 <AnimatePresence>
-                  {deals.map((deal, i) => {
+              {deals.map((deal, i) => {
                     const progress = Math.min((deal.current_participants / deal.target_participants) * 100, 100);
                     const almostThere = progress > 80 && deal.status === "active";
                     const isFunded = deal.status === "funded";
                     const secondsLeft = Math.max(0, Math.floor((new Date(deal.ends_at).getTime() - Date.now()) / 1000));
                     const isJoined = joinedDeals.includes(deal.id);
                     const avatars = dealAvatars[deal.id] || [];
+                    const catImage = categoryImages[deal.category?.toLowerCase()] || imgCardsBox;
 
                     return (
                       <motion.div
                         key={deal.id}
-                        initial={{ opacity: 0, y: 16 }}
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.06 }}
+                        whileHover={{ y: -3 }}
+                        transition={{ delay: i * 0.08 }}
                         className={cn(
-                          "p-5 rounded-2xl glass-card gradient-border space-y-4 relative overflow-hidden",
-                          isFunded && "shadow-[0_0_30px_-5px_hsl(var(--primary)/0.3)]",
+                          "rounded-2xl relative overflow-hidden group",
+                          isFunded && "shadow-[0_0_40px_-8px_hsl(var(--success)/0.4)]",
+                          almostThere && "shadow-[0_0_30px_-8px_hsl(var(--primary)/0.3)]",
                         )}
                       >
-                        {isFunded && <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-success via-primary to-accent" />}
-                        {almostThere && (
-                          <motion.div
-                            animate={{ opacity: [0.5, 1, 0.5] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent"
-                          />
-                        )}
-
-                        <div className="flex items-start gap-3">
-                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-secondary to-muted flex items-center justify-center text-3xl shrink-0">
-                            {deal.emoji}
+                        {/* Product image background */}
+                        <div className="relative h-28 overflow-hidden">
+                          <img src={catImage} alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/20" />
+                          {/* Top badges */}
+                          <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                            {deal.tribe_name && (
+                              <span className="text-[10px] font-bold text-foreground bg-background/70 backdrop-blur-xl px-2.5 py-1 rounded-lg border border-border/30">{deal.emoji} {deal.tribe_name}</span>
+                            )}
+                            {deal.reward_tier && (
+                              <span className={cn("text-[10px] font-bold backdrop-blur-xl px-2.5 py-1 rounded-lg border",
+                                deal.reward_tier === "gold" ? "text-yellow-400 bg-yellow-400/20 border-yellow-400/30" :
+                                deal.reward_tier === "silver" ? "text-slate-300 bg-slate-400/20 border-slate-400/30" :
+                                "text-amber-500 bg-amber-600/20 border-amber-600/30"
+                              )}>
+                                {deal.reward_tier === "gold" ? "🥇" : deal.reward_tier === "silver" ? "🥈" : "🥉"} {deal.reward_tier}
+                              </span>
+                            )}
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              {deal.tribe_name && (
-                                <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">{deal.tribe_name}</span>
+                          {/* Discount pill */}
+                          <div className="absolute top-3 right-3">
+                            <motion.span
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="inline-flex items-center gap-1 text-xs font-black px-2.5 py-1 rounded-lg bg-success/90 text-white backdrop-blur-xl"
+                            >
+                              -{deal.discount_pct}%
+                            </motion.span>
+                          </div>
+                          {/* Status bar */}
+                          {isFunded && <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-success via-primary to-accent" />}
+                          {almostThere && (
+                            <motion.div
+                              animate={{ opacity: [0.5, 1, 0.5] }}
+                              transition={{ duration: 2, repeat: Infinity }}
+                              className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent"
+                            />
+                          )}
+                        </div>
+
+                        <div className="bg-card border border-t-0 border-border rounded-b-2xl p-4 space-y-3">
+                          {/* Title + Price */}
+                          <div>
+                            <h3 className="font-heading font-bold text-foreground text-sm leading-tight">{deal.title}</h3>
+                            <div className="flex items-baseline gap-2 mt-1.5">
+                              <span className="text-2xl font-heading font-black gradient-text">${deal.deal_price}</span>
+                              <span className="text-sm text-muted-foreground line-through">${deal.retail_price}</span>
+                            </div>
+                          </div>
+
+                          {/* Progress */}
+                          <div>
+                            <div className="flex justify-between text-xs mb-1.5">
+                              <span className="text-muted-foreground flex items-center gap-1">
+                                <Users className="w-3 h-3" />
+                                <span className="font-bold text-foreground">{deal.current_participants}</span>
+                                <span className="text-muted-foreground">/ {deal.target_participants}</span>
+                              </span>
+                              {almostThere && (
+                                <motion.span animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 1.2, repeat: Infinity }} className="text-primary font-bold flex items-center gap-1">
+                                  <Flame className="w-3 h-3 text-destructive" /> Almost there!
+                                </motion.span>
                               )}
-                              {deal.reward_tier && (
-                                <span className={cn("text-[10px] font-bold flex items-center gap-0.5 px-2 py-0.5 rounded-full",
-                                  deal.reward_tier === "gold" ? "text-yellow-400 bg-yellow-400/10" :
-                                  deal.reward_tier === "silver" ? "text-slate-400 bg-slate-400/10" :
-                                  "text-amber-600 bg-amber-600/10"
-                                )}>
-                                  {deal.reward_tier === "gold" ? "🥇" : deal.reward_tier === "silver" ? "🥈" : "🥉"} {deal.reward_tier}
+                              {isFunded && (
+                                <span className="text-success font-bold flex items-center gap-1">
+                                  <Trophy className="w-3 h-3" /> Funded! 🎉
                                 </span>
                               )}
                             </div>
-                            <h3 className="font-heading font-semibold text-foreground text-sm leading-tight mt-1">{deal.title}</h3>
-                            <div className="flex items-baseline gap-2 mt-1.5">
-                              <span className="text-xl font-heading font-bold gradient-text">${deal.deal_price}</span>
-                              <span className="text-sm text-muted-foreground line-through">${deal.retail_price}</span>
-                              <span className="text-xs font-bold text-success bg-success/10 px-1.5 py-0.5 rounded">-{deal.discount_pct}%</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Progress */}
-                        <div>
-                          <div className="flex justify-between text-xs mb-1.5">
-                            <span className="text-muted-foreground flex items-center gap-1">
-                              <Users className="w-3 h-3" />
-                              <span className="font-bold text-foreground">{deal.current_participants}</span> of {deal.target_participants}
-                            </span>
-                            {almostThere && (
-                              <motion.span animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 1.5, repeat: Infinity }} className="text-primary font-bold flex items-center gap-1">
-                                <Flame className="w-3 h-3" /> Almost there!
-                              </motion.span>
-                            )}
-                            {isFunded && (
-                              <span className="text-success font-bold flex items-center gap-1">
-                                <Trophy className="w-3 h-3" /> Funded!
-                              </span>
-                            )}
-                          </div>
-                          <div className="relative">
-                            <Progress value={progress} className="h-2.5 rounded-full" />
-                            {progress > 0 && (
+                            <div className="relative h-3 rounded-full bg-secondary overflow-hidden">
                               <motion.div
-                                className="absolute top-0 left-0 h-2.5 rounded-full bg-gradient-to-r from-primary to-accent opacity-30"
+                                className="absolute inset-y-0 left-0 rounded-full"
+                                style={{ background: isFunded
+                                  ? "linear-gradient(90deg, hsl(var(--success)), hsl(var(--primary)))"
+                                  : "linear-gradient(90deg, hsl(var(--nab-cyan)), hsl(var(--nab-blue)), hsl(var(--nab-purple)))"
+                                }}
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress}%` }}
-                                transition={{ duration: 0.8, ease: "easeOut" }}
+                                transition={{ duration: 1, ease: "easeOut" }}
                               />
-                            )}
+                              {/* Shimmer on progress */}
+                              {!isFunded && progress > 0 && (
+                                <motion.div
+                                  className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                                  animate={{ x: ["-100%", "400%"] }}
+                                  transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+                                />
+                              )}
+                            </div>
                           </div>
-                        </div>
 
-                        {/* Avatars */}
-                        {avatars.length > 0 && (
-                          <div className="flex items-center gap-1">
-                            {avatars.slice(0, 6).map((emoji, j) => (
-                              <span key={j} className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center text-sm ring-2 ring-background -ml-1 first:ml-0">
-                                {emoji}
-                              </span>
-                            ))}
-                            {deal.current_participants > 6 && (
-                              <span className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary ring-2 ring-background -ml-1">
-                                +{deal.current_participants - 6}
-                              </span>
-                            )}
+                          {/* Avatars + Timer */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                              {avatars.slice(0, 5).map((emoji, j) => (
+                                <motion.span
+                                  key={j}
+                                  initial={{ scale: 0, x: -10 }}
+                                  animate={{ scale: 1, x: 0 }}
+                                  transition={{ delay: j * 0.05 }}
+                                  className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center text-sm ring-2 ring-card -ml-1.5 first:ml-0"
+                                >
+                                  {emoji}
+                                </motion.span>
+                              ))}
+                              {deal.current_participants > 5 && (
+                                <span className="w-7 h-7 rounded-full bg-primary/15 flex items-center justify-center text-[10px] font-bold text-primary ring-2 ring-card -ml-1.5">
+                                  +{deal.current_participants - 5}
+                                </span>
+                              )}
+                            </div>
+                            <span className="text-[11px] text-muted-foreground flex items-center gap-1 bg-secondary/60 px-2 py-1 rounded-lg">
+                              <Clock className="w-3 h-3" /><Countdown seconds={secondsLeft} />
+                            </span>
                           </div>
-                        )}
 
-                        {/* Footer */}
-                        <div className="flex items-center justify-between pt-1">
-                          <span className="text-xs text-muted-foreground flex items-center gap-1 bg-secondary/50 px-2 py-1 rounded-lg">
-                            <Clock className="w-3 h-3" /><Countdown seconds={secondsLeft} />
-                          </span>
-                          <div className="flex items-center gap-2">
-                            <Button size="sm" variant="ghost" className="rounded-xl text-xs px-2.5 h-8" onClick={() => shareDeal(deal.id)}>
-                              <Share2 className="w-3.5 h-3.5" />
-                            </Button>
-                            <motion.div whileTap={{ scale: 0.92 }}>
+                          {/* Actions */}
+                          <div className="flex items-center gap-2 pt-1">
+                            <motion.div whileTap={{ scale: 0.95 }} className="flex-1">
                               <Button
                                 size="sm"
                                 variant={isJoined ? "secondary" : "default"}
-                                className={cn("rounded-xl text-xs h-8 px-4", !isJoined && "shimmer-btn")}
+                                className={cn("rounded-xl text-xs h-9 w-full font-bold", !isJoined && "shimmer-btn")}
                                 onClick={() => isJoined ? leaveDeal(deal.id) : joinDeal(deal.id)}
                                 disabled={isFunded && !isJoined}
                               >
-                                {isJoined ? "Joined ✓" : "Join Deal"}
+                                {isJoined ? "✓ Joined" : "🚀 Join Deal"}
                               </Button>
                             </motion.div>
+                            <Button size="sm" variant="outline" className="rounded-xl text-xs h-9 px-3" onClick={() => shareDeal(deal.id)}>
+                              <Share2 className="w-3.5 h-3.5" />
+                            </Button>
                           </div>
                         </div>
                       </motion.div>
@@ -745,7 +776,7 @@ const Community = () => {
   );
 };
 
-// Premium inline leaderboard
+// Premium inline leaderboard with dramatic podium
 const LeaderboardInline = () => {
   const { user } = useAuth();
   const [profiles, setProfiles] = useState<any[]>([]);
@@ -766,46 +797,88 @@ const LeaderboardInline = () => {
 
   if (loading) return <div className="flex justify-center py-12"><Loader2 className="w-6 h-6 text-primary animate-spin" /></div>;
 
+  const podiumConfig = [
+    { idx: 1, order: "order-1", height: "h-20", avatarSize: "w-14 h-14", textSize: "text-3xl", ring: "ring-slate-300/50", bg: "bg-slate-300/10", glow: "" },
+    { idx: 0, order: "order-2", height: "h-28", avatarSize: "w-18 h-18", textSize: "text-4xl", ring: "ring-yellow-400/60", bg: "bg-yellow-400/10", glow: "shadow-[0_0_30px_-5px_rgba(250,204,21,0.4)]" },
+    { idx: 2, order: "order-3", height: "h-16", avatarSize: "w-12 h-12", textSize: "text-2xl", ring: "ring-amber-600/40", bg: "bg-amber-600/10", glow: "" },
+  ];
   const medals = ["🥇", "🥈", "🥉"];
 
   return (
-    <div className="space-y-2.5">
-      {/* Top 3 podium */}
+    <div className="space-y-3">
+      {/* Top 3 podium — dramatic */}
       {profiles.length >= 3 && (
-        <div className="flex items-end justify-center gap-3 pb-4">
-          {[1, 0, 2].map((idx) => {
+        <div className="flex items-end justify-center gap-2 pt-6 pb-2">
+          {podiumConfig.map(({ idx, order, height, avatarSize, ring, bg, glow }) => {
             const p = profiles[idx];
             if (!p) return null;
-            const isCenter = idx === 0;
             const isMe = user?.id === p.id;
+            const isFirst = idx === 0;
             return (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.1 }}
-                className={cn(
-                  "flex flex-col items-center",
-                  isCenter ? "order-2" : idx === 1 ? "order-1" : "order-3"
-                )}
+                initial={{ opacity: 0, y: 40, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: idx * 0.15, type: "spring", stiffness: 200, damping: 18 }}
+                className={cn("flex flex-col items-center flex-1 max-w-[130px]", order)}
               >
-                <div className={cn(
-                  "rounded-2xl flex items-center justify-center text-3xl mb-2 ring-2",
-                  isCenter ? "w-16 h-16 ring-yellow-400/40 bg-yellow-400/10" : "w-12 h-12 ring-border bg-secondary"
-                )}>
-                  {p.avatar_emoji || "🐇"}
-                </div>
-                <span className="text-lg mb-0.5">{medals[idx]}</span>
-                <p className="text-xs font-bold text-foreground text-center max-w-[80px] truncate">
-                  {p.display_name || "Anonymous"}
-                  {isMe && <span className="text-primary ml-0.5">(you)</span>}
-                </p>
-                <p className="text-[10px] font-bold gradient-text">{p.total_xp.toLocaleString()} XP</p>
+                {/* Crown for #1 */}
+                {isFirst && (
+                  <motion.span
+                    initial={{ y: -20, opacity: 0, rotate: -15 }}
+                    animate={{ y: 0, opacity: 1, rotate: 0 }}
+                    transition={{ delay: 0.5, type: "spring" }}
+                    className="text-2xl mb-1"
+                  >
+                    👑
+                  </motion.span>
+                )}
+                {/* Avatar */}
+                <motion.div
+                  whileHover={{ scale: 1.1, rotate: 5 }}
+                  className={cn(
+                    "rounded-2xl flex items-center justify-center mb-2 ring-3 transition-shadow",
+                    avatarSize, ring, bg, glow,
+                    isMe && "ring-primary/50"
+                  )}
+                >
+                  <span className={isFirst ? "text-3xl" : "text-2xl"}>{p.avatar_emoji || "🐇"}</span>
+                </motion.div>
+                {/* Podium bar */}
+                <motion.div
+                  initial={{ height: 0 }}
+                  animate={{ height: "auto" }}
+                  transition={{ delay: 0.3 + idx * 0.1, duration: 0.5 }}
+                  className={cn(
+                    "w-full rounded-t-xl flex flex-col items-center justify-start pt-2 pb-3 px-1",
+                    isFirst
+                      ? "bg-gradient-to-b from-yellow-400/20 to-yellow-400/5 border border-yellow-400/20"
+                      : idx === 1
+                      ? "bg-gradient-to-b from-slate-300/15 to-slate-300/5 border border-slate-300/15"
+                      : "bg-gradient-to-b from-amber-600/15 to-amber-600/5 border border-amber-600/15",
+                    height
+                  )}
+                >
+                  <span className="text-xl mb-0.5">{medals[idx]}</span>
+                  <p className="text-[11px] font-bold text-foreground text-center truncate w-full">
+                    {p.display_name || "Anon"}
+                  </p>
+                  {isMe && <span className="text-[9px] text-primary font-bold">(you)</span>}
+                  <p className="text-[10px] font-bold gradient-text mt-0.5">{p.total_xp.toLocaleString()} XP</p>
+                  {p.streak_days > 0 && (
+                    <p className="text-[9px] text-muted-foreground flex items-center gap-0.5 mt-0.5">
+                      <Flame className="w-2.5 h-2.5 text-destructive" />{p.streak_days}d
+                    </p>
+                  )}
+                </motion.div>
               </motion.div>
             );
           })}
         </div>
       )}
+
+      {/* Divider */}
+      <div className="gradient-divider" />
 
       {/* Rest of list */}
       {profiles.slice(3).map((p, i) => {
@@ -814,15 +887,20 @@ const LeaderboardInline = () => {
         return (
           <motion.div
             key={p.id || i}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: (i + 3) * 0.03 }}
+            initial={{ opacity: 0, x: -12 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 + i * 0.04 }}
             className={cn(
-              "flex items-center gap-3 p-3.5 rounded-2xl transition-all glass-card",
-              isMe && "gradient-border shadow-lg shadow-primary/10"
+              "flex items-center gap-3 p-3 rounded-xl transition-all",
+              isMe
+                ? "bg-primary/8 border border-primary/20 shadow-sm"
+                : "bg-card border border-border hover:bg-secondary/30"
             )}
           >
-            <span className="w-8 h-8 rounded-xl bg-secondary flex items-center justify-center text-xs font-bold text-muted-foreground">
+            <span className={cn(
+              "w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold",
+              rank <= 5 ? "bg-primary/10 text-primary" : "bg-secondary text-muted-foreground"
+            )}>
               {rank}
             </span>
             <span className="text-xl">{p.avatar_emoji || "🐇"}</span>
@@ -831,23 +909,29 @@ const LeaderboardInline = () => {
                 {p.display_name || "Anonymous"}
                 {isMe && <span className="text-primary text-xs ml-1">(you)</span>}
               </p>
-              <p className="text-[10px] text-muted-foreground flex items-center gap-2">
-                {p.streak_days > 0 && (
-                  <span className="flex items-center gap-0.5">
-                    <Flame className="w-3 h-3 text-destructive" /> {p.streak_days}d streak
-                  </span>
-                )}
-              </p>
+              {p.streak_days > 0 && (
+                <p className="text-[10px] text-muted-foreground flex items-center gap-1">
+                  <Flame className="w-3 h-3 text-destructive" /> {p.streak_days} day streak
+                </p>
+              )}
             </div>
-            <span className="font-mono font-bold text-sm gradient-text">{p.total_xp.toLocaleString()} XP</span>
+            <div className="text-right shrink-0">
+              <span className="font-mono font-bold text-sm gradient-text">{p.total_xp.toLocaleString()}</span>
+              <span className="text-[10px] text-muted-foreground ml-0.5">XP</span>
+            </div>
           </motion.div>
         );
       })}
 
       {profiles.length === 0 && (
         <div className="text-center py-12">
-          <Star className="w-8 h-8 text-primary mx-auto mb-3 opacity-50" />
-          <p className="text-muted-foreground text-sm">No XP earned yet — be the first!</p>
+          <motion.div
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <Star className="w-10 h-10 text-primary mx-auto mb-3 opacity-40" />
+          </motion.div>
+          <p className="text-muted-foreground text-sm font-medium">No XP earned yet — be the first!</p>
         </div>
       )}
     </div>
