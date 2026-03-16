@@ -44,7 +44,7 @@ const Play = () => {
         const method = o.listings?.listing_type?.replace('_', ' ') || "purchase";
         return `${emoji} ${name} won ${o.listings?.title || "an item"} via ${method}!`;
       });
-      setTickerItems(tickers.length > 0 ? tickers : ["🎉 Welcome to Navigator Play!"]);
+      setTickerItems(tickers.length > 0 ? tickers : ["🎉 Welcome to nabbit Play!"]);
       setRecentWins(orders.slice(0, 4).map((o: any) => ({
         user: o.profiles?.avatar_emoji || "🧑",
         name: o.profiles?.display_name || "User",

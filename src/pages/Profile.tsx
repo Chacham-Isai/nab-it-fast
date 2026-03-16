@@ -38,7 +38,7 @@ const Profile = () => {
       supabase.from("orders").select("*, listings(title, category)").eq("buyer_id", user.id).order("created_at", { ascending: false }),
     ]);
     if (profileRes.data) {
-      setDisplayName(profileRes.data.display_name || user.user_metadata?.display_name || "Navigator User");
+      setDisplayName(profileRes.data.display_name || user.user_metadata?.display_name || "nabbit User");
       setTasteTags(profileRes.data.taste_tags || []);
       setAvatarEmoji(profileRes.data.avatar_emoji || "🐇");
     }

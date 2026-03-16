@@ -270,7 +270,7 @@ const DreamBuy = () => {
             </motion.div>
             <p className="text-foreground font-heading font-black text-lg">No hunts yet</p>
             <p className="text-xs text-muted-foreground mt-2 max-w-[260px] mx-auto leading-relaxed">
-              Add your first dream buy and let Navigator find the best deal for you.
+              Add your first dream buy and let nabbit find the best deal for you.
             </p>
             <Button className="mt-6 rounded-xl shimmer-btn gap-1.5 text-xs font-black uppercase tracking-wider" onClick={() => setAdding(true)}>
               <Plus className="w-4 h-4" /> Add Your First Hunt
