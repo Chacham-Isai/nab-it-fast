@@ -10,7 +10,7 @@ import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import Countdown from "@/components/Countdown";
 import usePageMeta from "@/hooks/usePageMeta";
-import nabbitLogo from "@/assets/nabbit-logo.png";
+import NabbitLogo from "@/components/NabbitLogo";
 
 // Product placeholder images
 import imgCardsBox from "@/assets/products/cards-box.jpg";
