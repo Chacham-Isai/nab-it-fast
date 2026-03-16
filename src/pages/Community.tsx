@@ -179,6 +179,22 @@ const Community = () => {
     const deal = deals.find(d => d.id === dealId);
     if (deal && deal.current_participants + 1 >= deal.target_participants) {
       setShowCelebration({ show: true, title: deal.title });
+      // Check for giveaway winner after a short delay for DB to update
+      if (deal.giveaway_enabled) {
+        setTimeout(async () => {
+          const { data: updatedDeal } = await supabase.from("group_deals").select("giveaway_winner_id, giveaway_prize").eq("id", dealId).single();
+          if (updatedDeal?.giveaway_winner_id) {
+            const { data: winner } = await supabase.from("profiles").select("display_name, avatar_emoji").eq("id", updatedDeal.giveaway_winner_id).single();
+            setGiveawayReveal({
+              show: true,
+              winner: winner?.display_name || "Lucky Nabber",
+              emoji: winner?.avatar_emoji || "🐇",
+              prize: updatedDeal.giveaway_prize || "1 FREE order",
+              title: deal.title,
+            });
+          }
+        }, 1500);
+      }
     }
     const xpGain = await awardXP(user.id, "join_deal");
     toast({ title: `+${xpGain} XP! 🎮`, description: "You joined a crew deal!" });
