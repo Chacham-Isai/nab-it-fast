@@ -17,7 +17,7 @@ const Profile = () => {
   const { user, signOut } = useAuth();
   const [tab, setTab] = useState<"saved" | "history" | "settings">("saved");
   const [editing, setEditing] = useState(false);
-  const [displayName, setDisplayName] = useState(user?.user_metadata?.display_name || "Navigator User");
+  const [displayName, setDisplayName] = useState(user?.user_metadata?.display_name || "nabbit User");
   const [tasteTags, setTasteTags] = useState<string[]>([]);
   const [avatarEmoji, setAvatarEmoji] = useState("🐇");
   const [savedItems, setSavedItems] = useState<any[]>([]);
