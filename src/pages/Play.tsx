@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Radio, Sparkles, Gavel, Shield, ChevronRight, Flame, Search, ShoppingBag, Package, Zap } from "lucide-react";
 import { motion } from "framer-motion";
 import BottomNav from "@/components/BottomNav";
+import NabbitLogo from "@/components/NabbitLogo";
 import { supabase } from "@/integrations/supabase/client";
 import usePageMeta from "@/hooks/usePageMeta";
 import { modeImages } from "@/lib/images";
