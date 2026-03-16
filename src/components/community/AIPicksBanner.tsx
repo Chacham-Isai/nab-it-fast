@@ -23,6 +23,7 @@ interface AIDeal {
   giveaway_enabled: boolean;
   giveaway_prize?: string;
   target_participants: number;
+  match_reason?: string;
 }
 
 interface AIPicksBannerProps {
