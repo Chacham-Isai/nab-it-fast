@@ -572,129 +572,160 @@ const Community = () => {
                 </div>
               ) : (
                 <AnimatePresence>
-                  {deals.map((deal, i) => {
+              {deals.map((deal, i) => {
                     const progress = Math.min((deal.current_participants / deal.target_participants) * 100, 100);
                     const almostThere = progress > 80 && deal.status === "active";
                     const isFunded = deal.status === "funded";
                     const secondsLeft = Math.max(0, Math.floor((new Date(deal.ends_at).getTime() - Date.now()) / 1000));
                     const isJoined = joinedDeals.includes(deal.id);
                     const avatars = dealAvatars[deal.id] || [];
+                    const catImage = categoryImages[deal.category?.toLowerCase()] || imgCardsBox;
 
                     return (
                       <motion.div
                         key={deal.id}
-                        initial={{ opacity: 0, y: 16 }}
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.06 }}
+                        whileHover={{ y: -3 }}
+                        transition={{ delay: i * 0.08 }}
                         className={cn(
-                          "p-5 rounded-2xl glass-card gradient-border space-y-4 relative overflow-hidden",
-                          isFunded && "shadow-[0_0_30px_-5px_hsl(var(--primary)/0.3)]",
+                          "rounded-2xl relative overflow-hidden group",
+                          isFunded && "shadow-[0_0_40px_-8px_hsl(var(--success)/0.4)]",
+                          almostThere && "shadow-[0_0_30px_-8px_hsl(var(--primary)/0.3)]",
                         )}
                       >
-                        {isFunded && <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-success via-primary to-accent" />}
-                        {almostThere && (
-                          <motion.div
-                            animate={{ opacity: [0.5, 1, 0.5] }}
-                            transition={{ duration: 2, repeat: Infinity }}
-                            className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent"
-                          />
-                        )}
-
-                        <div className="flex items-start gap-3">
-                          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-secondary to-muted flex items-center justify-center text-3xl shrink-0">
-                            {deal.emoji}
+                        {/* Product image background */}
+                        <div className="relative h-28 overflow-hidden">
+                          <img src={catImage} alt="" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                          <div className="absolute inset-0 bg-gradient-to-t from-card via-card/80 to-card/20" />
+                          {/* Top badges */}
+                          <div className="absolute top-3 left-3 flex items-center gap-1.5">
+                            {deal.tribe_name && (
+                              <span className="text-[10px] font-bold text-foreground bg-background/70 backdrop-blur-xl px-2.5 py-1 rounded-lg border border-border/30">{deal.emoji} {deal.tribe_name}</span>
+                            )}
+                            {deal.reward_tier && (
+                              <span className={cn("text-[10px] font-bold backdrop-blur-xl px-2.5 py-1 rounded-lg border",
+                                deal.reward_tier === "gold" ? "text-yellow-400 bg-yellow-400/20 border-yellow-400/30" :
+                                deal.reward_tier === "silver" ? "text-slate-300 bg-slate-400/20 border-slate-400/30" :
+                                "text-amber-500 bg-amber-600/20 border-amber-600/30"
+                              )}>
+                                {deal.reward_tier === "gold" ? "🥇" : deal.reward_tier === "silver" ? "🥈" : "🥉"} {deal.reward_tier}
+                              </span>
+                            )}
                           </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              {deal.tribe_name && (
-                                <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-full">{deal.tribe_name}</span>
+                          {/* Discount pill */}
+                          <div className="absolute top-3 right-3">
+                            <motion.span
+                              initial={{ scale: 0 }}
+                              animate={{ scale: 1 }}
+                              className="inline-flex items-center gap-1 text-xs font-black px-2.5 py-1 rounded-lg bg-success/90 text-white backdrop-blur-xl"
+                            >
+                              -{deal.discount_pct}%
+                            </motion.span>
+                          </div>
+                          {/* Status bar */}
+                          {isFunded && <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-success via-primary to-accent" />}
+                          {almostThere && (
+                            <motion.div
+                              animate={{ opacity: [0.5, 1, 0.5] }}
+                              transition={{ duration: 2, repeat: Infinity }}
+                              className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-accent"
+                            />
+                          )}
+                        </div>
+
+                        <div className="bg-card border border-t-0 border-border rounded-b-2xl p-4 space-y-3">
+                          {/* Title + Price */}
+                          <div>
+                            <h3 className="font-heading font-bold text-foreground text-sm leading-tight">{deal.title}</h3>
+                            <div className="flex items-baseline gap-2 mt-1.5">
+                              <span className="text-2xl font-heading font-black gradient-text">${deal.deal_price}</span>
+                              <span className="text-sm text-muted-foreground line-through">${deal.retail_price}</span>
+                            </div>
+                          </div>
+
+                          {/* Progress */}
+                          <div>
+                            <div className="flex justify-between text-xs mb-1.5">
+                              <span className="text-muted-foreground flex items-center gap-1">
+                                <Users className="w-3 h-3" />
+                                <span className="font-bold text-foreground">{deal.current_participants}</span>
+                                <span className="text-muted-foreground">/ {deal.target_participants}</span>
+                              </span>
+                              {almostThere && (
+                                <motion.span animate={{ scale: [1, 1.08, 1] }} transition={{ duration: 1.2, repeat: Infinity }} className="text-primary font-bold flex items-center gap-1">
+                                  <Flame className="w-3 h-3 text-destructive" /> Almost there!
+                                </motion.span>
                               )}
-                              {deal.reward_tier && (
-                                <span className={cn("text-[10px] font-bold flex items-center gap-0.5 px-2 py-0.5 rounded-full",
-                                  deal.reward_tier === "gold" ? "text-yellow-400 bg-yellow-400/10" :
-                                  deal.reward_tier === "silver" ? "text-slate-400 bg-slate-400/10" :
-                                  "text-amber-600 bg-amber-600/10"
-                                )}>
-                                  {deal.reward_tier === "gold" ? "🥇" : deal.reward_tier === "silver" ? "🥈" : "🥉"} {deal.reward_tier}
+                              {isFunded && (
+                                <span className="text-success font-bold flex items-center gap-1">
+                                  <Trophy className="w-3 h-3" /> Funded! 🎉
                                 </span>
                               )}
                             </div>
-                            <h3 className="font-heading font-semibold text-foreground text-sm leading-tight mt-1">{deal.title}</h3>
-                            <div className="flex items-baseline gap-2 mt-1.5">
-                              <span className="text-xl font-heading font-bold gradient-text">${deal.deal_price}</span>
-                              <span className="text-sm text-muted-foreground line-through">${deal.retail_price}</span>
-                              <span className="text-xs font-bold text-success bg-success/10 px-1.5 py-0.5 rounded">-{deal.discount_pct}%</span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Progress */}
-                        <div>
-                          <div className="flex justify-between text-xs mb-1.5">
-                            <span className="text-muted-foreground flex items-center gap-1">
-                              <Users className="w-3 h-3" />
-                              <span className="font-bold text-foreground">{deal.current_participants}</span> of {deal.target_participants}
-                            </span>
-                            {almostThere && (
-                              <motion.span animate={{ scale: [1, 1.05, 1] }} transition={{ duration: 1.5, repeat: Infinity }} className="text-primary font-bold flex items-center gap-1">
-                                <Flame className="w-3 h-3" /> Almost there!
-                              </motion.span>
-                            )}
-                            {isFunded && (
-                              <span className="text-success font-bold flex items-center gap-1">
-                                <Trophy className="w-3 h-3" /> Funded!
-                              </span>
-                            )}
-                          </div>
-                          <div className="relative">
-                            <Progress value={progress} className="h-2.5 rounded-full" />
-                            {progress > 0 && (
+                            <div className="relative h-3 rounded-full bg-secondary overflow-hidden">
                               <motion.div
-                                className="absolute top-0 left-0 h-2.5 rounded-full bg-gradient-to-r from-primary to-accent opacity-30"
+                                className="absolute inset-y-0 left-0 rounded-full"
+                                style={{ background: isFunded
+                                  ? "linear-gradient(90deg, hsl(var(--success)), hsl(var(--primary)))"
+                                  : "linear-gradient(90deg, hsl(var(--nab-cyan)), hsl(var(--nab-blue)), hsl(var(--nab-purple)))"
+                                }}
                                 initial={{ width: 0 }}
                                 animate={{ width: `${progress}%` }}
-                                transition={{ duration: 0.8, ease: "easeOut" }}
+                                transition={{ duration: 1, ease: "easeOut" }}
                               />
-                            )}
+                              {/* Shimmer on progress */}
+                              {!isFunded && progress > 0 && (
+                                <motion.div
+                                  className="absolute inset-y-0 w-1/3 bg-gradient-to-r from-transparent via-white/30 to-transparent"
+                                  animate={{ x: ["-100%", "400%"] }}
+                                  transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
+                                />
+                              )}
+                            </div>
                           </div>
-                        </div>
 
-                        {/* Avatars */}
-                        {avatars.length > 0 && (
-                          <div className="flex items-center gap-1">
-                            {avatars.slice(0, 6).map((emoji, j) => (
-                              <span key={j} className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center text-sm ring-2 ring-background -ml-1 first:ml-0">
-                                {emoji}
-                              </span>
-                            ))}
-                            {deal.current_participants > 6 && (
-                              <span className="w-7 h-7 rounded-full bg-primary/20 flex items-center justify-center text-[10px] font-bold text-primary ring-2 ring-background -ml-1">
-                                +{deal.current_participants - 6}
-                              </span>
-                            )}
+                          {/* Avatars + Timer */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                              {avatars.slice(0, 5).map((emoji, j) => (
+                                <motion.span
+                                  key={j}
+                                  initial={{ scale: 0, x: -10 }}
+                                  animate={{ scale: 1, x: 0 }}
+                                  transition={{ delay: j * 0.05 }}
+                                  className="w-7 h-7 rounded-full bg-secondary flex items-center justify-center text-sm ring-2 ring-card -ml-1.5 first:ml-0"
+                                >
+                                  {emoji}
+                                </motion.span>
+                              ))}
+                              {deal.current_participants > 5 && (
+                                <span className="w-7 h-7 rounded-full bg-primary/15 flex items-center justify-center text-[10px] font-bold text-primary ring-2 ring-card -ml-1.5">
+                                  +{deal.current_participants - 5}
+                                </span>
+                              )}
+                            </div>
+                            <span className="text-[11px] text-muted-foreground flex items-center gap-1 bg-secondary/60 px-2 py-1 rounded-lg">
+                              <Clock className="w-3 h-3" /><Countdown seconds={secondsLeft} />
+                            </span>
                           </div>
-                        )}
 
-                        {/* Footer */}
-                        <div className="flex items-center justify-between pt-1">
-                          <span className="text-xs text-muted-foreground flex items-center gap-1 bg-secondary/50 px-2 py-1 rounded-lg">
-                            <Clock className="w-3 h-3" /><Countdown seconds={secondsLeft} />
-                          </span>
-                          <div className="flex items-center gap-2">
-                            <Button size="sm" variant="ghost" className="rounded-xl text-xs px-2.5 h-8" onClick={() => shareDeal(deal.id)}>
-                              <Share2 className="w-3.5 h-3.5" />
-                            </Button>
-                            <motion.div whileTap={{ scale: 0.92 }}>
+                          {/* Actions */}
+                          <div className="flex items-center gap-2 pt-1">
+                            <motion.div whileTap={{ scale: 0.95 }} className="flex-1">
                               <Button
                                 size="sm"
                                 variant={isJoined ? "secondary" : "default"}
-                                className={cn("rounded-xl text-xs h-8 px-4", !isJoined && "shimmer-btn")}
+                                className={cn("rounded-xl text-xs h-9 w-full font-bold", !isJoined && "shimmer-btn")}
                                 onClick={() => isJoined ? leaveDeal(deal.id) : joinDeal(deal.id)}
                                 disabled={isFunded && !isJoined}
                               >
-                                {isJoined ? "Joined ✓" : "Join Deal"}
+                                {isJoined ? "✓ Joined" : "🚀 Join Deal"}
                               </Button>
                             </motion.div>
+                            <Button size="sm" variant="outline" className="rounded-xl text-xs h-9 px-3" onClick={() => shareDeal(deal.id)}>
+                              <Share2 className="w-3.5 h-3.5" />
+                            </Button>
                           </div>
                         </div>
                       </motion.div>
