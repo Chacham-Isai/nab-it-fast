@@ -36,7 +36,7 @@ const NavigatorSection = () => {
           But nabbit is more than <span className="gradient-text">price alerts.</span>
         </h2>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-          Navigator is the discovery side of nabbit — a gamified, community-powered shopping experience built for collectors, hunters, and deal obsessives.
+          nabbit is also a gamified, community-powered shopping experience built for collectors, hunters, and deal obsessives.
         </p>
       </div>
 
