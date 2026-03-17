@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { motion, useScroll, useSpring } from "framer-motion";
 import NabbitLogo from "./NabbitLogo";
+import NotificationBell from "./NotificationBell";
 import { Menu, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet";
