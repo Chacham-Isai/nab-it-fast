@@ -8,6 +8,8 @@ import Blog from "@/pages/Blog";
 import Contact from "@/pages/Contact";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
+import ForgotPassword from "@/pages/ForgotPassword";
+import ResetPassword from "@/pages/ResetPassword";
 import NotFound from "@/pages/NotFound";
 import Onboarding from "@/pages/Onboarding";
 import Feed from "@/pages/Feed";
@@ -29,6 +31,7 @@ import Analytics from "@/pages/Analytics";
 import Terms from "@/pages/Terms";
 import Privacy from "@/pages/Privacy";
 import DealDetail from "@/pages/DealDetail";
+import Chat from "@/pages/Chat";
 
 const AnimatedRoutes = () => {
   const location = useLocation();
