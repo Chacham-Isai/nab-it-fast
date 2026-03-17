@@ -1,0 +1,18 @@
+{
+  "name": "nabbit — Nab it before it's gone",
+  "short_name": "nabbit",
+  "description": "AI-powered marketplace for sneakers, cards, watches, and collectibles",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#09090b",
+  "theme_color": "#00e5a0",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["shopping", "lifestyle"]
+}

@@ -110,9 +110,9 @@ const Browse = () => {
       query = query.eq("listing_type", typeMap[type]);
     }
 
-    // Text search — use ilike for server-side search
+    // Text search — use Postgres full-text search via tsvector
     if (debouncedSearch.trim()) {
-      query = query.ilike("title", `%${debouncedSearch.trim()}%`);
+      query = query.textSearch("search_vector", debouncedSearch.trim(), { type: "websearch" });
     }
 
     // Price range — filter on starting_price server-side
