@@ -168,6 +168,10 @@ const Sell = () => {
                   ))}
                 </div>
 
+                <Button className="w-full rounded-full shimmer-btn font-bold gap-2" onClick={() => navigate("/seller-analytics")}>
+                  <BarChart3 className="w-4 h-4" /> View Full Analytics Dashboard
+                </Button>
+
                 {!sellerProfile?.stripe_onboarding_complete && (
                   <div className="glass-card !border-primary/30 p-5 space-y-3 shadow-[0_0_20px_hsl(var(--primary)/0.1)]">
                     <div className="flex items-center gap-2">
