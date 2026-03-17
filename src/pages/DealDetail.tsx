@@ -59,6 +59,7 @@ const DealDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { track: trackInteraction } = useTrackInteraction();
   const [deal, setDeal] = useState<any>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [isJoined, setIsJoined] = useState(false);
