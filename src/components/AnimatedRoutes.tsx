@@ -35,10 +35,12 @@ import Chat from "@/pages/Chat";
 import Referrals from "@/pages/Referrals";
 import Admin from "@/pages/Admin";
 import useRealtimeNotifications from "@/hooks/useRealtimeNotifications";
+import useStreakTracker from "@/hooks/useStreakTracker";
 
 const AnimatedRoutes = () => {
   const location = useLocation();
   useRealtimeNotifications();
+  useStreakTracker();
 
   return (
     <AnimatePresence mode="wait" initial={false}>
