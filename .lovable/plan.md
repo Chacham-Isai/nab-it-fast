@@ -1,86 +1,78 @@
 
 
-# nabbit.ai — Full Marketing Website
+# Complete Build Audit & Fix Plan
 
-A premium, dark-mode, conversion-focused marketing website for an AI-powered autonomous shopping agent. The logo image will be used as a reference for the brand identity (the "a" has a crosshair/target motif, ".ai" in coral).
+## Issues Found
 
----
+After a thorough audit of every page, database table, edge function, trigger, and RLS policy, here is what's broken or missing:
 
-## Phase 1: Foundation & Design System
+### Critical: `user_roles` table and `has_role` function don't exist
+The Admin page (`/admin`) queries `user_roles` to check admin access. The migration was attempted but the table and the `app_role` enum type were never actually created in the database. This means the Admin dashboard will always show "Access Denied."
 
-- **Dark theme setup** — Override all CSS variables to the nabbit brand palette (#0A0A0A background, #FF6B5B coral accent, etc.)
-- **Typography** — Import Google Fonts (Syne for headings, Plus Jakarta Sans for body) and configure Tailwind
-- **Install Framer Motion** for scroll-triggered animations throughout the site
-- **Reusable components** — Section wrapper with fade-up animation, gradient dividers, coral pill/badge, stat card
+**Fix:** Run a migration to create the `app_role` enum, `user_roles` table with RLS, and the `has_role` security definer function. Then insert an admin role row for your user.
 
----
+### Critical: `notifications_log` INSERT RLS blocks edge functions
+The current INSERT policy on `notifications_log` is `user_id = auth.uid()`. Edge functions using the service role key (stripe-webhook, close-auctions, deal triggers) insert notifications for OTHER users. The service role bypasses RLS, so this actually works — but the `notify_deal_milestone` trigger runs as SECURITY DEFINER which also bypasses RLS. This is OK.
 
-## Phase 2: Navigation & Layout Shell
+However, the client-side INSERT policy means a user can only insert notifications for themselves — which is correct and safe. No fix needed here.
 
-- **Sticky navbar** — Transparent → glass blur on scroll, nabbit.ai text logo ("nabbit" white, ".ai" coral), desktop nav links with smooth scroll, coral "Get Started Free" CTA button
-- **Mobile hamburger** — Slide-in drawer with all nav links
-- **Footer** — 4-column layout (Brand, Product, Company, Support), bottom copyright bar
+### Issue: Referrals page foreign key join may fail
+`Referrals.tsx` does `profiles!referrals_referee_id_fkey(...)`. The types file shows this FK exists, so this should work. No fix needed.
 
----
+### Issue: `buyer_interactions` has 0 rows despite tracking hook being wired
+The `useTrackInteraction` hook is imported into Feed, Browse, ListingDetail, and DealDetail. But looking at Feed.tsx more carefully, the hook is imported but the `track` function from `useTrackInteraction` may not actually be called in the Feed's nab/save/like handlers.
 
-## Phase 3: Homepage Sections (Landing Page)
+**Fix:** Wire `useTrackInteraction.track()` calls into Feed's `handleNab`, `handleBookmark`, and `handleLike` handlers so interactions actually get logged.
 
-### Hero (Section 1)
-- Two-column: headline + CTAs + inline stats on left, CSS phone mockup on right showing 3 product hunt cards (Jordan 4, Rolex, Chanel)
-- Floating animated badges around the phone
-- Coral radial glow background accents
+### Issue: `streak_days` and `last_active_date` never update
+The `useStreakTracker` hook runs but `last_active_date` is null for all 3 test users. The hook checks `if (lastActive === today) return` which works, but the real issue is the hook only runs inside `AnimatedRoutes` which requires the user to be on a protected route. If the user lands on the landing page, it won't fire. This is actually correct — streak only tracks when logged in and on an app page. The profiles show `last_active_date: null` because no one has visited a protected route since the hook was deployed. This will self-correct on next login.
 
-### The Problem (Section 2)
-- 4 stat cards in a grid with large coral values, descriptions, and source citations
-- Closing italicized quote
+### Issue: `user_roles` table not in Supabase types
+Since the table doesn't exist yet, `Admin.tsx` casts `"user_roles" as any`. After creating the table, the types will auto-regenerate and the cast can be removed.
 
-### How It Works (Section 3)
-- 3 step cards (Upload, Set Price, Auto-Purchase) connected by a faint line
-- Each with icon, faded step number, description, and coral tag pill
+### Issue: Realtime is properly configured
+`notifications_log`, `auctions`, `bids`, `orders`, `chat_messages`, `break_slots`, `group_deals`, `group_deal_participants`, and `crews` are all in `supabase_realtime` publication. This is correct.
 
-### Proprietary Technology (Section 4)
-- 2×2 grid of tech cards (NabVision AI, PriceGraph Engine, NabBot Agent, TrustShield)
-- Horizontal metrics bar below with 5 key stats
+### Issue: Feed interaction tracking not wired
+Looking at the Feed page carefully, the `useTrackInteraction` hook is imported but the `track` function from it is not destructured or used — only `useAnalytics().track` is used. Need to add `useTrackInteraction` calls.
 
-### Use Cases / Categories (Section 5)
-- 4×2 grid of category cards (Sneakers, Electronics, Fashion, Collectibles, Beauty, Home, Kids, Cars) with Lucide icons
+## Plan
 
-### Traction (Section 6)
-- 4 metric cards with large coral values
-- Footnote bar with growth stats
+### 1. Database Migration: Create user_roles + has_role
+Create the `app_role` enum, `user_roles` table with proper RLS (only admins can read, system can insert), and the `has_role` security definer function.
 
-### Competitive Comparison (Section 7)
-- Feature comparison table: Nabbit vs Honey vs Camel vs Google Shopping
-- Nabbit column highlighted with coral tint, using ● / — / ◐ indicators
+### 2. Insert admin role for your user
+After the migration, insert an admin role for the existing user(s) who should have admin access.
 
-### Pricing (Section 8)
-- 3 pricing cards: Nibble (Free), Nabber ($9/mo — featured with coral border/glow), Nabbit Pro ($29/mo)
-- Feature lists with coral checkmarks
+### 3. Wire interaction tracking in Feed.tsx
+The Feed page imports `useTrackInteraction` but never calls `track()` from it. Add calls in `handleNab`, `handleBookmark`, and `handleLike` to log `purchase`/`click`, `save`, and `view` interactions respectively.
 
-### Final CTA (Section 9)
-- Large banner card with coral glow, headline, and two CTA buttons
+### 4. Fix Admin.tsx to remove `as any` cast
+Once `user_roles` table exists and types regenerate, clean up the type cast.
 
----
+### 5. Verify all edge functions deploy correctly
+Confirm `ai-learn`, `close-auctions`, `stripe-webhook`, `create-checkout`, `place-bid`, `recommend-feed`, `recommend-deals`, `weekly-digest`, `create-connect-account`, `check-connect-status`, `stripe-connect-webhook` all deploy without errors.
 
-## Phase 4: Additional Pages
+## Summary of what already works
+- Authentication (signup, login, forgot/reset password)
+- Onboarding flow with taste tag collection
+- 9 active listings in the database
+- 1 live auction with real-time bidding
+- 13 active group deals with tiered pricing + giveaway logic
+- 4 orders in the system
+- Seller dashboard with Stripe Connect
+- Chat with real-time subscriptions
+- Notifications with real-time toasts
+- Referral system with code generation and XP rewards
+- AI Taste DNA with Lovable AI gateway integration
+- XP/leveling/badges system
+- Streak tracking
+- Profile with AI learning, badges, shipping, activity timeline
+- Browse with full-text search and filters
 
-- **/about** — Mission statement, placeholder team member cards, 3 company values
-- **/blog** — Grid of 6 placeholder blog post cards with titles, dates, and excerpts
-- **/contact** — Contact form (Name, Email, Subject dropdown, Message) + email/social links
-- **/login** — Dark centered card with email/password fields, links to signup/forgot password
-- **/signup** — Dark centered card with name/email/password/confirm fields, link to login
-
-All pages share the same navbar and footer. All UI-only (no backend auth needed).
-
----
-
-## Design Details Applied Throughout
-
-- Scroll-triggered Framer Motion fade-up animations on every section
-- Cards with 1px borders, 20-24px rounded corners, hover lift effects
-- Generous spacing (~140px desktop, ~100px mobile between sections)
-- Gradient section dividers
-- Fully responsive: mobile-first with tablet and desktop breakpoints
-- Lucide React icons (no emojis)
-- All copy exactly as specified in the brief
+## What needs fixing (4 items)
+1. Create `user_roles` table + `has_role` function (migration)
+2. Assign admin role to your user
+3. Wire `useTrackInteraction.track()` in Feed.tsx handlers
+4. Deploy all edge functions to ensure they're current
 
