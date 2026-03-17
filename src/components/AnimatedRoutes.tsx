@@ -34,6 +34,7 @@ import DealDetail from "@/pages/DealDetail";
 import Chat from "@/pages/Chat";
 import Referrals from "@/pages/Referrals";
 import Admin from "@/pages/Admin";
+import SellerAnalytics from "@/pages/SellerAnalytics";
 import useRealtimeNotifications from "@/hooks/useRealtimeNotifications";
 import useStreakTracker from "@/hooks/useStreakTracker";
 
