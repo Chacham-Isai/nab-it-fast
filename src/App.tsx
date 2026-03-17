@@ -7,8 +7,14 @@ import AnimatedRoutes from "./components/AnimatedRoutes";
 import { ThemeProvider } from "./hooks/use-theme";
 import { AuthProvider } from "./hooks/useAuth";
 import ErrorBoundary from "./components/ErrorBoundary";
+import useRealtimeNotifications from "./hooks/useRealtimeNotifications";
 
 const queryClient = new QueryClient();
+
+const RealtimeNotificationListener = () => {
+  useRealtimeNotifications();
+  return null;
+};
 
 const App = () => (
   <ErrorBoundary>
@@ -19,6 +25,7 @@ const App = () => (
           <Sonner />
           <BrowserRouter>
             <AuthProvider>
+              <RealtimeNotificationListener />
               <AnimatedRoutes />
             </AuthProvider>
           </BrowserRouter>
