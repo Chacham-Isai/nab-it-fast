@@ -375,10 +375,13 @@ const Feed = () => {
     } catch (err) { console.error("Error saving item:", err); }
   };
 
+  const { track: trackInteraction } = useTrackInteraction();
+
   const handleNab = (item: FeedItem) => {
     setSavedItems((s) => [item, ...s]);
     saveToDb(item);
     track("nab_item", { item_id: item.id, category: item.category, price: item.price });
+    trackInteraction("purchase", item.listing_id || item.id, "listing", item.category, item.price);
     toast({ title: "✅ Nabbed!", description: `${item.name} added to your collection.` });
   };
 
@@ -386,11 +389,13 @@ const Feed = () => {
     setSavedItems((s) => [item, ...s]);
     saveToDb(item);
     track("bookmark", { item_id: item.id, category: item.category, price: item.price });
+    trackInteraction("save", item.listing_id || item.id, "listing", item.category, item.price);
     toast({ title: "🔖 Saved!", description: item.name });
   };
 
   const handleLike = (item: FeedItem) => {
     track("like_item", { item_id: item.id, category: item.category });
+    trackInteraction("click", item.listing_id || item.id, "listing", item.category, item.price);
   };
 
   return (
