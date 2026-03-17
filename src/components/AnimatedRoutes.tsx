@@ -32,6 +32,7 @@ import Terms from "@/pages/Terms";
 import Privacy from "@/pages/Privacy";
 import DealDetail from "@/pages/DealDetail";
 import Chat from "@/pages/Chat";
+import Referrals from "@/pages/Referrals";
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -71,6 +72,7 @@ const AnimatedRoutes = () => {
         <Route path="/deal/:id" element={<PageTransition><ProtectedRoute><DealDetail /></ProtectedRoute></PageTransition>} />
         <Route path="/analytics" element={<PageTransition><ProtectedRoute><Analytics /></ProtectedRoute></PageTransition>} />
         <Route path="/chat/:roomId" element={<PageTransition><ProtectedRoute><Chat /></ProtectedRoute></PageTransition>} />
+        <Route path="/referrals" element={<PageTransition><ProtectedRoute><Referrals /></ProtectedRoute></PageTransition>} />
 
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Edit2, ShoppingBag, Star, Zap, Heart, Bell, DollarSign, Moon, Shield, Trash2, LogOut, ChevronRight, Loader2, Package, BarChart3 } from "lucide-react";
+import { ArrowLeft, Edit2, ShoppingBag, Star, Zap, Heart, Bell, DollarSign, Moon, Shield, Trash2, LogOut, ChevronRight, Loader2, Package, BarChart3, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion } from "framer-motion";
@@ -59,7 +59,7 @@ const Profile = () => {
 
   const settingsGroups = [
     { label: "Preferences", items: [{ icon: Bell, label: "Notifications", value: "On" }, { icon: DollarSign, label: "Currency", value: "USD" }, { icon: Moon, label: "Theme", value: "System" }] },
-    { label: "Insights", items: [{ icon: BarChart3, label: "Analytics Dashboard", value: "", action: () => navigate("/analytics") }] },
+    { label: "Insights", items: [{ icon: BarChart3, label: "Analytics Dashboard", value: "", action: () => navigate("/analytics") }, { icon: Gift, label: "Invite Friends (500 XP)", value: "", action: () => navigate("/referrals") }] },
     { label: "Account", items: [{ icon: Star, label: "Subscription", value: "Free" }, { icon: Shield, label: "Privacy & Data", value: "" }] },
     { label: "Danger Zone", items: [{ icon: Trash2, label: "Delete Account", value: "", danger: true }, { icon: LogOut, label: "Sign Out", value: "", danger: true, action: handleSignOut }] },
   ];
