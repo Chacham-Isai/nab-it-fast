@@ -33,6 +33,7 @@ import Privacy from "@/pages/Privacy";
 import DealDetail from "@/pages/DealDetail";
 import Chat from "@/pages/Chat";
 import Referrals from "@/pages/Referrals";
+import Admin from "@/pages/Admin";
 
 const AnimatedRoutes = () => {
   const location = useLocation();
