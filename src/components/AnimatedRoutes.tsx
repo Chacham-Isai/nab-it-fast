@@ -33,9 +33,12 @@ import Privacy from "@/pages/Privacy";
 import DealDetail from "@/pages/DealDetail";
 import Chat from "@/pages/Chat";
 import Referrals from "@/pages/Referrals";
+import Admin from "@/pages/Admin";
+import useRealtimeNotifications from "@/hooks/useRealtimeNotifications";
 
 const AnimatedRoutes = () => {
   const location = useLocation();
+  useRealtimeNotifications();
 
   return (
     <AnimatePresence mode="wait" initial={false}>
@@ -73,6 +76,7 @@ const AnimatedRoutes = () => {
         <Route path="/analytics" element={<PageTransition><ProtectedRoute><Analytics /></ProtectedRoute></PageTransition>} />
         <Route path="/chat/:roomId" element={<PageTransition><ProtectedRoute><Chat /></ProtectedRoute></PageTransition>} />
         <Route path="/referrals" element={<PageTransition><ProtectedRoute><Referrals /></ProtectedRoute></PageTransition>} />
+        <Route path="/admin" element={<PageTransition><ProtectedRoute><Admin /></ProtectedRoute></PageTransition>} />
 
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
