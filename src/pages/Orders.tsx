@@ -44,6 +44,19 @@ const Orders = () => {
   useEffect(() => {
     if (!user) return;
     loadOrders();
+
+    // Real-time order status updates
+    const channel = supabase
+      .channel('my-orders')
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'orders', filter: `buyer_id=eq.${user.id}` }, (payload) => {
+        setOrders(prev => prev.map(o => o.id === payload.new.id ? { ...o, ...payload.new } : o));
+        const status = (payload.new as any).status;
+        if (status === 'shipped') toast({ title: "📦 Your order shipped!", description: "Check tracking details." });
+        if (status === 'delivered') toast({ title: "✅ Order delivered!" });
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
   }, [user]);
 
   const loadOrders = async () => {
