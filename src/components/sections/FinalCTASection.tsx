@@ -19,7 +19,14 @@ const liveNabs = [
 
 const FinalCTASection = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [nabIndex, setNabIndex] = useState(0);
+  const [waitlistOpen, setWaitlistOpen] = useState(false);
+
+  const handleCTA = () => {
+    if (user) navigate("/feed");
+    else setWaitlistOpen(true);
+  };
 
   useEffect(() => {
     const interval = setInterval(() => setNabIndex((i) => (i + 1) % liveNabs.length), 3000);
