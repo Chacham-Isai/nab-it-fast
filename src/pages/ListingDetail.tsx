@@ -11,6 +11,7 @@ import Countdown from "@/components/Countdown";
 import BottomNav from "@/components/BottomNav";
 import usePageMeta from "@/hooks/usePageMeta";
 import ReviewList from "@/components/reviews/ReviewList";
+import { useTrackInteraction } from "@/hooks/useTrackInteraction";
 
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
