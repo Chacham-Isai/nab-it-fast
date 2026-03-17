@@ -90,9 +90,16 @@ const useSavingsCounter = (target: number, duration = 3000) => {
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [activeFeature, setActiveFeature] = useState(0);
   const [activityIndex, setActivityIndex] = useState(0);
+  const [waitlistOpen, setWaitlistOpen] = useState(false);
   const totalSaved = useSavingsCounter(4218490, 3000);
+
+  const handleCTA = () => {
+    if (user) navigate("/feed");
+    else setWaitlistOpen(true);
+  };
 
   useEffect(() => {
     const interval = setInterval(() => setActivityIndex((i) => (i + 1) % liveActivity.length), 3200);
