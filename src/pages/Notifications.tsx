@@ -51,6 +51,18 @@ const Notifications = () => {
   const [filter, setFilter] = useState<string>("All");
   const [loading, setLoading] = useState(true);
   const [isDemo, setIsDemo] = useState(false);
+  const { isSupported, isSubscribed, subscribe, unsubscribe } = usePushNotifications();
+
+  const handlePushToggle = async () => {
+    if (isSubscribed) {
+      await unsubscribe();
+      toast("Push notifications disabled");
+    } else {
+      const ok = await subscribe();
+      if (ok) toast.success("Push notifications enabled! 🔔");
+      else toast.error("Could not enable push notifications");
+    }
+  };
 
   useEffect(() => { if (user) fetchNotifications(); }, [user]);
 
