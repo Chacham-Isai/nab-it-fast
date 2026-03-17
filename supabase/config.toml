@@ -23,3 +23,6 @@ verify_jwt = false
 
 [functions.recommend-feed]
 verify_jwt = false
+
+[functions.ai-learn]
+verify_jwt = false

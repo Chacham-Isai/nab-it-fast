@@ -19,7 +19,7 @@ export const useTrackInteraction = () => {
     ) => {
       if (!user) return;
       try {
-        await supabase.from("buyer_interactions").insert({
+        await supabase.from("buyer_interactions").insert([{
           user_id: user.id,
           interaction_type: interactionType,
           item_id: itemId,
@@ -27,7 +27,7 @@ export const useTrackInteraction = () => {
           category,
           price,
           metadata: metadata || {},
-        });
+        }]);
       } catch {
         // Fire and forget — don't break UX
       }
