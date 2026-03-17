@@ -101,6 +101,11 @@ const Notifications = () => {
           <button onClick={() => navigate(-1)}><ArrowLeft className="w-5 h-5 text-foreground" /></button>
           <NabbitLogo size="sm" />
           <h1 className="font-heading font-black text-foreground text-lg tracking-tight flex-1">NOTIFICATIONS</h1>
+          {isSupported && (
+            <Button variant="ghost" size="icon" onClick={handlePushToggle} title={isSubscribed ? "Disable push" : "Enable push"}>
+              {isSubscribed ? <Bell className="w-4 h-4 text-primary" /> : <BellOff className="w-4 h-4 text-muted-foreground" />}
+            </Button>
+          )}
           {unreadCount > 0 && (
             <>
               <span className="text-xs bg-primary text-primary-foreground rounded-full px-2 py-0.5 font-black">{unreadCount}</span>
