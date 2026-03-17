@@ -15,7 +15,7 @@ export const useTrackInteraction = () => {
       itemType?: ItemType,
       category?: string,
       price?: number,
-      metadata?: Record<string, unknown>
+      metadata?: Record<string, string | number | boolean>
     ) => {
       if (!user) return;
       try {
