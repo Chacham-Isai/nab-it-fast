@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useAuth } from "@/hooks/useAuth";
+import WaitlistModal from "@/components/WaitlistModal";
+
 import heroBgDark from "@/assets/hero/hero-bg-dark.jpg";
 import crewDealShowcase from "@/assets/hero/crew-deal-showcase.png";
 import aiCuratedFeed from "@/assets/hero/ai-curated-feed.png";
