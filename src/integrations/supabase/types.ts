@@ -483,6 +483,7 @@ export type Database = {
           listing_type: string
           metadata: Json | null
           quantity: number
+          search_vector: unknown
           seller_id: string
           starting_price: number
           status: string
@@ -501,6 +502,7 @@ export type Database = {
           listing_type?: string
           metadata?: Json | null
           quantity?: number
+          search_vector?: unknown
           seller_id: string
           starting_price: number
           status?: string
@@ -519,6 +521,7 @@ export type Database = {
           listing_type?: string
           metadata?: Json | null
           quantity?: number
+          search_vector?: unknown
           seller_id?: string
           starting_price?: number
           status?: string
