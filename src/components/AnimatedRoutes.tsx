@@ -34,6 +34,7 @@ import DealDetail from "@/pages/DealDetail";
 import Chat from "@/pages/Chat";
 import Referrals from "@/pages/Referrals";
 import Admin from "@/pages/Admin";
+import SellerAnalytics from "@/pages/SellerAnalytics";
 import useRealtimeNotifications from "@/hooks/useRealtimeNotifications";
 import useStreakTracker from "@/hooks/useStreakTracker";
 
@@ -79,6 +80,7 @@ const AnimatedRoutes = () => {
         <Route path="/chat/:roomId" element={<PageTransition><ProtectedRoute><Chat /></ProtectedRoute></PageTransition>} />
         <Route path="/referrals" element={<PageTransition><ProtectedRoute><Referrals /></ProtectedRoute></PageTransition>} />
         <Route path="/admin" element={<PageTransition><ProtectedRoute><Admin /></ProtectedRoute></PageTransition>} />
+        <Route path="/seller-analytics" element={<PageTransition><ProtectedRoute><SellerAnalytics /></ProtectedRoute></PageTransition>} />
 
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
