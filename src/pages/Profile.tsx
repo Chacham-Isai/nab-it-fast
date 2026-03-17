@@ -59,7 +59,7 @@ const Profile = () => {
 
   const settingsGroups = [
     { label: "Preferences", items: [{ icon: Bell, label: "Notifications", value: "On" }, { icon: DollarSign, label: "Currency", value: "USD" }, { icon: Moon, label: "Theme", value: "System" }] },
-    { label: "Insights", items: [{ icon: BarChart3, label: "Analytics Dashboard", value: "", action: () => navigate("/analytics") }] },
+    { label: "Insights", items: [{ icon: BarChart3, label: "Analytics Dashboard", value: "", action: () => navigate("/analytics") }, { icon: Gift, label: "Invite Friends (500 XP)", value: "", action: () => navigate("/referrals") }] },
     { label: "Account", items: [{ icon: Star, label: "Subscription", value: "Free" }, { icon: Shield, label: "Privacy & Data", value: "" }] },
     { label: "Danger Zone", items: [{ icon: Trash2, label: "Delete Account", value: "", danger: true }, { icon: LogOut, label: "Sign Out", value: "", danger: true, action: handleSignOut }] },
   ];
