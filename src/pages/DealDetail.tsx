@@ -14,6 +14,7 @@ import usePageMeta from "@/hooks/usePageMeta";
 import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useTrackInteraction } from "@/hooks/useTrackInteraction";
 
 import imgCardsBox from "@/assets/products/cards-box.jpg";
 import imgSneakers from "@/assets/products/sneakers-jordans.jpg";
