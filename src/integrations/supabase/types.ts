@@ -672,6 +672,7 @@ export type Database = {
           id: string
           last_active_date: string | null
           onboarding_complete: boolean | null
+          referred_by: string | null
           spending_style: string | null
           streak_days: number
           taste_tags: string[] | null
@@ -687,6 +688,7 @@ export type Database = {
           id: string
           last_active_date?: string | null
           onboarding_complete?: boolean | null
+          referred_by?: string | null
           spending_style?: string | null
           streak_days?: number
           taste_tags?: string[] | null
@@ -702,6 +704,7 @@ export type Database = {
           id?: string
           last_active_date?: string | null
           onboarding_complete?: boolean | null
+          referred_by?: string | null
           spending_style?: string | null
           streak_days?: number
           taste_tags?: string[] | null
@@ -709,6 +712,54 @@ export type Database = {
           travel_vibes?: string[] | null
         }
         Relationships: []
+      }
+      referrals: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          id: string
+          referee_id: string | null
+          referral_code: string
+          referrer_id: string
+          status: string
+          xp_awarded: number
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          referee_id?: string | null
+          referral_code: string
+          referrer_id: string
+          status?: string
+          xp_awarded?: number
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          referee_id?: string | null
+          referral_code?: string
+          referrer_id?: string
+          status?: string
+          xp_awarded?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referrals_referee_id_fkey"
+            columns: ["referee_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "referrals_referrer_id_fkey"
+            columns: ["referrer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reviews: {
         Row: {
@@ -920,6 +971,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      complete_referral: {
+        Args: { p_code: string; p_referee_id: string }
+        Returns: undefined
+      }
+      generate_referral_code: { Args: { user_id: string }; Returns: string }
       increment_seller_sales: {
         Args: { p_amount: number; p_seller_id: string }
         Returns: undefined
