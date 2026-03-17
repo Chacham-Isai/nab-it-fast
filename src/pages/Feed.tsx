@@ -15,6 +15,7 @@ import usePageMeta from "@/hooks/usePageMeta";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { getCategoryImage, modeImages } from "@/lib/images";
 import AIFeedRecommendations from "@/components/feed/AIFeedRecommendations";
+import { useTrackInteraction } from "@/hooks/useTrackInteraction";
 
 // Premium product images
 import imgCardsBox from "@/assets/products/cards-box.jpg";

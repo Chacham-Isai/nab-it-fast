@@ -11,6 +11,7 @@ import { supabase } from "@/integrations/supabase/client";
 import Countdown from "@/components/Countdown";
 import usePageMeta from "@/hooks/usePageMeta";
 import NabbitLogo from "@/components/NabbitLogo";
+import { useTrackInteraction } from "@/hooks/useTrackInteraction";
 
 // Product placeholder images
 import imgCardsBox from "@/assets/products/cards-box.jpg";
@@ -57,6 +58,7 @@ const typeMap: Record<string, string> = {
 const Browse = () => {
   usePageMeta({ title: "Browse — nabbit.ai", description: "Browse auctions, buy-now deals, breaks, and grab bags. Find your next nab.", path: "/browse" });
   const navigate = useNavigate();
+  const { track: trackInteraction } = useTrackInteraction();
   const [searchParams, setSearchParams] = useSearchParams();
 
   const [listings, setListings] = useState<any[]>([]);
@@ -364,7 +366,7 @@ const Browse = () => {
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: Math.min(i * 0.03, 0.3) }}
-                    onClick={() => navigate(`/listing/${listing.id}`)}
+                    onClick={() => { trackInteraction("click", listing.id, "listing", listing.category, listing.starting_price); navigate(`/listing/${listing.id}`); }}
                     className="group rounded-2xl glass-card gradient-border overflow-hidden cursor-pointer hover:shadow-[0_0_30px_-6px_hsl(var(--primary)/0.2)] transition-all"
                   >
                     {/* Image */}

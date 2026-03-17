@@ -194,6 +194,42 @@ export type Database = {
           },
         ]
       }
+      buyer_interactions: {
+        Row: {
+          category: string | null
+          created_at: string | null
+          id: string
+          interaction_type: string
+          item_id: string | null
+          item_type: string | null
+          metadata: Json | null
+          price: number | null
+          user_id: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          interaction_type: string
+          item_id?: string | null
+          item_type?: string | null
+          metadata?: Json | null
+          price?: number | null
+          user_id: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string | null
+          id?: string
+          interaction_type?: string
+          item_id?: string | null
+          item_type?: string | null
+          metadata?: Json | null
+          price?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       chat_messages: {
         Row: {
           created_at: string | null
@@ -664,13 +700,18 @@ export type Database = {
       }
       profiles: {
         Row: {
+          ai_learning_enabled: boolean
+          ai_taste_summary: Json | null
           avatar_emoji: string | null
+          badges: Json
+          bio: string | null
           brand_affinities: string[] | null
           buy_speed: string | null
           created_at: string | null
           display_name: string | null
           id: string
           last_active_date: string | null
+          level: number
           onboarding_complete: boolean | null
           referred_by: string | null
           spending_style: string | null
@@ -680,13 +721,18 @@ export type Database = {
           travel_vibes: string[] | null
         }
         Insert: {
+          ai_learning_enabled?: boolean
+          ai_taste_summary?: Json | null
           avatar_emoji?: string | null
+          badges?: Json
+          bio?: string | null
           brand_affinities?: string[] | null
           buy_speed?: string | null
           created_at?: string | null
           display_name?: string | null
           id: string
           last_active_date?: string | null
+          level?: number
           onboarding_complete?: boolean | null
           referred_by?: string | null
           spending_style?: string | null
@@ -696,13 +742,18 @@ export type Database = {
           travel_vibes?: string[] | null
         }
         Update: {
+          ai_learning_enabled?: boolean
+          ai_taste_summary?: Json | null
           avatar_emoji?: string | null
+          badges?: Json
+          bio?: string | null
           brand_affinities?: string[] | null
           buy_speed?: string | null
           created_at?: string | null
           display_name?: string | null
           id?: string
           last_active_date?: string | null
+          level?: number
           onboarding_complete?: boolean | null
           referred_by?: string | null
           spending_style?: string | null
@@ -912,6 +963,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      shipping_addresses: {
+        Row: {
+          address_line1: string
+          address_line2: string | null
+          city: string
+          country: string | null
+          created_at: string | null
+          full_name: string
+          id: string
+          is_default: boolean | null
+          label: string | null
+          state: string
+          user_id: string
+          zip: string
+        }
+        Insert: {
+          address_line1: string
+          address_line2?: string | null
+          city: string
+          country?: string | null
+          created_at?: string | null
+          full_name: string
+          id?: string
+          is_default?: boolean | null
+          label?: string | null
+          state: string
+          user_id: string
+          zip: string
+        }
+        Update: {
+          address_line1?: string
+          address_line2?: string | null
+          city?: string
+          country?: string | null
+          created_at?: string | null
+          full_name?: string
+          id?: string
+          is_default?: boolean | null
+          label?: string | null
+          state?: string
+          user_id?: string
+          zip?: string
+        }
+        Relationships: []
       }
       tribe_memberships: {
         Row: {

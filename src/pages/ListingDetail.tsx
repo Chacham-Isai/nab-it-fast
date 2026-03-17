@@ -11,12 +11,14 @@ import Countdown from "@/components/Countdown";
 import BottomNav from "@/components/BottomNav";
 import usePageMeta from "@/hooks/usePageMeta";
 import ReviewList from "@/components/reviews/ReviewList";
+import { useTrackInteraction } from "@/hooks/useTrackInteraction";
 
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { track } = useAnalytics();
+  const { track: trackInteraction } = useTrackInteraction();
   const [listing, setListing] = useState<any>(null);
   const [seller, setSeller] = useState<any>(null);
   const [auction, setAuction] = useState<any>(null);
@@ -49,6 +51,7 @@ const ListingDetail = () => {
     if (!data) { setLoading(false); return; }
     setListing(data);
     track("listing_viewed", { listing_id: data.id, category: data.category, listing_type: data.listing_type, price: data.starting_price });
+    trackInteraction("view", data.id, "listing", data.category, data.starting_price);
 
     const auc = data.auctions?.[0];
     if (auc) {

@@ -14,6 +14,7 @@ import usePageMeta from "@/hooks/usePageMeta";
 import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { useTrackInteraction } from "@/hooks/useTrackInteraction";
 
 import imgCardsBox from "@/assets/products/cards-box.jpg";
 import imgSneakers from "@/assets/products/sneakers-jordans.jpg";
@@ -58,6 +59,7 @@ const DealDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { track: trackInteraction } = useTrackInteraction();
   const [deal, setDeal] = useState<any>(null);
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [isJoined, setIsJoined] = useState(false);
@@ -110,6 +112,7 @@ const DealDetail = () => {
       setIsJoined(true);
       const xpGain = await awardXP(user.id, "join_deal");
       toast({ title: `+${xpGain} XP! 🎮`, description: "You joined this crew deal!" });
+      trackInteraction("join", id, "deal", deal?.category, deal?.deal_price);
     }
     setJoining(false);
   };
