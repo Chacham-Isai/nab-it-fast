@@ -112,6 +112,7 @@ const DealDetail = () => {
       setIsJoined(true);
       const xpGain = await awardXP(user.id, "join_deal");
       toast({ title: `+${xpGain} XP! 🎮`, description: "You joined this crew deal!" });
+      trackInteraction("join", id, "deal", deal?.category, deal?.deal_price);
     }
     setJoining(false);
   };

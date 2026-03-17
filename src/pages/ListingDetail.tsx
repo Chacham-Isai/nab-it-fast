@@ -51,6 +51,7 @@ const ListingDetail = () => {
     if (!data) { setLoading(false); return; }
     setListing(data);
     track("listing_viewed", { listing_id: data.id, category: data.category, listing_type: data.listing_type, price: data.starting_price });
+    trackInteraction("view", data.id, "listing", data.category, data.starting_price);
 
     const auc = data.auctions?.[0];
     if (auc) {
