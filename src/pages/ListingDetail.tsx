@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Gavel, ShoppingBag, Share2, Bookmark, Star, Shield, Loader2, ChevronLeft, ChevronRight, Clock, Users, AlertCircle } from "lucide-react";
+import { ArrowLeft, Gavel, ShoppingBag, Share2, Bookmark, Star, Shield, Loader2, ChevronLeft, ChevronRight, Clock, Users, AlertCircle, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
