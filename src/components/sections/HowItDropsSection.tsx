@@ -5,6 +5,11 @@ import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
+import stepSpot from "@/assets/steps/step-spot.jpg";
+import stepAI from "@/assets/steps/step-ai-learns.jpg";
+import stepPrice from "@/assets/steps/step-price-drops.jpg";
+import stepNabbed from "@/assets/steps/step-nabbed.jpg";
+
 const steps = [
   {
     icon: Users,
@@ -12,7 +17,7 @@ const steps = [
     title: "Join a Crew Deal.",
     desc: "Browse live deals or let AI recommend ones matched to your taste. Pick a tier — early birds get the deepest discounts.",
     accent: "nab-cyan",
-    gradient: "from-nab-cyan/20 via-nab-cyan/5 to-transparent",
+    image: stepSpot,
     demo: [
       { label: "👟 Jordan 4 Thunder — 18/25 joined", sublabel: "Early Bird tier: $121 (42% off)" },
       { label: "🃏 PSA 10 Charizard — 32/50 joined", sublabel: "Standard tier: $340 (24% off)" },
@@ -25,7 +30,7 @@ const steps = [
     title: "AI curates your feed.",
     desc: "Every swipe, save, and purchase trains your personal engine. It learns what you actually want — not what an ad tells you to buy.",
     accent: "nab-purple",
-    gradient: "from-nab-purple/20 via-nab-purple/5 to-transparent",
+    image: stepAI,
     demo: [
       { label: "🧠 Taste profile: 94% complete", sublabel: "Sneakerhead · Streetwear · Tech" },
       { label: "🎯 New match: 97% confidence", sublabel: "Jordan 4 'Bred Reimagined' — $89 off" },
@@ -38,7 +43,7 @@ const steps = [
     title: "Price drops as crew grows.",
     desc: "More people join → price drops for everyone. The tier ladder shows exactly where the price is heading. Transparent. No tricks.",
     accent: "success",
-    gradient: "from-success/20 via-success/5 to-transparent",
+    image: stepPrice,
     demo: [
       { label: "📉 Price just dropped: $145 → $121", sublabel: "Early Bird tier filled — moving to next" },
       { label: "🔥 3 more needed for next tier", sublabel: "Price will drop to $99 at 25 members" },
@@ -51,7 +56,7 @@ const steps = [
     title: "Nabbed. Delivered. Won.",
     desc: "Deal gets funded, supplier is locked, product ships directly to you. Full buyer protection. Real sourcing pipeline you can track.",
     accent: "nab-blue",
-    gradient: "from-nab-blue/20 via-nab-blue/5 to-transparent",
+    image: stepNabbed,
     demo: [
       { label: "✓ Deal funded — order placed", sublabel: "Sourcing: locked with verified supplier" },
       { label: "📦 Tracking: shipped → in transit", sublabel: "Arrives Thursday — buyer protected" },
@@ -62,13 +67,21 @@ const steps = [
 
 const HowItDropsSection = () => {
   const navigate = useNavigate();
-  const [hoveredStep, setHoveredStep] = useState<number | null>(null);
+  const [activeStep, setActiveStep] = useState(0);
   const [demoIndex, setDemoIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => setDemoIndex((i) => (i + 1) % 3), 2800);
     return () => clearInterval(interval);
   }, []);
+
+  // Auto-cycle steps
+  useEffect(() => {
+    const interval = setInterval(() => setActiveStep((i) => (i + 1) % steps.length), 6000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const step = steps[activeStep];
 
   return (
     <SectionWrapper id="how-it-drops">
@@ -83,96 +96,131 @@ const HowItDropsSection = () => {
         </p>
       </div>
 
-      {/* Progress connector line (desktop) */}
-      <div className="hidden lg:block relative mb-8">
-        <div className="absolute top-1/2 left-[12.5%] right-[12.5%] h-px bg-border" />
-        <motion.div
-          className="absolute top-1/2 left-[12.5%] h-px bg-gradient-to-r from-nab-cyan via-success to-nab-blue"
-          initial={{ width: "0%" }}
-          whileInView={{ width: "75%" }}
-          viewport={{ once: true }}
-          transition={{ duration: 1.5, ease: "easeOut" }}
-        />
-        <div className="flex justify-between px-[12.5%]">
-          {steps.map((step, i) => (
-            <motion.div
-              key={i}
-              initial={{ scale: 0 }}
-              whileInView={{ scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.3 + i * 0.15, type: "spring" }}
-              className={`w-4 h-4 rounded-full border-2 relative z-10 transition-all duration-300 ${
-                hoveredStep !== null && hoveredStep >= i
-                  ? `bg-${step.accent} border-${step.accent} shadow-[0_0_12px_hsl(var(--${step.accent})/0.5)]`
-                  : "bg-background border-muted-foreground/30"
-              }`}
-            />
-          ))}
+      {/* Step selector bar */}
+      <div className="flex items-center justify-center gap-3 sm:gap-4 mb-10">
+        {steps.map((s, i) => (
+          <button
+            key={s.num}
+            onClick={() => setActiveStep(i)}
+            className={`flex items-center gap-2 px-4 py-3 rounded-2xl border transition-all duration-400 ${
+              activeStep === i
+                ? `glass-card border-${s.accent}/40 shadow-[0_0_30px_-5px_hsl(var(--${s.accent})/0.3)]`
+                : "border-border/20 hover:border-border/40"
+            }`}
+          >
+            <div className={`w-8 h-8 rounded-xl flex items-center justify-center transition-all duration-300 ${
+              activeStep === i
+                ? `bg-${s.accent}/20 border border-${s.accent}/40`
+                : "bg-muted/30"
+            }`}>
+              <s.icon className={`w-4 h-4 ${activeStep === i ? `text-${s.accent}` : "text-muted-foreground"}`} />
+            </div>
+            <div className="hidden sm:block text-left">
+              <span className={`text-[10px] font-black tracking-widest ${activeStep === i ? `text-${s.accent}` : "text-muted-foreground"}`}>
+                STEP {s.num}
+              </span>
+              <p className={`text-xs font-bold ${activeStep === i ? "text-foreground" : "text-muted-foreground"}`}>
+                {s.title.replace(".", "")}
+              </p>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {/* Progress bar */}
+      <div className="max-w-2xl mx-auto mb-10">
+        <div className="h-1 rounded-full bg-border/30 overflow-hidden">
+          <motion.div
+            className="h-full rounded-full"
+            style={{ background: `linear-gradient(90deg, hsl(var(--nab-cyan)), hsl(var(--${step.accent})))` }}
+            initial={{ width: "0%" }}
+            animate={{ width: `${((activeStep + 1) / steps.length) * 100}%` }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+          />
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        {steps.map((step, i) => (
-          <motion.div
-            key={step.num}
-            initial={{ opacity: 0, y: 40, scale: 0.95 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: i * 0.12, duration: 0.5, type: "spring", stiffness: 100 }}
-            whileHover={{ y: -8, scale: 1.02 }}
-            onHoverStart={() => setHoveredStep(i)}
-            onHoverEnd={() => setHoveredStep(null)}
-            className={`glass-card gradient-border p-6 group relative overflow-hidden cursor-pointer transition-shadow duration-500 hover:shadow-[0_0_40px_-5px_hsl(var(--${step.accent})/0.3)]`}
-          >
-            <div className={`absolute inset-0 bg-gradient-to-b ${step.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-
-            <motion.div
-              animate={{ scale: [1, 1.5, 1], opacity: [0, 0.2, 0] }}
-              transition={{ duration: 3, repeat: Infinity, delay: i * 0.5 }}
-              className={`absolute -top-10 -right-10 w-28 h-28 rounded-full bg-${step.accent} blur-[40px] pointer-events-none`}
+      {/* Active step — cinematic card */}
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={activeStep}
+          initial={{ opacity: 0, y: 30, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: -20, scale: 0.97 }}
+          transition={{ duration: 0.5, type: "spring", stiffness: 100 }}
+          className="grid lg:grid-cols-2 gap-8 items-center"
+        >
+          {/* Image side */}
+          <div className={`relative rounded-3xl overflow-hidden glass-card gradient-border ${activeStep % 2 === 1 ? "lg:order-2" : ""}`}>
+            <img
+              src={step.image}
+              alt={step.title}
+              className="w-full h-64 sm:h-80 object-cover"
             />
-
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <span className={`text-sm font-black tracking-widest text-${step.accent}`}>{step.num}</span>
+            <div className="absolute inset-0 bg-gradient-to-t from-[hsl(var(--card))] via-transparent to-transparent" />
+            
+            {/* Step badge overlay */}
+            <div className="absolute top-4 left-4">
+              <div className={`px-3 py-1.5 rounded-xl bg-background/70 backdrop-blur-2xl border border-${step.accent}/30`}>
+                <span className={`text-[10px] font-black tracking-widest text-${step.accent}`}>STEP {step.num}</span>
               </div>
+            </div>
 
-              <div className="relative mb-5">
-                <motion.div
-                  className={`w-14 h-14 rounded-2xl bg-${step.accent}/[0.1] border border-${step.accent}/30 flex items-center justify-center group-hover:bg-${step.accent}/[0.2] group-hover:border-${step.accent}/50 transition-all duration-300`}
-                >
-                  <step.icon className={`w-6 h-6 text-${step.accent}`} />
-                </motion.div>
-              </div>
-
-              <h3 className="font-heading text-xl font-black text-foreground mb-2">{step.title}</h3>
-              <p className="text-sm text-muted-foreground leading-relaxed mb-4">{step.desc}</p>
-
-              <div className={`h-[52px] rounded-xl bg-${step.accent}/[0.06] border border-${step.accent}/20 group-hover:border-${step.accent}/40 transition-all duration-300 overflow-hidden`}>
+            {/* Live demo overlay at bottom */}
+            <div className="absolute bottom-4 left-4 right-4">
+              <div className={`rounded-2xl bg-background/70 backdrop-blur-2xl border border-${step.accent}/20 overflow-hidden`}>
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={demoIndex}
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
+                    exit={{ opacity: 0, y: -8 }}
                     transition={{ duration: 0.3 }}
-                    className="px-3 py-2"
+                    className="px-4 py-3"
                   >
-                    <p className="text-xs font-bold text-foreground truncate">{step.demo[demoIndex].label}</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5 truncate">{step.demo[demoIndex].sublabel}</p>
+                    <p className="text-xs font-bold text-foreground">{step.demo[demoIndex].label}</p>
+                    <p className="text-[10px] text-muted-foreground mt-0.5">{step.demo[demoIndex].sublabel}</p>
                   </motion.div>
                 </AnimatePresence>
               </div>
             </div>
-          </motion.div>
-        ))}
-      </div>
+          </div>
+
+          {/* Content side */}
+          <div className={`space-y-5 ${activeStep % 2 === 1 ? "lg:order-1" : ""}`}>
+            <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-${step.accent}/10 border border-${step.accent}/25`}>
+              <step.icon className={`w-4 h-4 text-${step.accent}`} />
+              <span className={`text-xs font-black text-${step.accent} tracking-wider`}>STEP {step.num} OF 04</span>
+            </div>
+
+            <h3 className="font-heading font-black text-foreground text-3xl sm:text-4xl leading-tight">
+              {step.title}
+            </h3>
+            <p className="text-base text-muted-foreground leading-relaxed max-w-md">
+              {step.desc}
+            </p>
+
+            {/* Micro-stats */}
+            <div className="flex gap-4 pt-2">
+              {step.demo.map((d, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: i * 0.1 }}
+                  className={`w-2 h-2 rounded-full ${i <= demoIndex ? `bg-${step.accent}` : "bg-border"} transition-colors duration-300`}
+                />
+              ))}
+            </div>
+          </div>
+        </motion.div>
+      </AnimatePresence>
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="text-center mt-10"
+        className="text-center mt-14"
       >
         <Button
           size="lg"
