@@ -262,9 +262,9 @@ const HeroSection = () => {
               <Button
                 size="lg"
                 className="rounded-full px-10 font-black text-base gap-2.5 shimmer-btn h-14 shadow-[0_0_60px_-10px_hsl(var(--nab-cyan)/0.5)]"
-                onClick={() => navigate("/signup")}
+                onClick={handleCTA}
               >
-                Start Nabbing Free <ArrowRight className="w-5 h-5" />
+                {user ? "Go to Feed" : "Start Nabbing Free"} <ArrowRight className="w-5 h-5" />
               </Button>
               <Button
                 size="lg"
