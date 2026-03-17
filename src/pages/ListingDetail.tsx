@@ -342,6 +342,19 @@ const ListingDetail = () => {
               {seller.shop_description && (
                 <p className="text-xs text-muted-foreground mt-3">{seller.shop_description}</p>
               )}
+              {!isOwner && user && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full mt-3 rounded-xl text-xs gap-1.5 border-border/50 hover:border-primary/40 font-bold"
+                  onClick={() => {
+                    const roomId = [user.id, listing.seller_id].sort().join("_");
+                    navigate(`/chat/${roomId}`);
+                  }}
+                >
+                  <MessageCircle className="w-3.5 h-3.5" /> Message Seller
+                </Button>
+              )}
             </div>
           )}
 

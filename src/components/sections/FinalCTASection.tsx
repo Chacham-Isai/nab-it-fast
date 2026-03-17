@@ -132,14 +132,15 @@ const FinalCTASection = () => {
             <Button
               size="lg"
               className="rounded-full px-12 font-black text-lg gap-2.5 shimmer-btn h-14 shadow-[0_0_60px_-8px_hsl(var(--nab-cyan)/0.5)]"
-              onClick={() => navigate("/signup")}
+              onClick={handleCTA}
             >
-              Start Nabbing Free <ArrowRight className="w-5 h-5" />
+              {user ? "Go to Feed" : "Start Nabbing Free"} <ArrowRight className="w-5 h-5" />
             </Button>
           </div>
           <p className="text-xs text-muted-foreground mt-5 text-center">No credit card · Setup in 30 seconds · Cancel anytime</p>
         </div>
       </div>
+      <WaitlistModal open={waitlistOpen} onClose={() => setWaitlistOpen(false)} source="final_cta" />
     </SectionWrapper>
   );
 };
