@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import WaitlistModal from "@/components/WaitlistModal";
 import nabbitIcon from "@/assets/nabbit-icon.png";
 import heroShowcase from "@/assets/hero/hero-products-showcase.jpg";
 
