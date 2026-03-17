@@ -35,7 +35,7 @@ const Signup = () => {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { data: { display_name: name } },
+      options: { data: { display_name: name, referral_code: refCode || undefined } },
     });
     setLoading(false);
     if (error) setError(error.message);

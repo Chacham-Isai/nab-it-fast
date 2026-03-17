@@ -128,6 +128,12 @@ const Onboarding = () => {
         }));
         await supabase.from("dream_buys").insert(dreamRows);
       }
+
+      // Complete referral if user signed up with a referral code
+      const refCode = user.user_metadata?.referral_code;
+      if (refCode) {
+        await supabase.rpc("complete_referral", { p_referee_id: user.id, p_code: refCode });
+      }
     } catch (err) {
       console.error("Failed to save profile:", err);
     }
