@@ -8,6 +8,8 @@ import Blog from "@/pages/Blog";
 import Contact from "@/pages/Contact";
 import Login from "@/pages/Login";
 import Signup from "@/pages/Signup";
+import ForgotPassword from "@/pages/ForgotPassword";
+import ResetPassword from "@/pages/ResetPassword";
 import NotFound from "@/pages/NotFound";
 import Onboarding from "@/pages/Onboarding";
 import Feed from "@/pages/Feed";
@@ -29,6 +31,7 @@ import Analytics from "@/pages/Analytics";
 import Terms from "@/pages/Terms";
 import Privacy from "@/pages/Privacy";
 import DealDetail from "@/pages/DealDetail";
+import Chat from "@/pages/Chat";
 
 const AnimatedRoutes = () => {
   const location = useLocation();
@@ -43,6 +46,8 @@ const AnimatedRoutes = () => {
         <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
         <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
         <Route path="/signup" element={<PageTransition><Signup /></PageTransition>} />
+        <Route path="/forgot-password" element={<PageTransition><ForgotPassword /></PageTransition>} />
+        <Route path="/reset-password" element={<PageTransition><ResetPassword /></PageTransition>} />
         <Route path="/terms" element={<PageTransition><Terms /></PageTransition>} />
         <Route path="/privacy" element={<PageTransition><Privacy /></PageTransition>} />
 
@@ -65,6 +70,7 @@ const AnimatedRoutes = () => {
         <Route path="/crew/:name" element={<PageTransition><CrewDetail /></PageTransition>} />
         <Route path="/deal/:id" element={<PageTransition><ProtectedRoute><DealDetail /></ProtectedRoute></PageTransition>} />
         <Route path="/analytics" element={<PageTransition><ProtectedRoute><Analytics /></ProtectedRoute></PageTransition>} />
+        <Route path="/chat/:roomId" element={<PageTransition><ProtectedRoute><Chat /></ProtectedRoute></PageTransition>} />
 
         <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
       </Routes>
