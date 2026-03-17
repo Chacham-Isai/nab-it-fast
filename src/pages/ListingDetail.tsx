@@ -18,6 +18,7 @@ const ListingDetail = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { track } = useAnalytics();
+  const { track: trackInteraction } = useTrackInteraction();
   const [listing, setListing] = useState<any>(null);
   const [seller, setSeller] = useState<any>(null);
   const [auction, setAuction] = useState<any>(null);
