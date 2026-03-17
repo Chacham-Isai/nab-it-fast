@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import BottomNav from "@/components/BottomNav";
 import usePageMeta from "@/hooks/usePageMeta";
 import NabbitLogo from "@/components/NabbitLogo";
+import ReferralLeaderboard from "@/components/community/ReferralLeaderboard";
 
 const Referrals = () => {
   usePageMeta({ title: "Invite Friends — nabbit.ai", description: "Earn 500 XP for every friend who joins nabbit.", path: "/referrals" });
