@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Gavel, ShoppingBag, Share2, Bookmark, Star, Shield, Loader2, ChevronLeft, ChevronRight, Clock, Users, AlertCircle } from "lucide-react";
+import { ArrowLeft, Gavel, ShoppingBag, Share2, Bookmark, Star, Shield, Loader2, ChevronLeft, ChevronRight, Clock, Users, AlertCircle, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -341,6 +341,19 @@ const ListingDetail = () => {
               </div>
               {seller.shop_description && (
                 <p className="text-xs text-muted-foreground mt-3">{seller.shop_description}</p>
+              )}
+              {!isOwner && user && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full mt-3 rounded-xl text-xs gap-1.5 border-border/50 hover:border-primary/40 font-bold"
+                  onClick={() => {
+                    const roomId = [user.id, listing.seller_id].sort().join("_");
+                    navigate(`/chat/${roomId}`);
+                  }}
+                >
+                  <MessageCircle className="w-3.5 h-3.5" /> Message Seller
+                </Button>
               )}
             </div>
           )}

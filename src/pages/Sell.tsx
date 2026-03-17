@@ -28,6 +28,12 @@ const Sell = () => {
     if (!user) return;
     if (searchParams.get("stripe_connected") === "true") {
       toast({ title: "✅ Stripe connected!", description: "Your payout account is set up." });
+      // Check and update onboarding status
+      supabase.functions.invoke("check-connect-status").then(({ data }) => {
+        if (data?.onboarding_complete) {
+          supabase.from("seller_profiles").update({ stripe_onboarding_complete: true }).eq("id", user.id);
+        }
+      }).catch(() => {});
     }
     loadData();
   }, [user]);

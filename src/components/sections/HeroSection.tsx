@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 
+import { useAuth } from "@/hooks/useAuth";
+import WaitlistModal from "@/components/WaitlistModal";
+
 import heroBgDark from "@/assets/hero/hero-bg-dark.jpg";
 import crewDealShowcase from "@/assets/hero/crew-deal-showcase.png";
 import aiCuratedFeed from "@/assets/hero/ai-curated-feed.png";
@@ -87,9 +90,16 @@ const useSavingsCounter = (target: number, duration = 3000) => {
 
 const HeroSection = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [activeFeature, setActiveFeature] = useState(0);
   const [activityIndex, setActivityIndex] = useState(0);
+  const [waitlistOpen, setWaitlistOpen] = useState(false);
   const totalSaved = useSavingsCounter(4218490, 3000);
+
+  const handleCTA = () => {
+    if (user) navigate("/feed");
+    else setWaitlistOpen(true);
+  };
 
   useEffect(() => {
     const interval = setInterval(() => setActivityIndex((i) => (i + 1) % liveActivity.length), 3200);
@@ -252,9 +262,9 @@ const HeroSection = () => {
               <Button
                 size="lg"
                 className="rounded-full px-10 font-black text-base gap-2.5 shimmer-btn h-14 shadow-[0_0_60px_-10px_hsl(var(--nab-cyan)/0.5)]"
-                onClick={() => navigate("/signup")}
+                onClick={handleCTA}
               >
-                Start Nabbing Free <ArrowRight className="w-5 h-5" />
+                {user ? "Go to Feed" : "Start Nabbing Free"} <ArrowRight className="w-5 h-5" />
               </Button>
               <Button
                 size="lg"
@@ -352,6 +362,8 @@ const HeroSection = () => {
 
       {/* Bottom gradient fade */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+
+      <WaitlistModal open={waitlistOpen} onClose={() => setWaitlistOpen(false)} source="hero" />
     </section>
   );
 };
