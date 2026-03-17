@@ -176,6 +176,12 @@ const Signup = () => {
             <Input placeholder="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="bg-secondary/50 border-border h-12 rounded-xl" required />
             <Input placeholder="Password (6+ chars)" type="password" value={password} onChange={(e) => setPassword(e.target.value)} className="bg-secondary/50 border-border h-12 rounded-xl" required />
             <Input placeholder="Confirm password" type="password" value={confirm} onChange={(e) => setConfirm(e.target.value)} className="bg-secondary/50 border-border h-12 rounded-xl" required />
+            {refCode && (
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-primary/5 border border-primary/10">
+                <Zap className="w-4 h-4 text-primary shrink-0" />
+                <span className="text-xs text-foreground">Referral code <strong className="text-primary">{refCode}</strong> applied — you'll get 100 XP bonus!</span>
+              </div>
+            )}
           </div>
 
           <Button type="submit" className="w-full h-12 rounded-xl font-semibold text-base shimmer-btn gap-2" disabled={loading}>
