@@ -155,7 +155,7 @@ const Login = () => {
           </Button>
 
           <div className="text-center text-sm space-y-3 pt-2">
-            <a href="#" className="text-nab-cyan hover:underline block text-xs">Forgot password?</a>
+            <Link to="/forgot-password" className="text-nab-cyan hover:underline block text-xs">Forgot password?</Link>
             <div className="gradient-divider" />
             <p className="text-muted-foreground">
               Don't have an account?{" "}

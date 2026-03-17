@@ -104,7 +104,8 @@ const Navbar = () => {
           ))}
           <ThemeToggle />
           {user ? (
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
+              <NotificationBell />
               <Link to="/profile" className="w-8 h-8 rounded-full bg-primary/20 border border-primary/30 flex items-center justify-center text-xs font-bold text-primary">
                 {user.email?.[0]?.toUpperCase() || "U"}
               </Link>
