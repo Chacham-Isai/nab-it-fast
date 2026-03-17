@@ -120,6 +120,9 @@ const Referrals = () => {
           <p className="text-2xl font-heading font-bold tracking-widest text-primary">{loading ? "..." : code}</p>
         </div>
 
+        {/* Leaderboard */}
+        <ReferralLeaderboard />
+
         {/* Referral History */}
         {referrals.length > 0 && (
           <div className="space-y-3">
