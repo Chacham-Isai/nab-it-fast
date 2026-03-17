@@ -1,86 +1,118 @@
 
 
-# nabbit.ai — Full Marketing Website
+# Full Buyer Profile + AI Learning System — Build Plan
 
-A premium, dark-mode, conversion-focused marketing website for an AI-powered autonomous shopping agent. The logo image will be used as a reference for the brand identity (the "a" has a crosshair/target motif, ".ai" in coral).
+## What's Missing
 
----
+The buyer profile is currently thin: basic display name, taste tags from onboarding, and simple stats. There's no behavioral tracking, no AI learning loop, no shipping addresses, no wishlist intelligence, and no buyer reputation. The AI recommendations use profile data but never learn from actual interactions (clicks, purchases, saves, skips).
 
-## Phase 1: Foundation & Design System
+## Plan Overview
 
-- **Dark theme setup** — Override all CSS variables to the nabbit brand palette (#0A0A0A background, #FF6B5B coral accent, etc.)
-- **Typography** — Import Google Fonts (Syne for headings, Plus Jakarta Sans for body) and configure Tailwind
-- **Install Framer Motion** for scroll-triggered animations throughout the site
-- **Reusable components** — Section wrapper with fade-up animation, gradient dividers, coral pill/badge, stat card
+### 1. Database: Buyer Interaction Tracking Table
+Create a `buyer_interactions` table to log every meaningful user action (view, save, skip, purchase, bid, share). This becomes the AI learning signal.
 
----
+```sql
+CREATE TABLE public.buyer_interactions (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  interaction_type text NOT NULL, -- 'view', 'save', 'skip', 'purchase', 'bid', 'share', 'click'
+  item_id text, -- listing_id, deal_id, or AI rec name
+  item_type text, -- 'listing', 'deal', 'ai_rec'
+  category text,
+  price numeric,
+  metadata jsonb DEFAULT '{}',
+  created_at timestamptz DEFAULT now()
+);
+-- RLS: users insert/read own interactions
+```
 
-## Phase 2: Navigation & Layout Shell
+### 2. Database: Shipping Addresses Table
+Create `shipping_addresses` table so buyers can save multiple addresses.
 
-- **Sticky navbar** — Transparent → glass blur on scroll, nabbit.ai text logo ("nabbit" white, ".ai" coral), desktop nav links with smooth scroll, coral "Get Started Free" CTA button
-- **Mobile hamburger** — Slide-in drawer with all nav links
-- **Footer** — 4-column layout (Brand, Product, Company, Support), bottom copyright bar
+```sql
+CREATE TABLE public.shipping_addresses (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  label text DEFAULT 'Home',
+  full_name text NOT NULL,
+  address_line1 text NOT NULL,
+  address_line2 text,
+  city text NOT NULL,
+  state text NOT NULL,
+  zip text NOT NULL,
+  country text DEFAULT 'US',
+  is_default boolean DEFAULT false,
+  created_at timestamptz DEFAULT now()
+);
+-- RLS: full CRUD on own addresses
+```
 
----
+### 3. Database: Expand Profiles
+Add columns to profiles for richer buyer identity:
+- `bio` (text) — short about me
+- `level` (integer, default 1) — computed from XP
+- `badges` (jsonb, default '[]') — earned achievements
+- `ai_learning_enabled` (boolean, default true) — opt-in for AI personalization
+- `preferred_address_id` (uuid) — default shipping address
 
-## Phase 3: Homepage Sections (Landing Page)
+### 4. Edge Function: `ai-learn` — Behavioral Intelligence Processor
+A new edge function that:
+- Accepts user_id
+- Queries `buyer_interactions` (last 100), `saved_items`, `orders`, `group_deal_participants`
+- Sends to Lovable AI (gemini-3-flash-preview) with structured output
+- Returns an "AI taste profile" summary: top categories, price sensitivity score, brand affinity updates, recommended deal types, buying pattern insights
+- Stores the AI summary back into `profiles.metadata` or a new `ai_taste_summary` column
 
-### Hero (Section 1)
-- Two-column: headline + CTAs + inline stats on left, CSS phone mockup on right showing 3 product hunt cards (Jordan 4, Rolex, Chanel)
-- Floating animated badges around the phone
-- Coral radial glow background accents
+### 5. Frontend: Full Buyer Profile Page Overhaul
+Rebuild `Profile.tsx` with these sections:
+- **Hero card**: Avatar, name, bio, level badge, XP bar to next level, member since
+- **AI Taste DNA**: Visual breakdown of the AI's understanding — top categories as a radar/donut chart, brand cloud, spending pattern, buy speed indicator
+- **Shipping Addresses**: CRUD list with default selector
+- **Badges & Achievements**: Grid of earned badges (first purchase, 10 saves, crew joiner, streak master, etc.)
+- **Activity Timeline**: Recent interactions pulled from `buyer_interactions`
+- **Settings**: Existing settings + AI learning toggle + address management
 
-### The Problem (Section 2)
-- 4 stat cards in a grid with large coral values, descriptions, and source citations
-- Closing italicized quote
+### 6. Frontend: Track Interactions Everywhere
+Add lightweight tracking calls throughout the app:
+- Feed: track `view`, `save`, `skip` on scroll
+- ListingDetail: track `view` on mount, `bid` on bid placement
+- Browse: track `click` on listing cards
+- Orders: track `purchase` on successful checkout
+- DealDetail: track `join` when joining a deal
 
-### How It Works (Section 3)
-- 3 step cards (Upload, Set Price, Auto-Purchase) connected by a faint line
-- Each with icon, faded step number, description, and coral tag pill
+Create a `useTrackInteraction` hook that calls `supabase.from('buyer_interactions').insert(...)`.
 
-### Proprietary Technology (Section 4)
-- 2×2 grid of tech cards (NabVision AI, PriceGraph Engine, NabBot Agent, TrustShield)
-- Horizontal metrics bar below with 5 key stats
+### 7. Frontend: AI Learning Widget on Profile
+A "Your AI Brain" card on the profile that:
+- Shows what the AI knows about you (categories, brands, price range)
+- Has a "Refresh AI" button that invokes `ai-learn`
+- Shows a confidence score for each category
+- Lets users correct/override AI assumptions
 
-### Use Cases / Categories (Section 5)
-- 4×2 grid of category cards (Sneakers, Electronics, Fashion, Collectibles, Beauty, Home, Kids, Cars) with Lucide icons
+### 8. Badges System
+Define ~12 badges computed from real data:
+- First Nab, Streak Master (7-day), Deal Hunter (join 5 deals), Collector (save 20 items), Big Spender ($500+), Community Builder (join 3 crews), Referral King (invite 5), Early Bird, etc.
+- Compute on profile load from counts in relevant tables
 
-### Traction (Section 6)
-- 4 metric cards with large coral values
-- Footnote bar with growth stats
+## Technical Details
 
-### Competitive Comparison (Section 7)
-- Feature comparison table: Nabbit vs Honey vs Camel vs Google Shopping
-- Nabbit column highlighted with coral tint, using ● / — / ◐ indicators
+- **Migration**: Single SQL migration with `buyer_interactions`, `shipping_addresses`, profile column additions, and RLS policies
+- **Edge function**: `ai-learn` using Lovable AI gateway with tool calling for structured output
+- **Hook**: `useTrackInteraction(type, itemId, itemType, category, price)` — fire-and-forget insert
+- **XP levels**: Level = floor(sqrt(total_xp / 100)) + 1, with progress bar showing % to next
+- **No breaking changes**: All new columns have defaults, existing pages unaffected
 
-### Pricing (Section 8)
-- 3 pricing cards: Nibble (Free), Nabber ($9/mo — featured with coral border/glow), Nabbit Pro ($29/mo)
-- Feature lists with coral checkmarks
+## Files to Create/Edit
 
-### Final CTA (Section 9)
-- Large banner card with coral glow, headline, and two CTA buttons
-
----
-
-## Phase 4: Additional Pages
-
-- **/about** — Mission statement, placeholder team member cards, 3 company values
-- **/blog** — Grid of 6 placeholder blog post cards with titles, dates, and excerpts
-- **/contact** — Contact form (Name, Email, Subject dropdown, Message) + email/social links
-- **/login** — Dark centered card with email/password fields, links to signup/forgot password
-- **/signup** — Dark centered card with name/email/password/confirm fields, link to login
-
-All pages share the same navbar and footer. All UI-only (no backend auth needed).
-
----
-
-## Design Details Applied Throughout
-
-- Scroll-triggered Framer Motion fade-up animations on every section
-- Cards with 1px borders, 20-24px rounded corners, hover lift effects
-- Generous spacing (~140px desktop, ~100px mobile between sections)
-- Gradient section dividers
-- Fully responsive: mobile-first with tablet and desktop breakpoints
-- Lucide React icons (no emojis)
-- All copy exactly as specified in the brief
+| Action | File |
+|--------|------|
+| Create | `supabase/functions/ai-learn/index.ts` |
+| Create | `src/hooks/useTrackInteraction.ts` |
+| Create | Migration SQL |
+| Rewrite | `src/pages/Profile.tsx` (full overhaul) |
+| Edit | `src/pages/Feed.tsx` (add interaction tracking) |
+| Edit | `src/pages/ListingDetail.tsx` (track views/bids) |
+| Edit | `src/pages/Browse.tsx` (track clicks) |
+| Edit | `src/pages/DealDetail.tsx` (track joins) |
+| Edit | `src/lib/xp.ts` (add level calculation) |
 
