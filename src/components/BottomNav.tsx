@@ -57,7 +57,7 @@ const BottomNav = () => {
             <button
               key={tab.label}
               onClick={() => navigate(tab.path)}
-              className="flex flex-col items-center gap-0.5 transition-colors"
+              className="flex flex-col items-center gap-0.5 transition-colors min-h-[48px] min-w-[48px] justify-center active:scale-95"
             >
               <Icon
                 className={`w-5 h-5 ${
