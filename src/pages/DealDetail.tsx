@@ -163,6 +163,7 @@ const DealDetail = () => {
   const sourceIdx = sourceSteps.findIndex(s => s.key === (deal.source_status || "sourcing"));
 
   return (
+    <SwipeBackEdge>
     <div className="min-h-screen bg-background pb-28">
       {/* Hero image */}
       <div className="relative h-56 overflow-hidden">

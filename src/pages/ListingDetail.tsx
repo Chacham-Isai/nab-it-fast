@@ -399,6 +399,7 @@ const ListingDetail = () => {
 
       <BottomNav />
     </div>
+    </SwipeBackEdge>
   );
 };
 
