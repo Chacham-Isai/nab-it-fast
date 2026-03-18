@@ -1,5 +1,6 @@
-import { ReactNode, useState } from "react";
+import { ReactNode, useState, useRef } from "react";
 import { motion, useMotionValue, useTransform, PanInfo } from "framer-motion";
+import { hapticLight, hapticMedium } from "@/lib/haptics";
 
 interface SwipeableCardProps {
   children: ReactNode;
@@ -23,11 +24,23 @@ const SwipeableCard = ({
   const leftOpacity = useTransform(x, [-threshold, -threshold / 2, 0], [1, 0.5, 0]);
   const rightOpacity = useTransform(x, [0, threshold / 2, threshold], [0, 0.5, 1]);
   const [dismissed, setDismissed] = useState(false);
+  const thresholdReached = useRef(false);
+
+  // Fire haptic when crossing threshold during drag
+  x.on("change", (latest) => {
+    if (Math.abs(latest) >= threshold && !thresholdReached.current) {
+      thresholdReached.current = true;
+      hapticLight();
+    } else if (Math.abs(latest) < threshold) {
+      thresholdReached.current = false;
+    }
+  });
 
   const handleDragEnd = (_: any, info: PanInfo) => {
     const swipeX = info.offset.x;
     if (Math.abs(swipeX) >= threshold) {
       setDismissed(true);
+      hapticMedium();
       if (swipeX > 0) onSwipeRight?.();
       else onSwipeLeft?.();
     }

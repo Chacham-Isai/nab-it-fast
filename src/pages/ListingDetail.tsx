@@ -13,6 +13,7 @@ import usePageMeta from "@/hooks/usePageMeta";
 import ReviewList from "@/components/reviews/ReviewList";
 import { useTrackInteraction } from "@/hooks/useTrackInteraction";
 import SwipeBackEdge from "@/components/SwipeBackEdge";
+import { hapticSuccess, hapticError, hapticLight } from "@/lib/haptics";
 
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -128,9 +129,11 @@ const ListingDetail = () => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       toast({ title: "🎉 Bid placed!", description: `You bid $${amount.toLocaleString()}` });
+      hapticSuccess();
       track("bid_placed", { auction_id: auction.id, amount, listing_id: listing?.id });
       loadListing();
     } catch (err: any) {
+      hapticError();
       toast({ title: "Bid failed", description: err.message, variant: "destructive" });
     }
     setBidding(false);
@@ -166,11 +169,13 @@ const ListingDetail = () => {
       tag: "SAVED",
     });
     setSaved(true);
+    hapticSuccess();
     toast({ title: "🔖 Saved!", description: listing.title });
   };
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
+    hapticLight();
     toast({ title: "📋 Link copied!" });
   };
 

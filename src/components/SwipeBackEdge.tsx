@@ -2,6 +2,7 @@ import { useRef, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronLeft } from "lucide-react";
+import { hapticLight, hapticMedium } from "@/lib/haptics";
 
 interface SwipeBackEdgeProps {
   children: React.ReactNode;
@@ -14,6 +15,7 @@ const SwipeBackEdge = ({ children, edgeWidth = 24, threshold = 100 }: SwipeBackE
   const startX = useRef(0);
   const startY = useRef(0);
   const started = useRef(false);
+  const thresholdFired = useRef(false);
   const [dragX, setDragX] = useState(0);
   const [active, setActive] = useState(false);
 
@@ -21,6 +23,7 @@ const SwipeBackEdge = ({ children, edgeWidth = 24, threshold = 100 }: SwipeBackE
     const x = e.touches[0].clientX;
     if (x <= edgeWidth) {
       started.current = true;
+      thresholdFired.current = false;
       startX.current = x;
       startY.current = e.touches[0].clientY;
       setActive(true);
@@ -39,6 +42,10 @@ const SwipeBackEdge = ({ children, edgeWidth = 24, threshold = 100 }: SwipeBackE
       return;
     }
     if (dx > 0) {
+      if (dx >= threshold && !thresholdFired.current) {
+        thresholdFired.current = true;
+        hapticLight();
+      }
       setDragX(dx);
     }
   }, []);
@@ -46,9 +53,11 @@ const SwipeBackEdge = ({ children, edgeWidth = 24, threshold = 100 }: SwipeBackE
   const onTouchEnd = useCallback(() => {
     if (!started.current) return;
     if (dragX >= threshold) {
+      hapticMedium();
       navigate(-1);
     }
     started.current = false;
+    thresholdFired.current = false;
     setDragX(0);
     setActive(false);
   }, [dragX, threshold, navigate]);
