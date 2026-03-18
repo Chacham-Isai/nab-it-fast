@@ -371,6 +371,30 @@ const Feed = () => {
   };
 
   const filtered = activeCategory === "All" ? items : items.filter((i) => i.category === activeCategory);
+  const visibleItems = filtered.slice(0, visibleCount);
+  const hasMore = visibleCount < filtered.length;
+
+  // Reset visible count when category changes
+  useEffect(() => { setVisibleCount(PAGE_SIZE); }, [activeCategory]);
+
+  // Intersection observer for infinite scroll
+  useEffect(() => {
+    if (!sentinelRef.current || loading) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loadingMore) {
+          setLoadingMore(true);
+          setTimeout(() => {
+            setVisibleCount((prev) => prev + PAGE_SIZE);
+            setLoadingMore(false);
+          }, 400);
+        }
+      },
+      { rootMargin: "200px" }
+    );
+    observer.observe(sentinelRef.current);
+    return () => observer.disconnect();
+  }, [loading, hasMore, loadingMore, visibleCount]);
 
   const saveToDb = async (item: FeedItem) => {
     if (!user) return;
