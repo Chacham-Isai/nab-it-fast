@@ -13,6 +13,7 @@ import usePageMeta from "@/hooks/usePageMeta";
 import ReviewList from "@/components/reviews/ReviewList";
 import { useTrackInteraction } from "@/hooks/useTrackInteraction";
 import SwipeBackEdge from "@/components/SwipeBackEdge";
+import { hapticSuccess, hapticError, hapticLight } from "@/lib/haptics";
 
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
