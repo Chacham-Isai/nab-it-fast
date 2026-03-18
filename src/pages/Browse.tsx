@@ -309,11 +309,20 @@ const Browse = () => {
       {/* ─── Results ─── */}
       <div className="max-w-5xl mx-auto px-4 py-5">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}>
-              <Loader2 className="w-7 h-7 text-primary" />
-            </motion.div>
-            <span className="text-xs text-muted-foreground font-medium">Searching listings...</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="rounded-2xl glass-card gradient-border overflow-hidden">
+                <div className="aspect-square bg-muted animate-pulse" />
+                <div className="p-4 space-y-3">
+                  <div className="h-4 w-3/4 bg-muted animate-pulse rounded" />
+                  <div className="h-3 w-1/2 bg-muted animate-pulse rounded" />
+                  <div className="flex justify-between items-center pt-1">
+                    <div className="h-6 w-20 bg-muted animate-pulse rounded" />
+                    <div className="h-8 w-24 bg-muted animate-pulse rounded-full" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : listings.length === 0 ? (
           <motion.div
