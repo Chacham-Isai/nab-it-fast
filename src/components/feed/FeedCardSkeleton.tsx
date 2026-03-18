@@ -1,7 +1,13 @@
 import { Skeleton } from "@/components/ui/skeleton";
+import { motion } from "framer-motion";
 
-const FeedCardSkeleton = () => (
-  <div className="rounded-2xl overflow-hidden glass-card gradient-border">
+const FeedCardSkeleton = ({ index = 0 }: { index?: number }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.4, delay: index * 0.15, ease: "easeOut" }}
+    className="rounded-2xl overflow-hidden glass-card gradient-border"
+  >
     {/* Seller header */}
     <div className="flex items-center gap-2.5 px-4 py-3">
       <Skeleton className="w-9 h-9 rounded-full" />
@@ -45,7 +51,7 @@ const FeedCardSkeleton = () => (
       {/* CTA button */}
       <Skeleton className="h-11 w-full rounded-xl" />
     </div>
-  </div>
+  </motion.div>
 );
 
 export default FeedCardSkeleton;

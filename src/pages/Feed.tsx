@@ -494,8 +494,8 @@ const Feed = () => {
         <PullToRefresh onRefresh={handleRefresh}>
           {loading ? (
             <div className="flex flex-col gap-5">
-              {[1, 2, 3].map((i) => (
-                <FeedCardSkeleton key={i} />
+              {[0, 1, 2].map((i) => (
+                <FeedCardSkeleton key={i} index={i} />
               ))}
             </div>
           ) : (
