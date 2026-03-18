@@ -99,20 +99,19 @@ const Notifications = () => {
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border/50 px-4 py-3">
-        <div className="flex items-center gap-2 max-w-lg mx-auto">
+        <div className="flex items-center gap-3 max-w-lg mx-auto">
           <button onClick={() => navigate(-1)} className="shrink-0"><ArrowLeft className="w-5 h-5 text-foreground" /></button>
-          <div className="shrink-0"><NabbitLogo size="sm" /></div>
-          <h1 className="font-heading font-black text-foreground text-base tracking-tight flex-1 truncate">NOTIFICATIONS</h1>
+          <h1 className="font-heading font-black text-foreground text-base tracking-tight flex-1">NOTIFICATIONS</h1>
           {unreadCount > 0 && (
             <span className="shrink-0 text-xs bg-primary text-primary-foreground rounded-full px-2 py-0.5 font-black">{unreadCount}</span>
           )}
           {isSupported && (
-            <Button variant="ghost" size="icon" className="shrink-0" onClick={handlePushToggle} title={isSubscribed ? "Disable push" : "Enable push"}>
+            <Button variant="ghost" size="icon" className="shrink-0 h-8 w-8" onClick={handlePushToggle} title={isSubscribed ? "Disable push" : "Enable push"}>
               {isSubscribed ? <Bell className="w-4 h-4 text-primary" /> : <BellOff className="w-4 h-4 text-muted-foreground" />}
             </Button>
           )}
           {unreadCount > 0 && (
-            <Button variant="ghost" size="sm" className="shrink-0 text-xs text-primary font-bold" onClick={markAllRead}>Mark all read</Button>
+            <Button variant="ghost" size="sm" className="shrink-0 text-xs text-primary font-bold px-2" onClick={markAllRead}>Mark all read</Button>
           )}
         </div>
       </div>
