@@ -327,6 +327,7 @@ const Sell = () => {
 
       <BottomNav />
     </div>
+    </SwipeBackEdge>
   );
 };
 

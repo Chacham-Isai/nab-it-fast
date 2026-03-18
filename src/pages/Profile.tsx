@@ -302,6 +302,7 @@ const Profile = () => {
       </div>
       <BottomNav />
     </div>
+    </SwipeBackEdge>
   );
 };
 

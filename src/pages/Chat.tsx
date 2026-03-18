@@ -178,6 +178,7 @@ const Chat = () => {
 
       <BottomNav />
     </div>
+    </SwipeBackEdge>
   );
 };
 

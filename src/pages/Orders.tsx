@@ -212,6 +212,7 @@ const Orders = () => {
 
       <BottomNav />
     </div>
+    </SwipeBackEdge>
   );
 };
 

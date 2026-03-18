@@ -158,6 +158,7 @@ const Referrals = () => {
 
       <BottomNav />
     </div>
+    </SwipeBackEdge>
   );
 };
 

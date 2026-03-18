@@ -157,6 +157,7 @@ const Notifications = () => {
 
       <BottomNav />
     </div>
+    </SwipeBackEdge>
   );
 };
 
