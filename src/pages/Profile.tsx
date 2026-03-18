@@ -123,14 +123,7 @@ const Profile = () => {
     { key: "settings" as const, label: "Settings", icon: Shield },
   ];
 
-  if (loading) return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-3">
-      <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}>
-        <Loader2 className="w-7 h-7 text-primary" />
-      </motion.div>
-      <span className="text-xs text-muted-foreground font-medium">Loading profile...</span>
-    </div>
-  );
+  if (loading) return <ProfileSkeleton />;
 
   return (
     <SwipeBackEdge>

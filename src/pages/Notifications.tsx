@@ -11,6 +11,7 @@ import usePageMeta from "@/hooks/usePageMeta";
 import NabbitLogo from "@/components/NabbitLogo";
 import { usePushNotifications } from "@/hooks/usePushNotifications";
 import { toast } from "sonner";
+import NotificationsSkeleton from "@/components/skeletons/NotificationsSkeleton";
 
 interface NotifItem {
   id: string;
