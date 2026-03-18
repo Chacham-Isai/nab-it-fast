@@ -12,6 +12,7 @@ import BottomNav from "@/components/BottomNav";
 import usePageMeta from "@/hooks/usePageMeta";
 import ReviewList from "@/components/reviews/ReviewList";
 import { useTrackInteraction } from "@/hooks/useTrackInteraction";
+import SwipeBackEdge from "@/components/SwipeBackEdge";
 
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
