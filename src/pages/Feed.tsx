@@ -51,7 +51,7 @@ interface FeedItem {
   timeAgo: string;
 }
 
-const categories = ["All", "Cards", "Sneakers", "Electronics", "Watches", "Collectibles", "Fashion", "Gaming"];
+const categories = ["All", "Cards", "Sneakers", "Electronics", "Watches", "Collectibles", "Fashion"];
 
 const categoryProductImages: Record<string, string[]> = {
   Cards: [imgCardsBox, imgCardsPrizm],
