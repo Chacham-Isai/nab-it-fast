@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils";
 // NabbitLogo component used below
 import NabbitLogo from "@/components/NabbitLogo";
 import CrewActivityFeed from "@/components/community/CrewActivityFeed";
+import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 
 import crewHeroImg from "@/assets/crew/crew-hero.jpg";
 import streakBgImg from "@/assets/crew/streak-bg.jpg";
