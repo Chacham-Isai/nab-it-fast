@@ -169,6 +169,7 @@ const ListingDetail = () => {
       tag: "SAVED",
     });
     setSaved(true);
+    hapticSuccess();
     toast({ title: "🔖 Saved!", description: listing.title });
   };
 
