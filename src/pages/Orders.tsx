@@ -13,6 +13,7 @@ import GrabBagReveal from "@/components/GrabBagReveal";
 import usePageMeta from "@/hooks/usePageMeta";
 import { awardXP } from "@/lib/xp";
 import NabbitLogo from "@/components/NabbitLogo";
+import OrdersSkeleton from "@/components/skeletons/OrdersSkeleton";
 
 const statusConfig: Record<string, { icon: any; color: string; label: string }> = {
   pending: { icon: Clock, color: "text-[hsl(40_90%_55%)]", label: "Pending Payment" },
