@@ -264,19 +264,6 @@ const Community = () => {
     !crewSearch || c.name.toLowerCase().includes(crewSearch.toLowerCase())
   );
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-            <Loader2 className="w-8 h-8 text-primary animate-spin" />
-          </div>
-          <p className="text-sm text-muted-foreground font-medium">Loading your crew...</p>
-        </motion.div>
-      </div>
-    );
-  }
-
   const tabs: { key: TabType; label: string; icon: any }[] = [
     { key: "feed", label: "For You", icon: Sparkles },
     { key: "crew-deals", label: "Crew Deals", icon: Target },
@@ -295,6 +282,19 @@ const Community = () => {
     { onSwipeLeft: goNextTab, onSwipeRight: goPrevTab },
     { threshold: 50 }
   );
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col items-center gap-4">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
+            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+          </div>
+          <p className="text-sm text-muted-foreground font-medium">Loading your crew...</p>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background pb-24">
