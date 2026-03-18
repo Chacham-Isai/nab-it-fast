@@ -93,7 +93,21 @@ const Notifications = () => {
     return true;
   });
 
-  if (loading) return <div className="min-h-screen bg-background flex items-center justify-center"><Loader2 className="w-8 h-8 text-primary animate-spin" /></div>;
+  if (loading) return (
+    <div className="min-h-screen bg-background pb-20">
+      <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border/50 px-4 py-3">
+        <div className="flex items-center gap-3 max-w-lg mx-auto">
+          <div className="w-5 h-5" />
+          <div className="h-5 w-32 animate-pulse rounded bg-muted" />
+          <div className="flex-1" />
+        </div>
+      </div>
+      <div className="max-w-lg mx-auto px-4 py-4">
+        <NotificationsSkeleton />
+      </div>
+      <BottomNav />
+    </div>
+  );
 
   return (
     <SwipeBackEdge>
