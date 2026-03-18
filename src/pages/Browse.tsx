@@ -13,6 +13,7 @@ import usePageMeta from "@/hooks/usePageMeta";
 import NabbitLogo from "@/components/NabbitLogo";
 import { useTrackInteraction } from "@/hooks/useTrackInteraction";
 import { Skeleton } from "@/components/ui/skeleton";
+import PullToRefresh from "@/components/PullToRefresh";
 
 // Product placeholder images
 import imgCardsBox from "@/assets/products/cards-box.jpg";
