@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import SwipeBackEdge from "@/components/SwipeBackEdge";
 import { ArrowLeft, Plus, Package, DollarSign, BarChart3, Clock, CheckCircle, Loader2, Trash2, Eye, XCircle, Truck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, Copy, Check, Gift, Users, Zap, Share2 } from "lucide-react";
+import SwipeBackEdge from "@/components/SwipeBackEdge";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";

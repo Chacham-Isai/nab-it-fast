@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import SwipeBackEdge from "@/components/SwipeBackEdge";
 import { ArrowLeft, Edit2, ShoppingBag, Star, Zap, Heart, Bell, DollarSign, Moon, Shield, Trash2, LogOut, ChevronRight, Loader2, Package, BarChart3, Gift, Brain, MapPin, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
