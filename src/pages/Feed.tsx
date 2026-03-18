@@ -17,6 +17,7 @@ import usePageMeta from "@/hooks/usePageMeta";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { getCategoryImage, modeImages } from "@/lib/images";
 import AIFeedRecommendations from "@/components/feed/AIFeedRecommendations";
+import FeedCardSkeleton from "@/components/feed/FeedCardSkeleton";
 import { useTrackInteraction } from "@/hooks/useTrackInteraction";
 
 // Premium product images
