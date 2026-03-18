@@ -493,11 +493,10 @@ const Feed = () => {
       <div className="max-w-lg mx-auto px-4 relative z-10">
         <PullToRefresh onRefresh={handleRefresh}>
           {loading ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-3">
-              <div className="w-12 h-12 rounded-2xl glass-card gradient-border flex items-center justify-center">
-                <Loader2 className="w-6 h-6 animate-spin text-primary" />
-              </div>
-              <span className="text-sm text-muted-foreground">Loading your feed...</span>
+            <div className="flex flex-col gap-5">
+              {[1, 2, 3].map((i) => (
+                <FeedCardSkeleton key={i} />
+              ))}
             </div>
           ) : (
             <div className="flex flex-col gap-5">
