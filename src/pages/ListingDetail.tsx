@@ -133,6 +133,7 @@ const ListingDetail = () => {
       track("bid_placed", { auction_id: auction.id, amount, listing_id: listing?.id });
       loadListing();
     } catch (err: any) {
+      hapticError();
       toast({ title: "Bid failed", description: err.message, variant: "destructive" });
     }
     setBidding(false);
