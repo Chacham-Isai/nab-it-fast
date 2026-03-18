@@ -53,9 +53,11 @@ const SwipeBackEdge = ({ children, edgeWidth = 24, threshold = 100 }: SwipeBackE
   const onTouchEnd = useCallback(() => {
     if (!started.current) return;
     if (dragX >= threshold) {
+      hapticMedium();
       navigate(-1);
     }
     started.current = false;
+    thresholdFired.current = false;
     setDragX(0);
     setActive(false);
   }, [dragX, threshold, navigate]);
