@@ -283,6 +283,19 @@ const Community = () => {
     { key: "leaderboard", label: "Rankings", icon: Trophy },
   ];
 
+  const tabKeys: TabType[] = ["feed", "crew-deals", "leaderboard"];
+  const activeTabIndex = tabKeys.indexOf(tab);
+  const goNextTab = useCallback(() => {
+    if (activeTabIndex < tabKeys.length - 1) setTab(tabKeys[activeTabIndex + 1]);
+  }, [activeTabIndex]);
+  const goPrevTab = useCallback(() => {
+    if (activeTabIndex > 0) setTab(tabKeys[activeTabIndex - 1]);
+  }, [activeTabIndex]);
+  const { swipeHandlers: communitySwipeHandlers } = useSwipeGesture(
+    { onSwipeLeft: goNextTab, onSwipeRight: goPrevTab },
+    { threshold: 50 }
+  );
+
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Background orbs */}
