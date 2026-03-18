@@ -129,6 +129,7 @@ const ListingDetail = () => {
       if (error) throw error;
       if (data?.error) throw new Error(data.error);
       toast({ title: "🎉 Bid placed!", description: `You bid $${amount.toLocaleString()}` });
+      hapticSuccess();
       track("bid_placed", { auction_id: auction.id, amount, listing_id: listing?.id });
       loadListing();
     } catch (err: any) {
