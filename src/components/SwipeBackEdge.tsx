@@ -23,6 +23,7 @@ const SwipeBackEdge = ({ children, edgeWidth = 24, threshold = 100 }: SwipeBackE
     const x = e.touches[0].clientX;
     if (x <= edgeWidth) {
       started.current = true;
+      thresholdFired.current = false;
       startX.current = x;
       startY.current = e.touches[0].clientY;
       setActive(true);
