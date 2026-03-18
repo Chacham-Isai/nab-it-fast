@@ -297,6 +297,10 @@ const Feed = () => {
   const [savedItems, setSavedItems] = useState<FeedItem[]>([]);
   const [activeCategory, setActiveCategory] = useState("All");
   const [loading, setLoading] = useState(true);
+  const PAGE_SIZE = 6;
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { loadFeed(); }, []);
 
