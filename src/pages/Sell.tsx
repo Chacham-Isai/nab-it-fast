@@ -134,12 +134,18 @@ const Sell = () => {
           </Button>
         </div>
         {/* Tabs */}
-        <div className="flex gap-2 mt-3 max-w-lg mx-auto">
-          {(["listings", "orders", "stats"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)} className={`px-4 py-1.5 rounded-full text-xs font-bold capitalize transition-all ${tab === t ? "bg-gradient-to-r from-primary to-[hsl(var(--nab-cyan))] text-primary-foreground shadow-[0_0_12px_hsl(var(--primary)/0.3)]" : "bg-secondary/60 text-secondary-foreground border border-border/50"}`}>
-              {t} {t === "orders" && orders.filter(o => o.status === 'paid').length > 0 ? `(${orders.filter(o => o.status === 'paid').length})` : ""}
-            </button>
-          ))}
+        <div className="mt-3 max-w-lg mx-auto">
+          <SwipeableTabs
+            tabs={[
+              { key: "listings", label: "Listings" },
+              { key: "orders", label: "Orders", badge: orders.filter(o => o.status === 'paid').length },
+              { key: "stats", label: "Stats" },
+            ]}
+            activeTab={tab === "create" ? "listings" : tab}
+            onTabChange={(key) => setTab(key as any)}
+          >
+            <span />
+          </SwipeableTabs>
         </div>
       </div>
 
