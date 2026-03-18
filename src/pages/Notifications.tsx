@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SwipeBackEdge from "@/components/SwipeBackEdge";
+import PullToRefresh from "@/components/PullToRefresh";
 import { ArrowLeft, Zap, TrendingDown, Users, Heart, ShoppingBag, Loader2, Bell, BellOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -111,6 +112,7 @@ const Notifications = () => {
 
   return (
     <SwipeBackEdge>
+    <PullToRefresh onRefresh={async () => { await fetchNotifications(); }}>
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border/50 px-4 py-3">
@@ -171,6 +173,7 @@ const Notifications = () => {
 
       <BottomNav />
     </div>
+    </PullToRefresh>
     </SwipeBackEdge>
   );
 };
