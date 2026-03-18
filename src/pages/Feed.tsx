@@ -400,6 +400,10 @@ const Feed = () => {
     trackInteraction("click", item.listing_id || item.id, "listing", item.category, item.price);
   };
 
+  const handleRefresh = useCallback(async () => {
+    await loadFeed();
+  }, []);
+
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Background glow orbs */}
