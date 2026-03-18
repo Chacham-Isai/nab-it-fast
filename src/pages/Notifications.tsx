@@ -173,6 +173,7 @@ const Notifications = () => {
 
       <BottomNav />
     </div>
+    </PullToRefresh>
     </SwipeBackEdge>
   );
 };
