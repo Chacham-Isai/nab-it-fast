@@ -12,6 +12,7 @@ import BottomNav from "@/components/BottomNav";
 import usePageMeta from "@/hooks/usePageMeta";
 import ReviewList from "@/components/reviews/ReviewList";
 import { useTrackInteraction } from "@/hooks/useTrackInteraction";
+import SwipeBackEdge from "@/components/SwipeBackEdge";
 
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -196,6 +197,7 @@ const ListingDetail = () => {
   const isOwner = user?.id === listing.seller_id;
 
   return (
+    <SwipeBackEdge>
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
@@ -397,6 +399,7 @@ const ListingDetail = () => {
 
       <BottomNav />
     </div>
+    </SwipeBackEdge>
   );
 };
 

@@ -13,6 +13,7 @@ import { awardXP } from "@/lib/xp";
 import { toast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useAnalytics } from "@/hooks/useAnalytics";
+import SwipeBackEdge from "@/components/SwipeBackEdge";
 
 interface Crew {
   id: string;
@@ -208,6 +209,7 @@ const CrewDetail = () => {
   ];
 
   return (
+    <SwipeBackEdge>
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border">
@@ -453,6 +455,7 @@ const CrewDetail = () => {
 
       <BottomNav />
     </div>
+    </SwipeBackEdge>
   );
 };
 
