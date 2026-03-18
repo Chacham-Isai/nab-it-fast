@@ -10,6 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 import usePageMeta from "@/hooks/usePageMeta";
 import NabbitLogo from "@/components/NabbitLogo";
 import { computeBadges } from "@/lib/xp";
+import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 import ProfileHero from "@/components/profile/ProfileHero";
 import AITasteDNA from "@/components/profile/AITasteDNA";
 import BadgesGrid from "@/components/profile/BadgesGrid";
