@@ -611,6 +611,7 @@ const Feed = () => {
         </PullToRefresh>
       </div>
 
+      <BackToTop />
       <BottomNav />
     </div>
   );
