@@ -15,6 +15,7 @@ const SwipeBackEdge = ({ children, edgeWidth = 24, threshold = 100 }: SwipeBackE
   const startX = useRef(0);
   const startY = useRef(0);
   const started = useRef(false);
+  const thresholdFired = useRef(false);
   const [dragX, setDragX] = useState(0);
   const [active, setActive] = useState(false);
 
