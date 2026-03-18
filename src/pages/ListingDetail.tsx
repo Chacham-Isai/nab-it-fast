@@ -175,6 +175,7 @@ const ListingDetail = () => {
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.href);
+    hapticLight();
     toast({ title: "📋 Link copied!" });
   };
 
