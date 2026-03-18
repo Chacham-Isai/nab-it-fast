@@ -13,6 +13,7 @@ import usePageMeta from "@/hooks/usePageMeta";
 import NabbitLogo from "@/components/NabbitLogo";
 import { useTrackInteraction } from "@/hooks/useTrackInteraction";
 import { Skeleton } from "@/components/ui/skeleton";
+import PullToRefresh from "@/components/PullToRefresh";
 
 // Product placeholder images
 import imgCardsBox from "@/assets/products/cards-box.jpg";
@@ -179,6 +180,7 @@ const Browse = () => {
   };
 
   return (
+    <PullToRefresh onRefresh={async () => { await loadListings(); }}>
     <div className="min-h-screen bg-background pb-24">
       {/* ─── Sticky Header ─── */}
       <div className="sticky top-0 z-40 bg-background/60 backdrop-blur-2xl border-b border-border/50">
@@ -491,6 +493,7 @@ const Browse = () => {
 
       <BottomNav />
     </div>
+    </PullToRefresh>
   );
 };
 
