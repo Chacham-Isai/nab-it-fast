@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Users, Flame, Clock, Loader2, Plus, ChevronRight, Zap, ShoppingBag, Gavel, Gift, Search, TrendingUp, Share2, Trophy, Sparkles, Crown, Star, Target } from "lucide-react";
 import DealCard from "@/components/community/DealCard";
