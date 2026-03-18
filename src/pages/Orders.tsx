@@ -108,6 +108,7 @@ const Orders = () => {
 
   return (
     <SwipeBackEdge>
+    <PullToRefresh onRefresh={async () => { await loadOrders(); }}>
     <div className="min-h-screen bg-background pb-20">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border/50 px-4 py-3">
