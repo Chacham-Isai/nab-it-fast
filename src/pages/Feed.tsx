@@ -13,6 +13,7 @@ import PullToRefresh from "@/components/PullToRefresh";
 import SwipeableCard from "@/components/SwipeableCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import BackToTop from "@/components/BackToTop";
 import usePageMeta from "@/hooks/usePageMeta";
 import { useAnalytics } from "@/hooks/useAnalytics";
 import { getCategoryImage, modeImages } from "@/lib/images";
@@ -610,6 +611,7 @@ const Feed = () => {
         </PullToRefresh>
       </div>
 
+      <BackToTop />
       <BottomNav />
     </div>
   );
