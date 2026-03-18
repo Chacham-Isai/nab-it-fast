@@ -493,6 +493,7 @@ const Browse = () => {
 
       <BottomNav />
     </div>
+    </PullToRefresh>
   );
 };
 
