@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { ArrowLeft, Copy, Check, Gift, Users, Zap, Share2 } from "lucide-react";
+import SwipeBackEdge from "@/components/SwipeBackEdge";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -62,6 +63,7 @@ const Referrals = () => {
   };
 
   return (
+    <SwipeBackEdge>
     <div className="min-h-screen bg-background pb-24">
       <header className="sticky top-0 z-30 bg-background/80 backdrop-blur-2xl border-b border-border px-4 py-3">
         <div className="flex items-center justify-between max-w-lg mx-auto">
@@ -156,6 +158,7 @@ const Referrals = () => {
 
       <BottomNav />
     </div>
+    </SwipeBackEdge>
   );
 };
 

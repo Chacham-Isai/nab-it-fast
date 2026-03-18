@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import SwipeBackEdge from "@/components/SwipeBackEdge";
 import { ArrowLeft, Send, Loader2, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -99,6 +100,7 @@ const Chat = () => {
   };
 
   return (
+    <SwipeBackEdge>
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-2xl border-b border-border/50 px-4 py-3">
@@ -176,6 +178,7 @@ const Chat = () => {
 
       <BottomNav />
     </div>
+    </SwipeBackEdge>
   );
 };
 

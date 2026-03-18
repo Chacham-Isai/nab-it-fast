@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import SwipeBackEdge from "@/components/SwipeBackEdge";
 import { ArrowLeft, Edit2, ShoppingBag, Star, Zap, Heart, Bell, DollarSign, Moon, Shield, Trash2, LogOut, ChevronRight, Loader2, Package, BarChart3, Gift, Brain, MapPin, Activity } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -131,6 +132,7 @@ const Profile = () => {
   );
 
   return (
+    <SwipeBackEdge>
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
       <div className="sticky top-0 z-40 bg-background/60 backdrop-blur-2xl border-b border-border/50">
@@ -300,6 +302,7 @@ const Profile = () => {
       </div>
       <BottomNav />
     </div>
+    </SwipeBackEdge>
   );
 };
 
