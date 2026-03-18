@@ -213,6 +213,7 @@ const Orders = () => {
 
       <BottomNav />
     </div>
+    </PullToRefresh>
     </SwipeBackEdge>
   );
 };
