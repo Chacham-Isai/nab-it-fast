@@ -2,6 +2,7 @@ import { useRef, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ChevronLeft } from "lucide-react";
+import { hapticLight, hapticMedium } from "@/lib/haptics";
 
 interface SwipeBackEdgeProps {
   children: React.ReactNode;
