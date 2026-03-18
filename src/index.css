@@ -132,6 +132,7 @@
   html {
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
   }
 
   body {
@@ -140,6 +141,7 @@
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overscroll-behavior-y: contain;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -162,6 +164,13 @@
   .safe-bottom {
     padding-bottom: max(env(safe-area-inset-bottom, 0px), 0px);
   }
+  .safe-top {
+    padding-top: max(env(safe-area-inset-top, 0px), 0px);
+  }
+  .safe-x {
+    padding-left: max(env(safe-area-inset-left, 0px), 0px);
+    padding-right: max(env(safe-area-inset-right, 0px), 0px);
+  }
 
   /* Touch-friendly tap targets */
   @media (pointer: coarse) {
@@ -170,10 +179,48 @@
       min-width: 44px;
     }
     /* Exception for inline/small elements */
-    .inline-btn, .text-btn, [data-compact] {
+    .inline-btn, .text-btn, [data-compact], .scrollbar-hide button, nav button {
       min-height: unset;
       min-width: unset;
     }
+  }
+
+  /* Mobile spacing utilities */
+  @media (max-width: 640px) {
+    .mobile-px { padding-left: 16px; padding-right: 16px; }
+    .mobile-gap-tight { gap: 8px; }
+    /* Prevent hover effects on touch */
+    .glass-card:hover {
+      transform: none;
+    }
+    /* Smaller border radius on small screens */
+    .glass-card { border-radius: 16px; }
+    /* Larger tap targets for action buttons */
+    .action-btn {
+      min-height: 48px;
+      min-width: 48px;
+    }
+  }
+
+  /* Active state feedback for touch */
+  @media (pointer: coarse) {
+    .glass-card:active {
+      transform: scale(0.98);
+      transition: transform 0.1s ease;
+    }
+    button:active, a:active, [role="button"]:active {
+      opacity: 0.85;
+      transition: opacity 0.1s ease;
+    }
+  }
+
+  /* Momentum scrolling for iOS */
+  .scroll-smooth-touch {
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+  }
+  .scroll-smooth-touch > * {
+    scroll-snap-align: start;
   }
 }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Users, Flame, Clock, Loader2, Plus, ChevronRight, Zap, ShoppingBag, Gavel, Gift, Search, TrendingUp, Share2, Trophy, Sparkles, Crown, Star, Target } from "lucide-react";
 import DealCard from "@/components/community/DealCard";
@@ -24,6 +24,7 @@ import { cn } from "@/lib/utils";
 // NabbitLogo component used below
 import NabbitLogo from "@/components/NabbitLogo";
 import CrewActivityFeed from "@/components/community/CrewActivityFeed";
+import { useSwipeGesture } from "@/hooks/useSwipeGesture";
 
 import crewHeroImg from "@/assets/crew/crew-hero.jpg";
 import streakBgImg from "@/assets/crew/streak-bg.jpg";
@@ -263,6 +264,25 @@ const Community = () => {
     !crewSearch || c.name.toLowerCase().includes(crewSearch.toLowerCase())
   );
 
+  const tabs: { key: TabType; label: string; icon: any }[] = [
+    { key: "feed", label: "For You", icon: Sparkles },
+    { key: "crew-deals", label: "Crew Deals", icon: Target },
+    { key: "leaderboard", label: "Rankings", icon: Trophy },
+  ];
+
+  const tabKeys: TabType[] = ["feed", "crew-deals", "leaderboard"];
+  const activeTabIndex = tabKeys.indexOf(tab);
+  const goNextTab = useCallback(() => {
+    if (activeTabIndex < tabKeys.length - 1) setTab(tabKeys[activeTabIndex + 1]);
+  }, [activeTabIndex]);
+  const goPrevTab = useCallback(() => {
+    if (activeTabIndex > 0) setTab(tabKeys[activeTabIndex - 1]);
+  }, [activeTabIndex]);
+  const { swipeHandlers: communitySwipeHandlers } = useSwipeGesture(
+    { onSwipeLeft: goNextTab, onSwipeRight: goPrevTab },
+    { threshold: 50 }
+  );
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -275,12 +295,6 @@ const Community = () => {
       </div>
     );
   }
-
-  const tabs: { key: TabType; label: string; icon: any }[] = [
-    { key: "feed", label: "For You", icon: Sparkles },
-    { key: "crew-deals", label: "Crew Deals", icon: Target },
-    { key: "leaderboard", label: "Rankings", icon: Trophy },
-  ];
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -352,7 +366,7 @@ const Community = () => {
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto px-4 pt-4 space-y-5 relative z-10">
+      <div {...communitySwipeHandlers} className="max-w-lg mx-auto px-4 pt-4 space-y-5 relative z-10 touch-pan-y">
 
         {/* ===== STREAK BANNER (inline, premium) ===== */}
         {user && (streak > 0 || xp > 0) && (

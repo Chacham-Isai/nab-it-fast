@@ -24,8 +24,8 @@ const BottomNav = () => {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-t border-border safe-bottom">
-      <div className="flex items-center justify-around h-16 max-w-lg mx-auto px-2 pb-[env(safe-area-inset-bottom)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background/90 backdrop-blur-xl border-t border-border safe-bottom" style={{ paddingBottom: "max(env(safe-area-inset-bottom, 0px), 4px)" }}>
+      <div className="flex items-center justify-around h-16 max-w-lg mx-auto px-2">
         {tabs.map((tab) => {
           const active = isActive(tab.path, tab.isCenter);
           const Icon = tab.icon;
@@ -57,7 +57,7 @@ const BottomNav = () => {
             <button
               key={tab.label}
               onClick={() => navigate(tab.path)}
-              className="flex flex-col items-center gap-0.5 transition-colors"
+              className="flex flex-col items-center gap-0.5 transition-colors min-h-[48px] min-w-[48px] justify-center active:scale-95"
             >
               <Icon
                 className={`w-5 h-5 ${

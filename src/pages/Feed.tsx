@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
@@ -9,6 +9,8 @@ import { Button } from "@/components/ui/button";
 import { toast } from "@/hooks/use-toast";
 import BottomNav from "@/components/BottomNav";
 import NabbitLogo from "@/components/NabbitLogo";
+import PullToRefresh from "@/components/PullToRefresh";
+import SwipeableCard from "@/components/SwipeableCard";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import usePageMeta from "@/hooks/usePageMeta";
@@ -398,6 +400,10 @@ const Feed = () => {
     trackInteraction("click", item.listing_id || item.id, "listing", item.category, item.price);
   };
 
+  const handleRefresh = useCallback(async () => {
+    await loadFeed();
+  }, []);
+
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Background glow orbs */}
@@ -484,39 +490,48 @@ const Feed = () => {
 
       {/* ─── Social Feed ─── */}
       <div className="max-w-lg mx-auto px-4 relative z-10">
-        {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <div className="w-12 h-12 rounded-2xl glass-card gradient-border flex items-center justify-center">
-              <Loader2 className="w-6 h-6 animate-spin text-primary" />
+        <PullToRefresh onRefresh={handleRefresh}>
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-20 gap-3">
+              <div className="w-12 h-12 rounded-2xl glass-card gradient-border flex items-center justify-center">
+                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              </div>
+              <span className="text-sm text-muted-foreground">Loading your feed...</span>
             </div>
-            <span className="text-sm text-muted-foreground">Loading your feed...</span>
-          </div>
-        ) : (
-          <div className="flex flex-col gap-5">
-            {filtered.map((item) => (
-              <SocialFeedCard
-                key={item.id}
-                item={item}
-                onNab={() => handleNab(item)}
-                onBookmark={() => handleBookmark(item)}
-                onLike={() => handleLike(item)}
-              />
-            ))}
+          ) : (
+            <div className="flex flex-col gap-5">
+              {filtered.map((item) => (
+                <SwipeableCard
+                  key={item.id}
+                  onSwipeRight={() => handleBookmark(item)}
+                  onSwipeLeft={() => track("swipe_left", { item_id: item.id })}
+                  rightLabel="Save 🔖"
+                  leftLabel="Skip ✕"
+                >
+                  <SocialFeedCard
+                    item={item}
+                    onNab={() => handleNab(item)}
+                    onBookmark={() => handleBookmark(item)}
+                    onLike={() => handleLike(item)}
+                  />
+                </SwipeableCard>
+              ))}
 
-            {filtered.length === 0 && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center py-20 text-center"
-              >
-                <img src={modeImages.emptyState} alt="" className="w-24 h-24 rounded-2xl object-cover mx-auto mb-4 opacity-80" />
-                <h3 className="font-heading font-bold text-foreground text-xl">You've seen it all!</h3>
-                <p className="text-muted-foreground text-sm mt-2">Check back for new drops</p>
-                <Button className="mt-4 rounded-xl shimmer-btn" onClick={loadFeed}>Refresh Feed</Button>
-              </motion.div>
-            )}
-          </div>
-        )}
+              {filtered.length === 0 && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="flex flex-col items-center justify-center py-20 text-center"
+                >
+                  <img src={modeImages.emptyState} alt="" className="w-24 h-24 rounded-2xl object-cover mx-auto mb-4 opacity-80" />
+                  <h3 className="font-heading font-bold text-foreground text-xl">You've seen it all!</h3>
+                  <p className="text-muted-foreground text-sm mt-2">Check back for new drops</p>
+                  <Button className="mt-4 rounded-xl shimmer-btn" onClick={loadFeed}>Refresh Feed</Button>
+                </motion.div>
+              )}
+            </div>
+          )}
+        </PullToRefresh>
       </div>
 
       <BottomNav />
