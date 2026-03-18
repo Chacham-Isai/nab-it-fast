@@ -13,6 +13,7 @@ import GrabBagReveal from "@/components/GrabBagReveal";
 import usePageMeta from "@/hooks/usePageMeta";
 import { awardXP } from "@/lib/xp";
 import NabbitLogo from "@/components/NabbitLogo";
+import OrdersSkeleton from "@/components/skeletons/OrdersSkeleton";
 
 const statusConfig: Record<string, { icon: any; color: string; label: string }> = {
   pending: { icon: Clock, color: "text-[hsl(40_90%_55%)]", label: "Pending Payment" },
@@ -118,9 +119,7 @@ const Orders = () => {
 
       <div className="max-w-lg mx-auto px-4 py-4 space-y-3">
         {loading ? (
-          <div className="flex items-center justify-center py-20">
-            <Loader2 className="w-6 h-6 animate-spin text-primary" />
-          </div>
+          <OrdersSkeleton />
         ) : orders.length === 0 ? (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center py-16">
             <motion.div animate={{ y: [0, -8, 0] }} transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}>
