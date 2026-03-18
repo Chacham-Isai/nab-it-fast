@@ -366,7 +366,7 @@ const Community = () => {
         </div>
       </div>
 
-      <div className="max-w-lg mx-auto px-4 pt-4 space-y-5 relative z-10">
+      <div {...communitySwipeHandlers} className="max-w-lg mx-auto px-4 pt-4 space-y-5 relative z-10 touch-pan-y">
 
         {/* ===== STREAK BANNER (inline, premium) ===== */}
         {user && (streak > 0 || xp > 0) && (
