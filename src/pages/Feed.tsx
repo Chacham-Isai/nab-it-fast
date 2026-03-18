@@ -528,7 +528,7 @@ const Feed = () => {
             </div>
           ) : (
             <div className="flex flex-col gap-5">
-              {filtered.map((item) => (
+              {visibleItems.map((item) => (
                 <SwipeableCard
                   key={item.id}
                   onSwipeRight={() => handleBookmark(item)}
@@ -544,6 +544,13 @@ const Feed = () => {
                   />
                 </SwipeableCard>
               ))}
+
+              {/* Infinite scroll sentinel */}
+              {hasMore && (
+                <div ref={sentinelRef} className="flex justify-center py-6">
+                  {loadingMore && <FeedCardSkeleton index={0} />}
+                </div>
+              )}
 
               {filtered.length === 0 && (
                 <motion.div
