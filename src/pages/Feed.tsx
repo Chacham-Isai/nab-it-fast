@@ -521,12 +521,53 @@ const Feed = () => {
                 <motion.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="flex flex-col items-center justify-center py-20 text-center"
+                  className="flex flex-col items-center justify-center py-16 text-center"
                 >
-                  <img src={modeImages.emptyState} alt="" className="w-24 h-24 rounded-2xl object-cover mx-auto mb-4 opacity-80" />
-                  <h3 className="font-heading font-bold text-foreground text-xl">You've seen it all!</h3>
-                  <p className="text-muted-foreground text-sm mt-2">Check back for new drops</p>
-                  <Button className="mt-4 rounded-xl shimmer-btn" onClick={loadFeed}>Refresh Feed</Button>
+                  {/* Animated empty state illustration */}
+                  <div className="relative w-36 h-36 mb-6">
+                    {/* Animated gradient ring */}
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                      className="absolute inset-0 rounded-full"
+                      style={{
+                        background: "conic-gradient(from 0deg, hsl(var(--nab-cyan) / 0.4), hsl(var(--nab-blue) / 0.4), hsl(var(--nab-purple) / 0.4), transparent 70%)",
+                        padding: "2px",
+                        WebkitMask: "radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 2px))",
+                        mask: "radial-gradient(farthest-side, transparent calc(100% - 2px), black calc(100% - 2px))",
+                      }}
+                    />
+                    {/* Floating cards animation */}
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <motion.div
+                        animate={{ y: [0, -10, 0], rotate: [-3, 3, -3] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                        className="w-16 h-20 rounded-xl bg-gradient-to-br from-primary/20 to-accent/20 border border-primary/30 shadow-lg absolute"
+                        style={{ transform: "translateX(-8px)" }}
+                      />
+                      <motion.div
+                        animate={{ y: [0, -14, 0], rotate: [3, -3, 3] }}
+                        transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                        className="w-16 h-20 rounded-xl bg-gradient-to-br from-accent/20 to-nab-purple/20 border border-accent/30 shadow-lg absolute"
+                        style={{ transform: "translateX(8px)" }}
+                      />
+                      <motion.div
+                        animate={{ scale: [1, 1.1, 1] }}
+                        transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                        className="relative z-10 w-10 h-10 rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center shadow-[0_0_20px_hsl(var(--primary)/0.3)]"
+                      >
+                        <ShoppingBag className="w-5 h-5 text-primary-foreground" />
+                      </motion.div>
+                    </div>
+                  </div>
+
+                  <h3 className="font-heading font-black text-foreground text-xl">You've seen it all!</h3>
+                  <p className="text-muted-foreground text-sm mt-2 max-w-xs leading-relaxed">
+                    No more items in <span className="text-primary font-bold">{activeCategory === "All" ? "your feed" : activeCategory}</span>. Pull down or tap below to refresh.
+                  </p>
+                  <Button className="mt-5 rounded-xl shimmer-btn gap-2 font-bold" onClick={loadFeed}>
+                    <Zap className="w-4 h-4" /> Refresh Feed
+                  </Button>
                 </motion.div>
               )}
             </div>

@@ -309,31 +309,71 @@ const Browse = () => {
       {/* ─── Results ─── */}
       <div className="max-w-5xl mx-auto px-4 py-5">
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-20 gap-3">
-            <motion.div animate={{ rotate: 360 }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}>
-              <Loader2 className="w-7 h-7 text-primary" />
-            </motion.div>
-            <span className="text-xs text-muted-foreground font-medium">Searching listings...</span>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="rounded-2xl glass-card gradient-border overflow-hidden">
+                <div className="aspect-square bg-muted animate-pulse" />
+                <div className="p-4 space-y-3">
+                  <div className="h-4 w-3/4 bg-muted animate-pulse rounded" />
+                  <div className="h-3 w-1/2 bg-muted animate-pulse rounded" />
+                  <div className="flex justify-between items-center pt-1">
+                    <div className="h-6 w-20 bg-muted animate-pulse rounded" />
+                    <div className="h-8 w-24 bg-muted animate-pulse rounded-full" />
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : listings.length === 0 ? (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-center py-20"
+            className="flex flex-col items-center justify-center py-20 text-center"
           >
-            <motion.div
-              animate={{ y: [0, -6, 0] }}
-              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-              className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/10 to-accent/10 border border-primary/20 flex items-center justify-center mx-auto mb-4"
-            >
-              <Search className="w-7 h-7 text-primary" />
-            </motion.div>
-            <h3 className="font-heading font-black text-foreground text-lg">No listings found</h3>
-            <p className="text-xs text-muted-foreground mt-1.5 max-w-sm mx-auto leading-relaxed">
-              {debouncedSearch ? `No results for "${debouncedSearch}"` : "Try adjusting your filters or check back later for new drops"}
+            {/* Animated illustration */}
+            <div className="relative w-32 h-32 mb-6">
+              {/* Orbiting dots */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0"
+              >
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3 h-3 rounded-full" style={{ background: "hsl(var(--nab-cyan))" }} />
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-2.5 h-2.5 rounded-full" style={{ background: "hsl(var(--nab-purple))" }} />
+              </motion.div>
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-2"
+              >
+                <div className="absolute top-0 right-0 w-2 h-2 rounded-full" style={{ background: "hsl(var(--nab-blue))" }} />
+              </motion.div>
+              {/* Center icon */}
+              <motion.div
+                animate={{ y: [0, -8, 0], scale: [1, 1.05, 1] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute inset-0 flex items-center justify-center"
+              >
+                <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-primary/15 to-accent/15 border border-primary/20 flex items-center justify-center shadow-[0_0_40px_-10px_hsl(var(--primary)/0.3)]">
+                  <Search className="w-9 h-9 text-primary/70" />
+                </div>
+              </motion.div>
+              {/* Pulse ring */}
+              <motion.div
+                animate={{ scale: [1, 1.6], opacity: [0.3, 0] }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+                className="absolute inset-0 rounded-full border-2 border-primary/20"
+              />
+            </div>
+
+            <h3 className="font-heading font-black text-foreground text-xl">No listings found</h3>
+            <p className="text-sm text-muted-foreground mt-2 max-w-xs mx-auto leading-relaxed">
+              {debouncedSearch ? `No results for "${debouncedSearch}". Try different keywords.` : "Try adjusting your filters or check back later for fresh drops."}
             </p>
             {activeFilterCount > 0 && (
-              <Button variant="outline" size="sm" className="mt-5 rounded-full border-primary/30 text-primary font-bold" onClick={clearFilters}>Clear Filters</Button>
+              <Button variant="outline" size="sm" className="mt-5 rounded-full border-primary/30 text-primary font-bold gap-2" onClick={clearFilters}>
+                <X className="w-3.5 h-3.5" /> Clear Filters
+              </Button>
             )}
           </motion.div>
         ) : (
