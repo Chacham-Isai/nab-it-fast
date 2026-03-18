@@ -507,6 +507,7 @@ const DealDetail = () => {
       </div>
       <BottomNav />
     </div>
+    </SwipeBackEdge>
   );
 };
 

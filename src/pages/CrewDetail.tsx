@@ -455,6 +455,7 @@ const CrewDetail = () => {
 
       <BottomNav />
     </div>
+    </SwipeBackEdge>
   );
 };
 
