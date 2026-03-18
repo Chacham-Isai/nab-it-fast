@@ -4,6 +4,7 @@ import { ArrowLeft, Plus, Package, DollarSign, BarChart3, Clock, CheckCircle, Lo
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { motion, AnimatePresence } from "framer-motion";
+import SwipeableTabs from "@/components/SwipeableTabs";
 import BottomNav from "@/components/BottomNav";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
