@@ -42,6 +42,10 @@ const SwipeBackEdge = ({ children, edgeWidth = 24, threshold = 100 }: SwipeBackE
       return;
     }
     if (dx > 0) {
+      if (dx >= threshold && !thresholdFired.current) {
+        thresholdFired.current = true;
+        hapticLight();
+      }
       setDragX(dx);
     }
   }, []);
