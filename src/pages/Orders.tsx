@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import SwipeBackEdge from "@/components/SwipeBackEdge";
+import PullToRefresh from "@/components/PullToRefresh";
 import { ArrowLeft, Package, Truck, CheckCircle, Clock, Loader2, Star, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";

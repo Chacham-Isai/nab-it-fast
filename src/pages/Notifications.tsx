@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SwipeBackEdge from "@/components/SwipeBackEdge";
+import PullToRefresh from "@/components/PullToRefresh";
 import { ArrowLeft, Zap, TrendingDown, Users, Heart, ShoppingBag, Loader2, Bell, BellOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
