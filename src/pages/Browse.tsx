@@ -14,6 +14,7 @@ import NabbitLogo from "@/components/NabbitLogo";
 import { useTrackInteraction } from "@/hooks/useTrackInteraction";
 import { Skeleton } from "@/components/ui/skeleton";
 import PullToRefresh from "@/components/PullToRefresh";
+import BackToTop from "@/components/BackToTop";
 
 // Product placeholder images
 import imgCardsBox from "@/assets/products/cards-box.jpg";
