@@ -27,6 +27,7 @@ const App = () => (
           <BrowserRouter>
             <AuthProvider>
               <RealtimeNotificationListener />
+              <ScrollProgressBar />
               <AnimatedRoutes />
             </AuthProvider>
           </BrowserRouter>
