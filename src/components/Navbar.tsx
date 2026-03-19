@@ -27,8 +27,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { user, signOut } = useAuth();
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
+
+
 
   useEffect(() => {
     const onScroll = () => {
