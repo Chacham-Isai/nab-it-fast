@@ -1,8 +1,12 @@
 import { motion, useScroll, useSpring } from "framer-motion";
+import { useLocation } from "react-router-dom";
 
 const ScrollProgressBar = () => {
+  const { pathname } = useLocation();
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
+
+  if (pathname === "/") return null;
 
   return (
     <motion.div
