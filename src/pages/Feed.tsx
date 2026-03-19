@@ -434,8 +434,8 @@ const Feed = () => {
     await loadFeed();
   }, []);
 
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
+
+
 
   return (
     <div className="min-h-screen bg-background pb-24">
