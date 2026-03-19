@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Search, SlidersHorizontal, Loader2, Gavel, X, Eye, Clock, Flame, Tag, ChevronRight, ShoppingBag, Bookmark, Heart } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BottomNav from "@/components/BottomNav";
@@ -72,6 +72,8 @@ const Browse = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(0);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30 });
 
   // Filters from URL
   const [search, setSearch] = useState(searchParams.get("q") || "");
@@ -189,6 +191,10 @@ const Browse = () => {
   return (
     <PullToRefresh onRefresh={async () => { setPage(0); await loadListings(0, false); }}>
     <div className="min-h-screen bg-background pb-24">
+      <motion.div
+        style={{ scaleX, transformOrigin: "0%" }}
+        className="fixed top-0 left-0 right-0 h-[3px] z-50 bg-gradient-to-r from-[hsl(var(--nab-cyan))] to-[hsl(var(--nab-purple))]"
+      />
       {/* ─── Sticky Header ─── */}
       <div className="sticky top-0 z-40 bg-background/60 backdrop-blur-2xl border-b border-border/50">
         <div className="max-w-5xl mx-auto px-4 py-3 space-y-3">
