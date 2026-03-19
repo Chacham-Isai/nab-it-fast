@@ -191,10 +191,8 @@ const Browse = () => {
   return (
     <PullToRefresh onRefresh={async () => { setPage(0); await loadListings(0, false); }}>
     <div className="min-h-screen bg-background pb-24">
-      <motion.div
-        style={{ scaleX, transformOrigin: "0%" }}
-        className="fixed top-0 left-0 right-0 h-[3px] z-50 bg-gradient-to-r from-[hsl(var(--nab-cyan))] to-[hsl(var(--nab-purple))]"
-      />
+
+
       {/* ─── Sticky Header ─── */}
       <div className="sticky top-0 z-40 bg-background/60 backdrop-blur-2xl border-b border-border/50">
         <div className="max-w-5xl mx-auto px-4 py-3 space-y-3">

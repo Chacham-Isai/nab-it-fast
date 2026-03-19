@@ -166,8 +166,8 @@ const Navbar = () => {
 
       {/* Scroll progress */}
       <motion.div
-        className="absolute bottom-0 left-0 right-0 h-[2px] bg-primary origin-left"
-        style={{ scaleX }}
+        className="absolute bottom-0 left-0 right-0 h-[3px] origin-left"
+        style={{ scaleX, background: "linear-gradient(90deg, hsl(var(--nab-cyan)), hsl(var(--nab-purple)))" }}
       />
     </nav>
   );
