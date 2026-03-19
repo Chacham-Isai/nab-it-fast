@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { motion, useScroll, useSpring } from "framer-motion";
+import { motion } from "framer-motion";
 import NabbitLogo from "./NabbitLogo";
 import NotificationBell from "./NotificationBell";
 import { Menu, LogOut } from "lucide-react";
@@ -27,8 +27,8 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { theme } = useTheme();
   const { user, signOut } = useAuth();
-  const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
+
+
 
   useEffect(() => {
     const onScroll = () => {
@@ -164,11 +164,8 @@ const Navbar = () => {
         </Sheet>
       </div>
 
-      {/* Scroll progress */}
-      <motion.div
-        className="absolute bottom-0 left-0 right-0 h-[3px] origin-left"
-        style={{ scaleX, background: "linear-gradient(90deg, hsl(var(--nab-cyan)), hsl(var(--nab-purple)))" }}
-      />
+
+
     </nav>
   );
 };
