@@ -413,7 +413,7 @@ const Browse = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {listings.map((listing, i) => {
                 const auction = listing.auctions?.[0];
-                const timeLeft = listing.ends_at ? getTimeLeft(listing.ends_at) : 0;
+                const timeLeft = listing.ends_at ? Math.max(0, Math.floor((new Date(listing.ends_at).getTime() - Date.now()) / 1000)) : 0;
                 const price = auction?.current_price ?? listing.starting_price;
                 const hasImage = listing.images && listing.images.length > 0 && listing.images[0];
                 const displayImage = hasImage ? listing.images[0] : getPlaceholderImage(listing.category, i);
