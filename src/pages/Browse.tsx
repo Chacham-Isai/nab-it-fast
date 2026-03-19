@@ -102,77 +102,78 @@ const Browse = () => {
   }, [search, category, type, sort, minPrice, maxPrice]);
 
   // Server-side query — runs when any filter changes
-  const loadListings = useCallback(async () => {
-    setLoading(true);
+  const loadListings = useCallback(async (pageNum: number, append = false) => {
+    if (append) {
+      setLoadingMore(true);
+    } else {
+      setLoading(true);
+    }
 
     let query = supabase
       .from("listings")
       .select("*, auctions(*)", { count: "exact" })
       .eq("status", "active");
 
-    // Category filter
-    if (category !== "All") {
-      query = query.eq("category", category);
-    }
+    if (category !== "All") query = query.eq("category", category);
+    if (type !== "All" && typeMap[type]) query = query.eq("listing_type", typeMap[type]);
+    if (debouncedSearch.trim()) query = query.textSearch("search_vector", debouncedSearch.trim(), { type: "websearch" });
 
-    // Listing type filter
-    if (type !== "All" && typeMap[type]) {
-      query = query.eq("listing_type", typeMap[type]);
-    }
-
-    // Text search — use Postgres full-text search via tsvector
-    if (debouncedSearch.trim()) {
-      query = query.textSearch("search_vector", debouncedSearch.trim(), { type: "websearch" });
-    }
-
-    // Price range — filter on starting_price server-side
     const min = parseFloat(minPrice);
     const max = parseFloat(maxPrice);
-    if (!isNaN(min)) {
-      query = query.gte("starting_price", min);
-    }
-    if (!isNaN(max)) {
-      query = query.lte("starting_price", max);
-    }
+    if (!isNaN(min)) query = query.gte("starting_price", min);
+    if (!isNaN(max)) query = query.lte("starting_price", max);
 
-    // Sort
     switch (sort) {
-      case "price_asc":
-        query = query.order("starting_price", { ascending: true });
-        break;
-      case "price_desc":
-        query = query.order("starting_price", { ascending: false });
-        break;
-      case "ending_soon":
-        query = query.not("ends_at", "is", null).order("ends_at", { ascending: true });
-        break;
-      default:
-        query = query.order("created_at", { ascending: false });
-        break;
+      case "price_asc": query = query.order("starting_price", { ascending: true }); break;
+      case "price_desc": query = query.order("starting_price", { ascending: false }); break;
+      case "ending_soon": query = query.not("ends_at", "is", null).order("ends_at", { ascending: true }); break;
+      default: query = query.order("created_at", { ascending: false }); break;
     }
 
-    query = query.limit(100);
+    const from = pageNum * PAGE_SIZE;
+    query = query.range(from, from + PAGE_SIZE - 1);
 
     const { data, count } = await query;
     let results = data || [];
 
-    // Client-side sort for "most_bids" (requires joined data)
     if (sort === "most_bids") {
       results = [...results].sort(
         (a: any, b: any) => (b.auctions?.[0]?.bid_count ?? 0) - (a.auctions?.[0]?.bid_count ?? 0)
       );
     }
 
-    setListings(results);
+    if (append) {
+      setListings(prev => [...prev, ...results]);
+    } else {
+      setListings(results);
+    }
     setTotalCount(count ?? results.length);
     setLoading(false);
+    setLoadingMore(false);
   }, [category, type, debouncedSearch, minPrice, maxPrice, sort]);
 
+  // Reset to page 0 when filters change
   useEffect(() => {
-    loadListings();
+    setPage(0);
+    loadListings(0, false);
   }, [loadListings]);
 
-  const getTimeLeft = (endsAt: string) => Math.max(0, Math.floor((new Date(endsAt).getTime() - Date.now()) / 1000));
+  // Infinite scroll observer
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !loadingMore && !loading && listings.length < totalCount) {
+        const nextPage = page + 1;
+        setPage(nextPage);
+        loadListings(nextPage, true);
+      }
+    }, { rootMargin: "200px" });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [page, loadingMore, loading, listings.length, totalCount, loadListings]);
+
+  const hasMore = listings.length < totalCount;
 
   const activeFilterCount = [category !== "All", type !== "All", minPrice, maxPrice, sort !== "newest"].filter(Boolean).length;
 
