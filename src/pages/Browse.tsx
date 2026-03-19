@@ -72,6 +72,8 @@ const Browse = () => {
   const [totalCount, setTotalCount] = useState(0);
   const [page, setPage] = useState(0);
   const sentinelRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30 });
 
   // Filters from URL
   const [search, setSearch] = useState(searchParams.get("q") || "");
