@@ -187,7 +187,7 @@ const Browse = () => {
   };
 
   return (
-    <PullToRefresh onRefresh={async () => { await loadListings(); }}>
+    <PullToRefresh onRefresh={async () => { setPage(0); await loadListings(0, false); }}>
     <div className="min-h-screen bg-background pb-24">
       {/* ─── Sticky Header ─── */}
       <div className="sticky top-0 z-40 bg-background/60 backdrop-blur-2xl border-b border-border/50">
