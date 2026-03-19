@@ -434,8 +434,17 @@ const Feed = () => {
     await loadFeed();
   }, []);
 
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, { stiffness: 200, damping: 30, restDelta: 0.001 });
+
   return (
     <div className="min-h-screen bg-background pb-24">
+      {/* Scroll progress bar */}
+      <motion.div
+        style={{ scaleX, transformOrigin: "0%" }}
+        className="fixed top-0 left-0 right-0 h-[3px] z-50"
+        style={{ scaleX, transformOrigin: "0%", background: "linear-gradient(90deg, hsl(var(--nab-cyan)), hsl(var(--nab-purple)))" }}
+      />
       {/* Background glow orbs */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
         <motion.div animate={{ scale: [1, 1.3, 1], opacity: [0.04, 0.08, 0.04] }} transition={{ duration: 8, repeat: Infinity }} className="absolute top-20 -left-32 w-64 h-64 rounded-full blur-[120px]" style={{ background: "hsl(var(--nab-cyan))" }} />
