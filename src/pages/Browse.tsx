@@ -58,6 +58,8 @@ const typeMap: Record<string, string> = {
   "Grab Bag": "grab_bag",
 };
 
+const PAGE_SIZE = 18;
+
 const Browse = () => {
   usePageMeta({ title: "Browse — nabbit.ai", description: "Browse auctions, buy-now deals, breaks, and grab bags. Find your next nab.", path: "/browse" });
   const navigate = useNavigate();
@@ -66,7 +68,10 @@ const Browse = () => {
 
   const [listings, setListings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   // Filters from URL
   const [search, setSearch] = useState(searchParams.get("q") || "");
