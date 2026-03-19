@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { motion, AnimatePresence, useInView, useScroll, useSpring } from "framer-motion";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
   ShoppingBag, Bookmark, Zap, Bell, Loader2, Heart, MessageCircle,
   Share2, Eye, Radio, TrendingUp, ChevronRight, Flame, Shield
