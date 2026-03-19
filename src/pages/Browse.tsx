@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { Search, SlidersHorizontal, Loader2, Gavel, X, Eye, Clock, Flame, Tag, ChevronRight, ShoppingBag, Bookmark, Heart } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -14,6 +14,7 @@ import NabbitLogo from "@/components/NabbitLogo";
 import { useTrackInteraction } from "@/hooks/useTrackInteraction";
 import { Skeleton } from "@/components/ui/skeleton";
 import PullToRefresh from "@/components/PullToRefresh";
+import BackToTop from "@/components/BackToTop";
 
 // Product placeholder images
 import imgCardsBox from "@/assets/products/cards-box.jpg";
@@ -57,6 +58,8 @@ const typeMap: Record<string, string> = {
   "Grab Bag": "grab_bag",
 };
 
+const PAGE_SIZE = 18;
+
 const Browse = () => {
   usePageMeta({ title: "Browse — nabbit.ai", description: "Browse auctions, buy-now deals, breaks, and grab bags. Find your next nab.", path: "/browse" });
   const navigate = useNavigate();
@@ -65,7 +68,10 @@ const Browse = () => {
 
   const [listings, setListings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [totalCount, setTotalCount] = useState(0);
+  const [page, setPage] = useState(0);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
   // Filters from URL
   const [search, setSearch] = useState(searchParams.get("q") || "");
@@ -96,77 +102,78 @@ const Browse = () => {
   }, [search, category, type, sort, minPrice, maxPrice]);
 
   // Server-side query — runs when any filter changes
-  const loadListings = useCallback(async () => {
-    setLoading(true);
+  const loadListings = useCallback(async (pageNum: number, append = false) => {
+    if (append) {
+      setLoadingMore(true);
+    } else {
+      setLoading(true);
+    }
 
     let query = supabase
       .from("listings")
       .select("*, auctions(*)", { count: "exact" })
       .eq("status", "active");
 
-    // Category filter
-    if (category !== "All") {
-      query = query.eq("category", category);
-    }
+    if (category !== "All") query = query.eq("category", category);
+    if (type !== "All" && typeMap[type]) query = query.eq("listing_type", typeMap[type]);
+    if (debouncedSearch.trim()) query = query.textSearch("search_vector", debouncedSearch.trim(), { type: "websearch" });
 
-    // Listing type filter
-    if (type !== "All" && typeMap[type]) {
-      query = query.eq("listing_type", typeMap[type]);
-    }
-
-    // Text search — use Postgres full-text search via tsvector
-    if (debouncedSearch.trim()) {
-      query = query.textSearch("search_vector", debouncedSearch.trim(), { type: "websearch" });
-    }
-
-    // Price range — filter on starting_price server-side
     const min = parseFloat(minPrice);
     const max = parseFloat(maxPrice);
-    if (!isNaN(min)) {
-      query = query.gte("starting_price", min);
-    }
-    if (!isNaN(max)) {
-      query = query.lte("starting_price", max);
-    }
+    if (!isNaN(min)) query = query.gte("starting_price", min);
+    if (!isNaN(max)) query = query.lte("starting_price", max);
 
-    // Sort
     switch (sort) {
-      case "price_asc":
-        query = query.order("starting_price", { ascending: true });
-        break;
-      case "price_desc":
-        query = query.order("starting_price", { ascending: false });
-        break;
-      case "ending_soon":
-        query = query.not("ends_at", "is", null).order("ends_at", { ascending: true });
-        break;
-      default:
-        query = query.order("created_at", { ascending: false });
-        break;
+      case "price_asc": query = query.order("starting_price", { ascending: true }); break;
+      case "price_desc": query = query.order("starting_price", { ascending: false }); break;
+      case "ending_soon": query = query.not("ends_at", "is", null).order("ends_at", { ascending: true }); break;
+      default: query = query.order("created_at", { ascending: false }); break;
     }
 
-    query = query.limit(100);
+    const from = pageNum * PAGE_SIZE;
+    query = query.range(from, from + PAGE_SIZE - 1);
 
     const { data, count } = await query;
     let results = data || [];
 
-    // Client-side sort for "most_bids" (requires joined data)
     if (sort === "most_bids") {
       results = [...results].sort(
         (a: any, b: any) => (b.auctions?.[0]?.bid_count ?? 0) - (a.auctions?.[0]?.bid_count ?? 0)
       );
     }
 
-    setListings(results);
+    if (append) {
+      setListings(prev => [...prev, ...results]);
+    } else {
+      setListings(results);
+    }
     setTotalCount(count ?? results.length);
     setLoading(false);
+    setLoadingMore(false);
   }, [category, type, debouncedSearch, minPrice, maxPrice, sort]);
 
+  // Reset to page 0 when filters change
   useEffect(() => {
-    loadListings();
+    setPage(0);
+    loadListings(0, false);
   }, [loadListings]);
 
-  const getTimeLeft = (endsAt: string) => Math.max(0, Math.floor((new Date(endsAt).getTime() - Date.now()) / 1000));
+  // Infinite scroll observer
+  useEffect(() => {
+    const el = sentinelRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting && !loadingMore && !loading && listings.length < totalCount) {
+        const nextPage = page + 1;
+        setPage(nextPage);
+        loadListings(nextPage, true);
+      }
+    }, { rootMargin: "200px" });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [page, loadingMore, loading, listings.length, totalCount, loadListings]);
+
+  const hasMore = listings.length < totalCount;
 
   const activeFilterCount = [category !== "All", type !== "All", minPrice, maxPrice, sort !== "newest"].filter(Boolean).length;
 
@@ -180,7 +187,7 @@ const Browse = () => {
   };
 
   return (
-    <PullToRefresh onRefresh={async () => { await loadListings(); }}>
+    <PullToRefresh onRefresh={async () => { setPage(0); await loadListings(0, false); }}>
     <div className="min-h-screen bg-background pb-24">
       {/* ─── Sticky Header ─── */}
       <div className="sticky top-0 z-40 bg-background/60 backdrop-blur-2xl border-b border-border/50">
@@ -406,7 +413,7 @@ const Browse = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {listings.map((listing, i) => {
                 const auction = listing.auctions?.[0];
-                const timeLeft = listing.ends_at ? getTimeLeft(listing.ends_at) : 0;
+                const timeLeft = listing.ends_at ? Math.max(0, Math.floor((new Date(listing.ends_at).getTime() - Date.now()) / 1000)) : 0;
                 const price = auction?.current_price ?? listing.starting_price;
                 const hasImage = listing.images && listing.images.length > 0 && listing.images[0];
                 const displayImage = hasImage ? listing.images[0] : getPlaceholderImage(listing.category, i);
@@ -487,10 +494,35 @@ const Browse = () => {
                 );
               })}
             </div>
+
+            {/* Infinite scroll sentinel */}
+            <div ref={sentinelRef} className="py-4">
+              {loadingMore && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {Array.from({ length: 3 }).map((_, i) => (
+                    <div key={i} className="rounded-2xl glass-card gradient-border overflow-hidden">
+                      <Skeleton className="aspect-square w-full rounded-none" />
+                      <div className="p-4 space-y-3">
+                        <Skeleton className="h-4 w-4/5" />
+                        <Skeleton className="h-3.5 w-3/5" />
+                        <div className="flex items-center justify-between pt-1">
+                          <Skeleton className="h-6 w-24" />
+                          <Skeleton className="h-7 w-20 rounded-full" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+              {!hasMore && listings.length > 0 && (
+                <p className="text-center text-xs text-muted-foreground py-4">You've seen all {totalCount} items</p>
+              )}
+            </div>
           </>
         )}
       </div>
 
+      <BackToTop />
       <BottomNav />
     </div>
     </PullToRefresh>
