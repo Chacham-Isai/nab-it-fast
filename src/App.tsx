@@ -8,6 +8,7 @@ import { ThemeProvider } from "./hooks/use-theme";
 import { AuthProvider } from "./hooks/useAuth";
 import ErrorBoundary from "./components/ErrorBoundary";
 import useRealtimeNotifications from "./hooks/useRealtimeNotifications";
+import ScrollProgressBar from "./components/ScrollProgressBar";
 
 const queryClient = new QueryClient();
 
