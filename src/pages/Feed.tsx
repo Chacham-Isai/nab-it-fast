@@ -441,7 +441,6 @@ const Feed = () => {
     <div className="min-h-screen bg-background pb-24">
       {/* Scroll progress bar */}
       <motion.div
-        style={{ scaleX, transformOrigin: "0%" }}
         className="fixed top-0 left-0 right-0 h-[3px] z-50"
         style={{ scaleX, transformOrigin: "0%", background: "linear-gradient(90deg, hsl(var(--nab-cyan)), hsl(var(--nab-purple)))" }}
       />
