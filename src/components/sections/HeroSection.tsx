@@ -19,7 +19,7 @@ const features = [
     icon: Users,
     title: "Buy together. Save bigger.",
     desc: "Join forces with other buyers. The more people in, the lower the price drops. Early birds get the best tier.",
-    image: crewDealShowcase,
+    image: aiCuratedFeed,
     accent: "nab-cyan",
     stats: [
       { label: "Avg savings", value: "42%" },
@@ -34,7 +34,7 @@ const features = [
     icon: Sparkles,
     title: "Your AI deal feed. Scary accurate.",
     desc: "Every swipe, save, and purchase trains your personal engine. It learns your taste and surfaces deals you'd actually buy.",
-    image: aiCuratedFeed,
+    image: crewDealShowcase,
     accent: "nab-purple",
     stats: [
       { label: "Match accuracy", value: "97%" },
