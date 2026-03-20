@@ -11,7 +11,7 @@ const ScrollProgressBar = () => {
 
   return (
     <motion.div
-      className="fixed top-0 left-0 right-0 h-[3px] z-[60]"
+      className="fixed top-0 left-0 right-0 h-[3px] z-[60] transition-[height] duration-200 hover:h-[6px]"
       style={{ scaleX, opacity, transformOrigin: "0%", background: "linear-gradient(90deg, hsl(var(--nab-cyan)), hsl(var(--nab-purple)))" }}
     />
   );
